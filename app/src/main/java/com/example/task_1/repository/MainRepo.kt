@@ -143,8 +143,15 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
             File(Environment.getExternalStorageDirectory(), "CropDirectory")
         }
         val folder = File("$targetDirectory/$dirName")
+        Log.i("MainRepoInfo", "getCropImagesList: $folder  //  ${folder.listFiles()?.size}")
+        if (folder.isDirectory && folder.listFiles()?.isEmpty() != false) {
+            Log.i("MainRepoInfo", "getCropImagesList: Folder Delete $folder  //  ${folder.listFiles()?.size}")
+            folder.delete()
+        }
         if(folder.exists()){
             allFiles = folder.listFiles { dir, name ->
+                Log.i("MainRepoInfo", "getCropImagesList: name:$name")
+                getCropImagesList(name)
                 if(dir.isDirectory){
                     dir.isDirectory
                 }else{
@@ -154,7 +161,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                 }
             } ?: emptyArray()
         }
-        Log.i("MainRepoInfo", "getCropImagesList: ${folder.exists()}  //  $folder   //  $allFiles")
+        Log.i("MainRepoInfo", "getCropImagesList: FinalList Return: ${folder.exists()}  //  $folder   //  ${allFiles.size}")
         return allFiles
     }
 }

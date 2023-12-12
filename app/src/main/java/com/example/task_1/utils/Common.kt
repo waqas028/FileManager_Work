@@ -174,7 +174,7 @@ object Common {
                     delay(1000)
                     onComplete()
                     mode?.finish() // Finish the ActionMode
-                    Log.i(ImagesAdapter.TAG, "deleteFileUsingDisplayName: Image Delete $copiedImagesCount")
+                    Log.i("DeleteImagesInfo", "deleteFileUsingDisplayName: Image Delete $copiedImagesCount")
                 }
             }
         } catch (ex: Exception) {

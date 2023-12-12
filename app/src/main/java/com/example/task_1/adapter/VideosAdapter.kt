@@ -105,6 +105,7 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
                     0 -> {menuSelection = R.menu.selection_menu}
                     1 -> {menuSelection = R.menu.selection_menu}
                     2 -> { menuSelection = R.menu.ic_delete_menu}
+                    3 -> { menuSelection = R.menu.ic_delete_menu}
                 }
                 actionMode = holder.itemView.startActionMode(MyActionModeCallback(
                     holder.itemView.context,
