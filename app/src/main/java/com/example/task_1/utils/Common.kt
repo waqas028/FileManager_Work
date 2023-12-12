@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -12,6 +13,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.ActionMode
 import com.example.task_1.adapter.ImagesAdapter
+import com.example.task_1.extension.saveImagesBitmap
 import com.example.task_1.interfaces.CopyImageProgressListener
 import com.example.task_1.model.Media
 import kotlinx.coroutines.CoroutineScope
@@ -27,9 +29,9 @@ import java.util.Locale
 
 object Common {
     @SuppressLint("Range")
-    fun getFilePathFromImageUri(context: Context, uri: Uri): String? {
+    fun getFilePathFromImageUri(context: Context, uri: Uri?): String? {
         val contentResolver = context.contentResolver
-        val cursor = contentResolver.query(uri, arrayOf(MediaStore.Images.Media.DATA), null, null, null)
+        val cursor = uri?.let { contentResolver.query(it, arrayOf(MediaStore.Images.Media.DATA), null, null, null) }
         if (cursor != null && cursor.moveToFirst()) {
             val filePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
             cursor.close()
@@ -146,7 +148,7 @@ object Common {
         }
     }
 
-    fun deleteFile(
+    fun deleteMultipleFile(
         context: Context,
         selectImageUri: Uri,
         imageFile: File,
@@ -183,14 +185,15 @@ object Common {
     }
 
     fun copyFileToFolder(
-        sourceImagePath: String,
+        context: Context,
+        sourceImagePath: String?,
         progressListener: CopyImageProgressListener?,
         mode: ActionMode?,
         copiedImagesCount: Int,
         selectedItems: MutableList<Media>,
         onComplete: () -> Unit
     ) {
-        val sourceFile = File(sourceImagePath)
+        val sourceFile = File(sourceImagePath.orEmpty())
         val destinationDir = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
             File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "TaskImages")
         }else{
@@ -209,6 +212,7 @@ object Common {
             "TaskImages_${sourceFile.name}"
         }
         val destinationFile = File(destinationDir, imageName)
+        MediaScannerConnection.scanFile(context, arrayOf(destinationFile.path), null, null)
         try {
             val inputStream = FileInputStream(sourceFile)
             val outputStream = FileOutputStream(destinationFile,true)

@@ -40,8 +40,7 @@ class PermissionsFragment : Fragment() {
         }
     }
 
-    private val activityResultLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
+    private val activityResultLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
         { permissions ->
             // Handle Permission granted/rejected
             var permissionGranted = true

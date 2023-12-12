@@ -30,9 +30,8 @@ class GalleryFragment : Fragment() {
         lifecycleScope.launch {
             // Get images this app has access to from MediaStore
             for(i in (activity as CameraPreviewActivity).imageUriList.indices){
-                mediaList.add(TempImage(MediaStoreUtils(requireContext()).getImages()[i].id.toInt(),MediaStoreUtils(requireContext()).getImages()[i].uri))
+                mediaList.add(TempImage(i,MediaStoreUtils(requireContext()).getImages()[i].uri))
             }
-            //mediaList = (activity as CameraPreviewActivity).imageUriList
             Log.i(TAG, "onCreate: ${(activity as CameraPreviewActivity).imageUriList.size}")
             (fragmentGalleryBinding.photoViewPager.adapter as MediaPagerAdapter)
                 .setMediaListAndNotify(mediaList)

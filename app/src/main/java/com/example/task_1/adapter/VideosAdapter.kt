@@ -1,11 +1,8 @@
 package com.example.task_1.adapter
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.view.ActionMode
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -17,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.task_1.R
+import com.example.task_1.extension.MyActionModeCallback
 import com.example.task_1.interfaces.CopyImageProgressListener
 import com.example.task_1.model.Media
 import com.example.task_1.utils.Common
@@ -24,20 +22,18 @@ import com.example.task_1.utils.Constant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
 class VideosAdapter (private val progressListener: CopyImageProgressListener?) : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
     companion object{
         const val TAG = "VideosAdapterInfo"
-        var copiedImagesCount = 0
-        private var isSelected = mutableListOf<Boolean>()
-        private val selectedItems = mutableListOf<Media>() // Replace T with your data type
-        private var actionMode: ActionMode? = null
-        private var menuSelection = R.menu.selection_menu
-        private var selectAllItems = false
     }
-    private lateinit var holderview : ViewHolder
+    private var copiedImagesCount = 0
+    private var isSelected = mutableListOf<Boolean>()
+    private val selectedItems = mutableListOf<Media>()
+    private var actionMode: ActionMode? = null
+    private var menuSelection = R.menu.selection_menu
+    private var selectAllItems = false
     private val differCallback = object : DiffUtil.ItemCallback<Media>() {
         override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
             return oldItem.name == newItem.name
@@ -66,7 +62,6 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val mediaList = differ.currentList[position]
-        holderview = holder
         holder.imageNameTextview.text = mediaList.name
         if(mediaList.name.endsWith(".mp4")) {
             holder.videoPlayImageview.visibility = View.VISIBLE
@@ -76,7 +71,7 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .override(300,300)
                 Glide.with(holder.itemView.context)
-                    .load(File(Common.getFilePathFromVideoUri(holder.itemView.context,mediaList.uri)!!))
+                    .load(File(Common.getFilePathFromVideoUri(holder.itemView.context,mediaList.uri).orEmpty()))
                     .apply(requestOptions)
                     .placeholder(R.drawable.ic_photo)
                     .error(R.drawable.ic_photo)
@@ -92,7 +87,7 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .override(300,300)
                 Glide.with(holder.itemView.context)
-                    .load(File(Common.getFilePathFromImageUri(holder.itemView.context,mediaList.uri)!!))
+                    .load(File(Common.getFilePathFromImageUri(holder.itemView.context,mediaList.uri).orEmpty()))
                     .apply(requestOptions)
                     .placeholder(R.drawable.ic_photo)
                     .error(R.drawable.ic_photo)
@@ -102,10 +97,33 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
             }
         }
         if(isSelected(mediaList)) holder.selectImageview.visibility = View.VISIBLE else holder.selectImageview.visibility = View.GONE
+
         // Set click listener for item selection
         holder.itemView.setOnLongClickListener {
             if (actionMode == null) {
-                actionMode = holder.itemView.startActionMode(actionModeCallback)
+                when(Constant.currentFragment){
+                    0 -> {menuSelection = R.menu.selection_menu}
+                    1 -> {menuSelection = R.menu.selection_menu}
+                    2 -> { menuSelection = R.menu.ic_delete_menu}
+                }
+                actionMode = holder.itemView.startActionMode(MyActionModeCallback(
+                    holder.itemView.context,
+                    menuSelection,
+                    selectedItems,
+                    copiedImagesCount,
+                    progressListener,
+                    onCopyClickListener = {
+                        onCopyClickListener?.let {
+                        it(true)
+                    }},
+                    onClearSelectionClickListener = { clearSelections() },
+                    onSelectAllItemsClickListener = { if(selectAllItems) unSelectAllItems() else selectAllItems() },
+                    onDestroyActionModeClickListener = {
+                        clearSelections()
+                        actionMode = null
+                        notifyDataSetChanged()
+                        Log.i(TAG, "onDestroyActionMode: ")}
+                ))
             }
             toggleSelection(mediaList)
             if(isSelected(mediaList)) holder.selectImageview.visibility = View.VISIBLE else holder.selectImageview.visibility = View.GONE
@@ -115,11 +133,9 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
         // Your regular item click listener
         holder.itemView.setOnClickListener {
             if (actionMode != null) {
-                // In ActionMode, toggle selection on click
                 toggleSelection(mediaList)
                 if(isSelected(mediaList)) holder.selectImageview.visibility = View.VISIBLE else holder.selectImageview.visibility = View.GONE
             } else {
-                // Handle item click in a non-selection context
                 Constant.selectVideoPosition = position
                 onItemClickListener?.let {
                     it(mediaList)
@@ -143,120 +159,6 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
     private var onCopyClickListener: ((Boolean) -> Unit)? = null
     fun stOnCopyClickListener(listener: (Boolean) -> Unit){
         onCopyClickListener = listener
-    }
-
-    //new code for selection copy
-    private val actionModeCallback = object : ActionMode.Callback {
-        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            mode?.menuInflater?.inflate(menuSelection, menu) // Create a menu XML
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            return false
-        }
-
-        @SuppressLint("CheckResult")
-        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId) {
-                R.id.menu_action_save -> {
-                    if(selectedItems.size>0){
-                        Constant.isItCancel = false
-                        onCopyClickListener?.let {
-                            it(true)
-                        }
-                        CoroutineScope(Dispatchers.IO).launch {
-                            Log.i(TAG, "onActionItemClicked: ${selectedItems.size}")
-                            for(img in selectedItems.indices){
-                                Log.i(TAG, "onActionItemClicked: $img")
-                                try {
-                                    val currentSourceImagePath = Common.getFilePathFromVideoUri(holderview.itemView.context,selectedItems[img].uri)!!
-                                    copiedImagesCount++
-                                    Common.copyFileToFolder(
-                                        currentSourceImagePath,
-                                        progressListener,
-                                        mode,
-                                        copiedImagesCount,
-                                        selectedItems
-                                    ){
-                                        clearSelections()
-                                    }
-                                    if(Constant.isItCancel) {
-                                        Constant.isItCancel = false
-                                        clearSelections()
-                                        withContext(Dispatchers.Main){
-                                            mode?.finish()
-                                        }
-                                        return@launch
-                                    }
-                                }catch (e:Exception){
-                                    copiedImagesCount++
-                                    Log.i(TAG, "onActionItemClicked: $e")
-                                }
-                            }
-                        }
-                    }
-                    true
-                }
-                R.id.menu_action_select_all -> {
-                    if(selectAllItems) unSelectAllItems() else selectAllItems()
-                    true
-                }
-                R.id.menu_action_delete -> {
-                    if(selectedItems.size>0){
-                        Constant.isItCancel = false
-                        onCopyClickListener?.let {
-                            it(true)
-                        }
-                        CoroutineScope(Dispatchers.IO).launch {
-                            Log.i(TAG, "onActionItemClicked: ${selectedItems.size}  //  ${Constant.isItCancel}")
-                            for(img in selectedItems.indices){
-                                try {
-                                    copiedImagesCount++
-                                    Common.deleteFile(
-                                        holderview.itemView.context,
-                                        selectedItems[img].uri,
-                                        File(Common.getFilePathFromImageUri(
-                                                holderview.itemView.context,
-                                                selectedItems[img].uri)!!
-                                        ),
-                                        mode,
-                                        progressListener,
-                                        copiedImagesCount,
-                                        selectedItems
-                                    ){
-                                        clearSelections()
-                                    }
-                                    if(Constant.isItCancel) {
-                                        Constant.isItCancel = false
-                                        clearSelections()
-                                        withContext(Dispatchers.Main){
-                                            mode?.finish()
-                                        }
-                                        return@launch
-                                    }
-                                }catch (e:Exception){
-                                    copiedImagesCount++
-                                    Log.i(TAG, "onActionItemClicked: $e")
-                                }
-                            }
-                        }
-                    }
-                    true
-                }
-                else -> {
-                    Log.i(TAG, "onActionItemClicked: else")
-                    false
-                }
-            }
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode?) {
-            clearSelections()
-            actionMode = null
-            notifyDataSetChanged()
-            Log.i(TAG, "onDestroyActionMode: ")
-        }
     }
 
     // Toggle selection of an item
@@ -312,13 +214,8 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
     }
 
     fun onPageUpdate(onPageSelected: Int) {
-        Log.i(TAG, "onPageUpdate: $onPageSelected")
+        Log.i(TAG, "onPageUpdate: $onPageSelected $actionMode")
         clearSelections()
         actionMode?.finish() // Finish the ActionMode
-        when(onPageSelected){
-            0 -> {menuSelection = R.menu.selection_menu}
-            1 -> {menuSelection = R.menu.selection_menu}
-            2 -> { menuSelection = R.menu.ic_delete_menu}
-        }
     }
 }

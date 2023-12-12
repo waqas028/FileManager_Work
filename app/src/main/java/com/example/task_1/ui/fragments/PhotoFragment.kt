@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.task_1.ui.fragments.PhotoFragment
 import com.example.task_1.databinding.FragmentPhotoBinding
 import com.example.task_1.extension.cropImage
 import com.example.task_1.ui.activity.CameraPreviewActivity
@@ -39,7 +40,7 @@ class PhotoFragment internal constructor() : Fragment() {
             val bitmap = fragmentPhotoBinding.cropImageView.croppedImage
             fragmentPhotoBinding.cropImageView.setImageBitmap(bitmap)
             if (bitmap != null) {
-                cropImage(bitmap, Common.getFilePathFromImageUri(requireContext(), imageUri!!)!!)
+                cropImage(bitmap, Common.getFilePathFromImageUri(requireContext(), imageUri))
             }
         }
     }

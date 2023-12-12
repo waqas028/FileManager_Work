@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.task_1.R
+import com.example.task_1.extension.MyActionModeCallback
 import com.example.task_1.interfaces.CopyImageProgressListener
 import com.example.task_1.model.Media
 import com.example.task_1.utils.Common
@@ -38,7 +39,6 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
     private var menuSelection = R.menu.selection_menu
     private var checkPosition = mutableListOf<Media>()
     private var selectAllItems = false
-    private lateinit var holderview : ViewHolder
     private val differCallback = object : DiffUtil.ItemCallback<Media>() {
         override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
             return oldItem.name == newItem.name
@@ -66,7 +66,6 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val mediaList = differ.currentList[position]
-        holderview = holder
         holder.imageNameTextview.text = mediaList.name
         holder.imageview.layout(0,0,0,0)
         try{
@@ -82,12 +81,35 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
         }catch (e:Exception){
             Log.i(TAG, "onBindViewHolder: Exception: $e")
         }
-        if(isSelected(mediaList)) holderview.selectImageview.visibility = View.VISIBLE else holder.selectImageview.visibility = View.GONE
+        if(isSelected(mediaList)) holder.selectImageview.visibility = View.VISIBLE else holder.selectImageview.visibility = View.GONE
         // Set click listener for item selection
         holder.itemView.setOnLongClickListener {
             if(!mediaList.name.startsWith("CropDirectory")){
                 if (actionMode == null) {
-                    actionMode = holder.itemView.startActionMode(actionModeCallback)
+                    //actionMode = holder.itemView.startActionMode(actionModeCallback)
+                    when(Constant.currentFragment){
+                        0 -> { menuSelection = R.menu.selection_menu}
+                        1 -> { menuSelection = R.menu.selection_menu}
+                        2 -> { menuSelection = R.menu.ic_delete_menu}
+                    }
+                    actionMode = holder.itemView.startActionMode(MyActionModeCallback(
+                        holder.itemView.context,
+                        menuSelection,
+                        selectedItems,
+                        copiedImagesCount,
+                        progressListener,
+                        onCopyClickListener = {
+                            onCopyClickListener?.let {
+                                it(true)
+                            }},
+                        onClearSelectionClickListener = {clearSelections()},
+                        onSelectAllItemsClickListener = {if(selectAllItems) unSelectAllItems() else selectAllItems()},
+                        onDestroyActionModeClickListener = {
+                            clearSelections()
+                            actionMode = null
+                            notifyDataSetChanged()
+                            Log.i(VideosAdapter.TAG, "onDestroyActionMode: ")}
+                    ))
                 }
                 toggleSelection(mediaList)
                 checkPosition.add(mediaList)
@@ -138,80 +160,6 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
     private var onCopyClickListener: ((Boolean) -> Unit)? = null
     fun stOnCopyClickListener(listener: (Boolean) -> Unit){
         onCopyClickListener = listener
-    }
-
-    //new code for selection copy
-    private val actionModeCallback = object : ActionMode.Callback {
-        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            mode?.menuInflater?.inflate(menuSelection, menu) // Create a menu XML
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            return false
-        }
-
-        @SuppressLint("CheckResult")
-        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId) {
-                R.id.menu_action_save -> {
-                    if(selectedItems.size>0){
-                        Constant.isItCancel = false
-                        onCopyClickListener?.let {
-                            it(true)
-                        }
-                        CoroutineScope(Dispatchers.IO).launch {
-                            Log.i(TAG, "onActionItemClicked: ${selectedItems.size}  //  ${Constant.isItCancel}")
-                            for(img in selectedItems.indices){
-                                try {
-                                    val currentSourceImagePath = Common.getFilePathFromImageUri(holderview.itemView.context, selectedItems[img].uri)!!
-                                    Log.i(TAG, "onActionItemClicked: path-> $currentSourceImagePath")
-                                    if(currentSourceImagePath.endsWith(".jpg") || currentSourceImagePath.endsWith(".png")) copiedImagesCount++
-                                    Common.copyFileToFolder(
-                                        currentSourceImagePath,
-                                        progressListener,
-                                        mode,
-                                        copiedImagesCount,
-                                        selectedItems
-                                    ){
-                                        clearSelections()
-                                    }
-                                    if(Constant.isItCancel) {
-                                        Constant.isItCancel = false
-                                        clearSelections()
-                                        withContext(Dispatchers.Main){
-                                            mode?.finish()
-                                        }
-                                        Log.i(TAG, "onActionItemClicked: set false then check: ${Constant.isItCancel}")
-                                        return@launch
-                                    }
-                                }catch (e:Exception){
-                                    copiedImagesCount++
-                                    Log.i(TAG, "onActionItemClicked: $e")
-                                }
-                            }
-                        }
-                    }
-                    true
-                }
-                R.id.menu_action_select_all -> {
-                    Log.i(TAG, "onActionItemClicked: selectAllItems: $selectAllItems")
-                    if(selectAllItems) unSelectAllItems() else selectAllItems()
-                    true
-                }
-
-                R.id.menu_action_delete -> {
-                    true
-                }
-                else -> false
-            }
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode?) {
-            clearSelections()
-            actionMode = null
-            notifyDataSetChanged()
-        }
     }
 
     // Toggle selection of an item
@@ -269,10 +217,5 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
         Log.i(TAG, "onPageUpdate: $onPageSelected")
         clearSelections()
         actionMode?.finish() // Finish the ActionMode
-        when(onPageSelected){
-            0 -> {menuSelection = R.menu.selection_menu}
-            1 -> {menuSelection = R.menu.selection_menu}
-            2 -> {menuSelection = R.menu.ic_delete_menu}
-        }
     }
 }

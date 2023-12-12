@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.task_1.ui.fragments
 
 import android.app.ProgressDialog
@@ -9,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,9 +20,9 @@ import com.example.task_1.adapter.VideosAdapter
 import com.example.task_1.databinding.FragmentSavedImageBinding
 import com.example.task_1.interfaces.CopyImageProgressListener
 import com.example.task_1.model.Media
-import com.example.task_1.ui.activity.MainActivity
 import com.example.task_1.utils.Common
 import com.example.task_1.utils.Constant
+import com.example.task_1.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,8 +35,9 @@ import kotlinx.coroutines.withContext
 class SavedImageFragment : Fragment(), CopyImageProgressListener {
     private var _binding: FragmentSavedImageBinding? = null
     private val binding get() = _binding!!
+    private val mainViewModel : MainViewModel by activityViewModels()
     var videosAdapter: VideosAdapter = VideosAdapter(this)
-    private var progressDialog: ProgressDialog? = null
+    private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSavedImageBinding.inflate(inflater, container, false)
         binding.savedVideoImageRecyclerView.apply {
@@ -46,29 +50,25 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                withContext(Dispatchers.IO){
-                    (activity as MainActivity).mainViewModel.savedVideoImageList.collect{
-                        val imagesList = mutableListOf<Media>()
-                        if(it.isNotEmpty()){
-                            for( files in it.indices){
-                                if(it[files].name.endsWith(".mp4")){
-                                    Common.getVideoContentUri(requireContext(),it[files])
-                                        ?.let { it1 -> Media(it1,it[files].name,1) }
-                                        ?.let { it2 -> imagesList.add(it2) }
-                                }else{
-                                    Common.getImageContentUri(requireContext(),it[files])
-                                        ?.let { it1 -> Media(it1,it[files].name,1) }
-                                        ?.let { it2 -> imagesList.add(it2) }
-                                }
-                            }
-                            Log.i(TAG, "onViewCreated: ${it.size}  //  $imagesList")
-                        }
-                        withContext(Dispatchers.Main){
-                            videosAdapter.differ.submitList(imagesList)
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            mainViewModel.savedVideoImageList.collect{
+                val imagesList = mutableListOf<Media>()
+                if(it.isNotEmpty()){
+                    for( files in it.indices){
+                        if(it[files].name.endsWith(".mp4")){
+                            Common.getVideoContentUri(requireContext(),it[files])
+                                ?.let { it1 -> Media(it1,it[files].name,1) }
+                                ?.let { it2 -> imagesList.add(it2) }
+                        }else{
+                            Common.getImageContentUri(requireContext(),it[files])
+                                ?.let { it1 -> Media(it1,it[files].name,1) }
+                                ?.let { it2 -> imagesList.add(it2) }
                         }
                     }
+                    Log.i(TAG, "onViewCreated: ${it.size}  //  $imagesList")
+                }
+                withContext(Dispatchers.Main){
+                    videosAdapter.differ.submitList(imagesList)
                 }
             }
         }
@@ -89,33 +89,35 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
 
     override fun onProgressUpdate(progress: Int) {
         Log.i(TAG, "onProgressUpdate: $progress  // ${Constant.totalImagesToCopy}")
-        progressDialog?.progress = progress
+        progressDialog.progress = progress
         if(progress == Constant.totalImagesToCopy) {
             CoroutineScope(Dispatchers.IO).launch {
-                (activity as MainActivity).mainViewModel.getSaveVideoImagesList()
+                mainViewModel.getSaveVideoImagesList()
                 withContext(Dispatchers.Main){
                     delay(500)
-                    progressDialog?.dismiss()
+                    progressDialog.dismiss()
                 }
             }
         }
     }
 
     private fun showDialogue(){
-        progressDialog = ProgressDialog(requireContext())
-        progressDialog!!.max = Constant.totalImagesToCopy // Progress Dialog Max Value
-        progressDialog!!.setMessage("Loading...") // Setting Message
-        progressDialog!!.setTitle("ProgressDialog") // Setting Title
-        progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL) // Progress Dialog Style Horizontal
-        progressDialog!!.setButton("Cancel"
-        ) { _, _ ->
-            Constant.isItCancel = true
-            CoroutineScope(Dispatchers.IO).launch {
-                (requireActivity() as MainActivity).mainViewModel.getSaveVideoImagesList()
+        progressDialog = ProgressDialog(requireActivity())
+        progressDialog.apply {
+            max = Constant.totalImagesToCopy // Progress Dialog Max Value
+            setMessage("Loading...") // Setting Message
+            setTitle("ProgressDialog") // Setting Title
+            setProgressStyle(ProgressDialog.STYLE_HORIZONTAL) // Progress Dialog Style Horizontal
+            setButton("Cancel"
+            ) { _, _ ->
+                Constant.isItCancel = true
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
+                    mainViewModel.getSaveVideoImagesList()
+                }
+                dismiss()
             }
-            progressDialog!!.dismiss()
+            show() // Display Progress Dialog
+            setCancelable(false)
         }
-        progressDialog!!.show() // Display Progress Dialog
-        progressDialog!!.setCancelable(false)
     }
 }

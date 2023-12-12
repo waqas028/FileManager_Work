@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.task_1.adapter.ViewPagerAdapter
 import com.example.task_1.databinding.ActivityMainBinding
@@ -21,12 +22,14 @@ import com.example.task_1.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     val mainViewModel : MainViewModel by viewModels()
+    private lateinit var viewPagerAdapter: ViewPagerAdapter
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,20 +37,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         checkPermissionForAllVersion() //check permission
-
-        binding.viewPager.adapter = ViewPagerAdapter(supportFragmentManager)
+        viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
+        binding.viewPager.adapter = viewPagerAdapter
         binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         binding.viewPager.addOnPageChangeListener(object : OnPageChangeListener{
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                Log.i(TAG, "onPageSelected: $position")
+                Log.i(TAG, "onPageSelected: $position  //  ${viewPagerAdapter.getPageTitle(position)}")
                 Constant.currentFragment = position
-                ImagesFragment().imagesAdapter.onPageUpdate(position)
-                VideosFragment().videosAdapter.onPageUpdate(position)
-                SavedImageFragment().videosAdapter.onPageUpdate(position)
+                when(viewPagerAdapter.getPageTitle(position).toString()){
+                    Fragments.IMAGE_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as ImagesFragment).imagesAdapter.onPageUpdate(position)
+                    Fragments.VIDEO_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as VideosFragment).videosAdapter.onPageUpdate(position)
+                    Fragments.SAVED_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as SavedImageFragment).videosAdapter.onPageUpdate(position)
+                    else -> {
+                        Log.i(TAG, "onPageSelected: else part: ${viewPagerAdapter.getPageTitle(position)}")}
+                }
+               // ImagesFragment().imagesAdapter.onPageUpdate(position)
+               // VideosFragment().videosAdapter.onPageUpdate(position)
+               // SavedImageFragment().videosAdapter.onPageUpdate(position)
                 if(position == 2){
-                    CoroutineScope(Dispatchers.IO).launch { mainViewModel.getSaveVideoImagesList() }
+                    lifecycleScope.launch(Dispatchers.IO) { mainViewModel.getSaveVideoImagesList() }
                 }
             }
             override fun onPageScrollStateChanged(state: Int) {}
@@ -98,7 +108,6 @@ class MainActivity : AppCompatActivity() {
                 this,
                 Manifest.permission.READ_MEDIA_VIDEO
             ) == PackageManager.PERMISSION_GRANTED -> {
-                // You can use the API that requires the permission.
                 getAllListOfData()
                 Log.i(TAG, "checkRequestPermissionFor14: collect videos list")
             }
@@ -131,11 +140,12 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun getAllListOfData(){
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             mainViewModel.getVideosList()
             mainViewModel.getImagesList()
             mainViewModel.getSaveVideoImagesList()
             mainViewModel.getCropImagesList("")
+            mainViewModel.getAllImages(this@MainActivity)
         }
     }
 
@@ -143,4 +153,7 @@ class MainActivity : AppCompatActivity() {
         const val TAG = "MainActivityInfo"
         const val READ_WRITE_REQUEST_CODE = 123
     }
+}
+enum class Fragments(val label : String){
+    IMAGE_FRAGMENTS("Images"),VIDEO_FRAGMENTS("Videos"),SAVED_FRAGMENTS("Saved"),CROP_FRAGMENTS("Crop")
 }

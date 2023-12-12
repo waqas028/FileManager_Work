@@ -1,25 +1,20 @@
 package com.example.task_1.ui.fragments
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.hardware.display.DisplayManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.os.Environment
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,37 +35,27 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.concurrent.futures.await
 import androidx.core.view.setPadding
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.Navigation
-import com.example.task_1.utils.ANIMATION_FAST_MILLIS
-import com.example.task_1.utils.ANIMATION_SLOW_MILLIS
-import com.example.task_1.utils.MediaStoreUtils
-import com.example.task_1.utils.simulateClick
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.example.task_1.R
 import com.example.task_1.databinding.CameraUiContainerBinding
 import com.example.task_1.databinding.FragmentCameraBinding
-import com.example.task_1.extension.showToast
-import com.example.task_1.extension.uriToBitmap
 import com.example.task_1.model.TempImage
 import com.example.task_1.ui.activity.CameraPreviewActivity
 import com.example.task_1.ui.activity.KEY_EVENT_ACTION
 import com.example.task_1.ui.activity.KEY_EVENT_EXTRA
-import com.example.task_1.utils.Common
-import com.example.task_1.utils.Constant
+import com.example.task_1.utils.ANIMATION_FAST_MILLIS
+import com.example.task_1.utils.ANIMATION_SLOW_MILLIS
+import com.example.task_1.utils.MediaStoreUtils
+import com.example.task_1.utils.simulateClick
 import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.ByteBuffer
-import java.text.SimpleDateFormat
 import java.util.ArrayDeque
-import java.util.ArrayList
-import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -78,7 +63,6 @@ import kotlin.math.max
 import kotlin.math.min
 
 typealias LumaListener = (luma: Double) -> Unit
-
 @Suppress("DEPRECATION")
 @RequiresApi(Build.VERSION_CODES.R)
 class CameraFragment : Fragment() {
@@ -199,10 +183,21 @@ class CameraFragment : Fragment() {
     private fun bindCameraUseCases() {
 
         // Get screen metrics used to setup camera for full screen resolution
-        val metrics = windowManager.currentWindowMetrics.bounds
-        Log.d(TAG, "Screen metrics: ${metrics.width()} x ${metrics.height()}")
+        val displayMetrics = DisplayMetrics()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val display = requireContext().display
+            display?.getRealMetrics(displayMetrics)
+        } else {
+            val display = (requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
+            display.getRealMetrics(displayMetrics)
+        }
 
-        val screenAspectRatio = aspectRatio(metrics.width(), metrics.height())
+        val width = displayMetrics.widthPixels
+        val height = displayMetrics.heightPixels
+
+        Log.d(TAG, "Screen metrics: $width x $height")
+
+        val screenAspectRatio = aspectRatio(width, height)
         Log.d(TAG, "Preview aspect ratio: $screenAspectRatio")
 
         val rotation = fragmentCameraBinding?.viewFinder?.display?.rotation ?: 0
@@ -341,25 +336,39 @@ class CameraFragment : Fragment() {
 
             // Get a stable reference of the modifiable image capture use case
             imageCapture?.let { imageCapture ->
-                // Create time stamped name and MediaStore entry.
-                val name = SimpleDateFormat(FILENAME, Locale.US)
+                val targetDirectory = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+                    File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CropDirectory/Crop_$currentTimeSession")
+                }else{
+                    File(Environment.getExternalStorageDirectory(), "CropDirectory/Crop_$currentTimeSession")
+                }
+                if (!targetDirectory.exists()) {
+                    targetDirectory.mkdir()
+                }
+                val filename = "Crop_" + System.currentTimeMillis() + ".jpg"
+                val imageFile = File(targetDirectory, filename)
+                val outputOptions = ImageCapture.OutputFileOptions.Builder(imageFile).build()
+                /*val name = SimpleDateFormat(FILENAME, Locale.US)
                     .format(System.currentTimeMillis())
                 val contentValues = ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, name)
                     put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
                     if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                        put(MediaStore.Images.Media.RELATIVE_PATH, "CropDirectory/Crop_$currentTimeSession")
+                        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/CropDirectory/Crop_$currentTimeSession")
+                    }else{
+                        requireActivity().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, this)
+                        //put(MediaStore.Images.Media.DATA,"/CropDirectory/Crop_$currentTimeSession")
                     }
-                }
+                }*/
 
                 // Create output options object which contains file + metadata
-                val outputOptions = ImageCapture.OutputFileOptions
+               /* val outputOptions = ImageCapture.OutputFileOptions
                     .Builder(requireContext().contentResolver,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         contentValues)
-                    .build()
+                    .build()*/
 
-              /*  // Setup image capture listener which is triggered after photo has been taken
+              /*//temporary file code
+                // Setup image capture listener which is triggered after photo has been taken
                 // Create an output file to store the captured image temporarily (you can use a temporary file)
                 Constant.currentImageCaptureSession = "CropDirectory_${System.currentTimeMillis()}"
                 val tempFile = File.createTempFile("temp_image", ".jpg", requireContext().cacheDir)
@@ -381,7 +390,7 @@ class CameraFragment : Fragment() {
                 })*/
 
                imageCapture.takePicture(
-                    outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
+                   outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
                         override fun onError(exc: ImageCaptureException) {
                             Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                         }
@@ -425,6 +434,7 @@ class CameraFragment : Fragment() {
         cameraUiContainerBinding?.photoViewButton?.setOnClickListener {
             // Only navigate when the gallery has photos
             lifecycleScope.launch {
+                Log.i(TAG, "updateCameraUi: photoViewButton?.setOnClickListener : ${mediaStoreUtils.getImages().size}")
                 if (mediaStoreUtils.getImages().isNotEmpty()) {
                     Navigation.findNavController(requireActivity(), R.id.fragment_container)
                         .navigate(R.id.action_cameraFragment_to_galleryFragment)

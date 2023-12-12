@@ -61,7 +61,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                 videoList += Media(contentUri, name, size)
             }
         }
-        Log.i("MainRepoInfo", "getAllVideoListFromStorage: ${videoList}")
+        Log.i("MainRepoInfo", "getAllVideoListFromStorage: ${videoList.size}")
         return videoList
     }
 
@@ -113,6 +113,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                 imagesList += Media(contentUri, name ?: "", size)
             }
         }
+        Log.i("MainRepoInfo", "getAllImageListFromStorage: ${imagesList.size}")
         return imagesList
     }
 
@@ -128,7 +129,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                 name.endsWith(".jpg") || name.endsWith(
                     ".jpeg"
                 ) || name.endsWith(".png") || name.endsWith(".mp4")
-            }!!
+            } ?: emptyArray()
             Log.i("MainRepoInfo", "getSaveVideoImagesList: ${allFiles.size}")
         }
         return allFiles
@@ -136,7 +137,12 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
 
     fun getCropImagesList(dirName:String) : Array<File> {
         var allFiles: Array<File> = emptyArray()
-        val folder = File(Environment.getExternalStorageDirectory().toString() + "/CropDirectory/$dirName")
+        val targetDirectory = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CropDirectory")
+        }else{
+            File(Environment.getExternalStorageDirectory(), "CropDirectory")
+        }
+        val folder = File("$targetDirectory/$dirName")
         if(folder.exists()){
             allFiles = folder.listFiles { dir, name ->
                 if(dir.isDirectory){
@@ -146,9 +152,9 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                         ".jpeg"
                     ) || name.endsWith(".png") || name.endsWith(".mp4")
                 }
-            }!!
-            Log.i("MainRepoInfo", "getCropImagesList: ${allFiles[0].name}")
+            } ?: emptyArray()
         }
+        Log.i("MainRepoInfo", "getCropImagesList: ${folder.exists()}  //  $folder   //  $allFiles")
         return allFiles
     }
 }

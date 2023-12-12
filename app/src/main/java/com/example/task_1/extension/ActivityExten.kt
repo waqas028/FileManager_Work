@@ -8,10 +8,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.example.task_1.ui.activity.MainActivity
+import com.example.task_1.utils.Common
 import com.example.task_1.utils.Constant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -79,7 +82,7 @@ fun Activity.getImageContentUri(imageFile: File): Uri? {
     }
 }
 
-fun Activity.saveImagesBitmap(bitmap: Bitmap,directory:File){
+fun Activity.saveImagesBitmap(bitmap: Bitmap?,directory:File){
     try {
         Log.i("SavedImageInfo", "saveImagesBitmap:")
         if (!directory.exists()) {
@@ -89,7 +92,7 @@ fun Activity.saveImagesBitmap(bitmap: Bitmap,directory:File){
         val fileName = "Image_${timestamp}.jpg"
         val outputFile = File(directory, fileName)
         val outputStream = FileOutputStream(outputFile)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
         outputStream.close()
         MediaScannerConnection.scanFile(this, arrayOf(outputFile.path), null, null)
         showToast("Image Saved Successfully!")
@@ -99,9 +102,9 @@ fun Activity.saveImagesBitmap(bitmap: Bitmap,directory:File){
     }
 }
 
-fun cropImage(bitmap: Bitmap, originalImagePath: String){
+fun cropImage(bitmap: Bitmap, originalImagePath: String?){
     try {
-        val file = File(originalImagePath)
+        val file = File(originalImagePath.orEmpty())
         Log.i("CropImageInfo", "cropImage: ${file.absolutePath}  //  $originalImagePath")
         val outputStream = FileOutputStream(file)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream) // Save the cropped bitmap as a JPEG file
@@ -113,6 +116,7 @@ fun cropImage(bitmap: Bitmap, originalImagePath: String){
     }
 }
 
+ @RequiresApi(Build.VERSION_CODES.O)
  fun Activity.showDialogue(progress: Int){
     val progressDialog = ProgressDialog(this)
     progressDialog.max = Constant.totalImagesToCopy // Progress Dialog Max Value
@@ -123,10 +127,28 @@ fun cropImage(bitmap: Bitmap, originalImagePath: String){
     ) { _, _ ->
         Constant.isItCancel = true
         CoroutineScope(Dispatchers.IO).launch {
-            (this@showDialogue as MainActivity).mainViewModel.getImagesList()
+            //(this@showDialogue as MainActivity).mainViewModel.getImagesList()
         }
         progressDialog.dismiss()
     }
     progressDialog.show() // Display Progress Dialog
     progressDialog.setCancelable(false)
+}
+
+fun Activity.deleteSingleFile(selectImageUri: Uri) {
+    val imageFile = File(Common.getFilePathFromImageUri(this,selectImageUri)!!)
+    Log.i("DeleteSingleFile", "deleteImages: $selectImageUri  //  ${imageFile.name}")
+    val resolver = contentResolver
+    val selectionArgsPdf = arrayOf(imageFile.name)
+    try {
+        resolver.delete(
+            selectImageUri,
+            MediaStore.Files.FileColumns.DISPLAY_NAME + "=?",
+            selectionArgsPdf
+        )
+        onBackPressed()
+    } catch (ex: Exception) {
+        ex.printStackTrace()
+        Log.i("DeleteSingleFile", "deleteFileUsingDisplayName: $ex")
+    }
 }

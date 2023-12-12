@@ -14,10 +14,12 @@ import androidx.viewpager.widget.ViewPager
 import com.example.task_1.adapter.ImageSlideViewPagerAdapter
 import com.example.task_1.adapter.SlidePhotoAdapter
 import com.example.task_1.databinding.ActivityImagePreviewBinding
+import com.example.task_1.extension.deleteSingleFile
 import com.example.task_1.extension.getFilePathFromImageUri
 import com.example.task_1.extension.saveImagesBitmap
 import com.example.task_1.interfaces.CopyImageProgressListener
 import com.example.task_1.model.Media
+import com.example.task_1.utils.Common
 import com.example.task_1.utils.Constant
 import com.example.task_1.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +43,7 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityImagePreviewBinding.inflate(layoutInflater)
-        mainViewModel.getImagesList()
+        lifecycleScope.launch(Dispatchers.IO) { mainViewModel.getImagesList() }
         setContentView(binding.root)
 
         binding.saveButton.setOnClickListener {
@@ -50,12 +52,12 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
             }else{
                 Environment.getExternalStorageDirectory()
             }
-            saveImagesBitmap(Constant.currentImageBitmap1[currentImagePosition]!!,File(targetDirectory, "TaskImages"))
+            saveImagesBitmap(Constant.currentImageBitmap1[currentImagePosition],File(targetDirectory, "TaskImages"))
             Log.i(TAG, "onCreate: $targetDirectory")
         }
 
         binding.deleteButton.setOnClickListener {
-            deleteImages(currentImageUri)
+            deleteSingleFile(currentImageUri)
         }
 
         /*binding.idViewPager.apply {
@@ -63,18 +65,16 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
             offscreenPageLimit = 3
         }*/
 
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO){
-                mainViewModel.imageList.collect{
-                    Log.i(TAG, "collectImagesList: $it")
-                    imageList = it
-                    withContext(Dispatchers.Main){
-                        imageSlideViewPagerAdapter = ImageSlideViewPagerAdapter(this@ImagePreviewActivity, imageList)
-                        binding.idViewPager.adapter = imageSlideViewPagerAdapter
-                        //imageSlideViewPagerAdapter.differ.submitList(imageList)
-                        binding.idViewPager.currentItem = Constant.selectImagePosition
-                        binding.imageCounterTextview.text = "${binding.idViewPager.currentItem+1}/${imageList.size}"
-                    }
+        lifecycleScope.launch(Dispatchers.IO) {
+            mainViewModel.imageList.collect{
+                Log.i(TAG, "collectImagesList: $it")
+                imageList = it
+                withContext(Dispatchers.Main){
+                    imageSlideViewPagerAdapter = ImageSlideViewPagerAdapter(this@ImagePreviewActivity, imageList)
+                    binding.idViewPager.adapter = imageSlideViewPagerAdapter
+                    //imageSlideViewPagerAdapter.differ.submitList(imageList)
+                    binding.idViewPager.currentItem = Constant.selectImagePosition
+                    binding.imageCounterTextview.text = "${binding.idViewPager.currentItem+1}/${imageList.size}"
                 }
             }
         }
@@ -105,24 +105,6 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
                 binding.idViewPager.currentItem = binding.idViewPager.currentItem + 1
                 binding.imageCounterTextview.text = "${binding.idViewPager.currentItem+1}/${imageList.size}"
             }
-        }
-    }
-
-    private fun deleteImages(selectImageUri: Uri) {
-        val imageFile = File(getFilePathFromImageUri(selectImageUri)!!)
-        Log.i(TAG, "deleteImages: $selectImageUri  //  ${imageFile.name}")
-        val resolver = contentResolver
-        val selectionArgsPdf = arrayOf(imageFile.name)
-        try {
-            resolver.delete(
-                selectImageUri,
-                MediaStore.Files.FileColumns.DISPLAY_NAME + "=?",
-                selectionArgsPdf
-            )
-            onBackPressed()
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            Log.i(TAG, "deleteFileUsingDisplayName: $ex")
         }
     }
 
