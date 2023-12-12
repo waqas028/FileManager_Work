@@ -50,6 +50,14 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        collectSavedImageVideosListFromStorage()
+
+        videosAdapter.stOnCopyClickListener {
+            showDialogue()
+        }
+    }
+
+    private fun collectSavedImageVideosListFromStorage() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             mainViewModel.savedVideoImageList.collect{
                 val imagesList = mutableListOf<Media>()
@@ -72,10 +80,6 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
                 }
             }
         }
-
-        videosAdapter.stOnCopyClickListener {
-            showDialogue()
-        }
     }
 
     companion object {
@@ -91,8 +95,8 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
         Log.i(TAG, "onProgressUpdate: $progress  // ${Constant.totalImagesToCopy}")
         progressDialog.progress = progress
         if(progress == Constant.totalImagesToCopy) {
-            CoroutineScope(Dispatchers.IO).launch {
-                mainViewModel.getSaveVideoImagesList()
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                collectSavedImageVideosListFromStorage()
                 withContext(Dispatchers.Main){
                     delay(500)
                     progressDialog.dismiss()
@@ -112,7 +116,7 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
             ) { _, _ ->
                 Constant.isItCancel = true
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
-                    mainViewModel.getSaveVideoImagesList()
+                    collectSavedImageVideosListFromStorage()
                 }
                 dismiss()
             }
