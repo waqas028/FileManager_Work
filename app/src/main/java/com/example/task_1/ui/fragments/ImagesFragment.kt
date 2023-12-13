@@ -35,7 +35,7 @@ class ImagesFragment : Fragment(), CopyImageProgressListener {
     private var _binding: FragmentImagesBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel : MainViewModel by activityViewModels()
-    var imagesAdapter : ImagesAdapter = ImagesAdapter(this)
+    var imagesAdapter : ImagesAdapter = ImagesAdapter(this){}
     private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentImagesBinding.inflate(inflater, container, false)

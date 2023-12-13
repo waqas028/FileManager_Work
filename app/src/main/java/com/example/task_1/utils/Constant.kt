@@ -1,8 +1,7 @@
 package com.example.task_1.utils
 
 import android.graphics.Bitmap
-import android.net.Uri
-import com.example.task_1.model.TempImage
+import android.view.ActionMode
 
 object Constant {
     const val SELECT_IMAGE_PATH = "SelectImage Path"
@@ -23,4 +22,6 @@ object Constant {
     var isItCancel = false
 
     //var currentImageCaptureSession = 0L
+
+    var actionMode : ActionMode? = null
 }

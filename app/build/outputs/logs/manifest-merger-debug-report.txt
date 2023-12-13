@@ -122,6 +122,7 @@ ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xm
 application
 ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:19:5-49:19
 INJECTED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:19:5-49:19
+INJECTED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:19:5-49:19
 MERGED from [com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:22:5-36:19
 MERGED from [com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:22:5-36:19
 MERGED from [com.google.android.material:material:1.10.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\6e1f8d1c8d21a1a52828a05c6bfec8b5\transformed\material-1.10.0\AndroidManifest.xml:22:5-20
@@ -152,6 +153,10 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\Mu
 		INJECTED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml
 	android:requestLegacyExternalStorage
 		ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:26:9-52
+	android:roundIcon
+		ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:27:9-54
+	android:icon
+		ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:24:9-43
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.10.1] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e66dfd527ae8a9816d62d684ec027516\transformed\core-1.10.1\AndroidManifest.xml:28:18-86
 	android:supportsRtl
@@ -160,12 +165,10 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\Mu
 		ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:25:9-41
 	android:fullBackupContent
 		ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:23:9-54
-	android:roundIcon
-		ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:27:9-54
+	android:testOnly
+		INJECTED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml
 	tools:targetApi
 		ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:30:9-29
-	android:icon
-		ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:24:9-43
 	android:allowBackup
 		ADDED from D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:21:9-35
 	android:theme

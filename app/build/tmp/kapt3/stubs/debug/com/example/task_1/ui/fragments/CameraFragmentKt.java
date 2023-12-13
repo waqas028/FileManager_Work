@@ -1,6 +1,7 @@
 package com.example.task_1.ui.fragments;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -44,9 +46,15 @@ import com.example.task_1.databinding.FragmentCameraBinding;
 import com.example.task_1.model.TempImage;
 import com.example.task_1.ui.activity.CameraPreviewActivity;
 import com.example.task_1.utils.MediaStoreUtils;
+import com.example.task_1.viewmodel.MainViewModel;
+import kotlinx.coroutines.Dispatchers;
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayDeque;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

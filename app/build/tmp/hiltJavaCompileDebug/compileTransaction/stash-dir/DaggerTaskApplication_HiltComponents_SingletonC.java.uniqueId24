@@ -8,6 +8,7 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import com.example.task_1.adapter.SlidePhotoAdapter;
 import com.example.task_1.repository.MainRepo;
+import com.example.task_1.ui.activity.CameraPreviewActivity;
 import com.example.task_1.ui.activity.ImagePreviewActivity;
 import com.example.task_1.ui.activity.ImagePreviewActivity_MembersInjector;
 import com.example.task_1.ui.activity.MainActivity;
@@ -359,6 +360,10 @@ public final class DaggerTaskApplication_HiltComponents_SingletonC {
       this.activityRetainedCImpl = activityRetainedCImpl;
 
 
+    }
+
+    @Override
+    public void injectCameraPreviewActivity(CameraPreviewActivity arg0) {
     }
 
     @Override

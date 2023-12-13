@@ -1,5 +1,6 @@
 package com.example.task_1.ui;
 
+import com.example.task_1.ui.activity.CameraPreviewActivity_GeneratedInjector;
 import com.example.task_1.ui.activity.ImagePreviewActivity_GeneratedInjector;
 import com.example.task_1.ui.activity.MainActivity_GeneratedInjector;
 import com.example.task_1.ui.fragments.SavedImageFragment_GeneratedInjector;
@@ -178,7 +179,8 @@ public final class TaskApplication_HiltComponents {
       }
   )
   @ActivityScoped
-  public abstract static class ActivityC implements ImagePreviewActivity_GeneratedInjector,
+  public abstract static class ActivityC implements CameraPreviewActivity_GeneratedInjector,
+      ImagePreviewActivity_GeneratedInjector,
       MainActivity_GeneratedInjector,
       ActivityComponent,
       DefaultViewModelFactories.ActivityEntryPoint,

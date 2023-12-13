@@ -143,16 +143,16 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
             File(Environment.getExternalStorageDirectory(), "CropDirectory")
         }
         val folder = File("$targetDirectory/$dirName")
-        Log.i("MainRepoInfo", "getCropImagesList: $folder  //  ${folder.listFiles()?.size}")
-        if (folder.isDirectory && folder.listFiles()?.isEmpty() != false) {
-            Log.i("MainRepoInfo", "getCropImagesList: Folder Delete $folder  //  ${folder.listFiles()?.size}")
+        Log.i("MainRepoInfo", "getCropImagesList: folder:${folder.isDirectory}  // ${folder.listFiles()?.isEmpty() == true}  //   Size:${folder.listFiles()?.size}")
+        if (folder.isDirectory && folder.listFiles()?.isEmpty() == true) {
+            Log.i("MainRepoInfo", "getCropImagesList: Folder Delete:$folder  //  Size:${folder.listFiles()?.size}")
             folder.delete()
         }
         if(folder.exists()){
             allFiles = folder.listFiles { dir, name ->
                 Log.i("MainRepoInfo", "getCropImagesList: name:$name")
                 getCropImagesList(name)
-                if(dir.isDirectory){
+                if(dir.isDirectory && dir.listFiles()?.isNotEmpty() == true){
                     dir.isDirectory
                 }else{
                     name.endsWith(".jpg") || name.endsWith(
@@ -161,7 +161,50 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                 }
             } ?: emptyArray()
         }
-        Log.i("MainRepoInfo", "getCropImagesList: FinalList Return: ${folder.exists()}  //  $folder   //  ${allFiles.size}")
+        //Log.i("MainRepoInfo", "getCropImagesList: FinalList Return:${folder.exists()}  //  Folder:$folder   //  Size:${allFiles.size}")
         return allFiles
+    }
+
+    fun getNonEmptyDirectoriesWithFiles(directoryName: String): List<File> {
+        val nonEmptyDirectories = mutableListOf<File>()
+        val targetDirectory = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CropDirectory")
+        }else{
+            File(Environment.getExternalStorageDirectory(), "CropDirectory")
+        }
+        val folder = File("$targetDirectory/$directoryName")
+        if (folder.isDirectory) {
+            val subdirectories = folder.listFiles { file -> file.isDirectory } ?: emptyArray()
+            Log.i("MainRepoInfo", "getNonEmptyDirectoriesWithFiles: Total Dir:${subdirectories.size}  //  ")
+            for (directory in subdirectories) {
+                val filesInDirectory = directory.listFiles() ?: arrayOf()
+                Log.i("MainRepoInfo", "getNonEmptyDirectoriesWithFiles: File in Directory:${filesInDirectory.size}")
+                if (filesInDirectory.isNotEmpty()) {
+                    // Directory has content, add it to the list of non-empty directories
+                    nonEmptyDirectories.add(directory)
+                } else {
+                    // Directory is empty, delete it
+                    directory.delete()
+                }
+            }
+        }
+        Log.i("MainRepoInfo", "getNonEmptyDirectoriesWithFiles: ${nonEmptyDirectories.size}")
+        return nonEmptyDirectories
+    }
+
+    fun getCropImagesList1(directoryName: String): List<File> {
+        val targetDirectory = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CropDirectory")
+        }else{
+            File(Environment.getExternalStorageDirectory(), "CropDirectory")
+        }
+        val directory = File("$targetDirectory/$directoryName")
+        Log.i("MainRepoInfo", "getCropImagesList: $directory")
+        val fileList = directory.listFiles()?.toList() ?: emptyList()
+        if (fileList.isEmpty()) {
+            directory.delete()
+        }
+        Log.i("MainRepoInfo", "getCropImagesList: ${fileList.size}  //  ${fileList.isEmpty()}")
+        return fileList
     }
 }

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import com.example.task_1.adapter.ViewPagerAdapter;
 import com.example.task_1.databinding.ActivityMainBinding;
+import com.example.task_1.ui.fragments.CropImagesFragment;
 import com.example.task_1.ui.fragments.ImagesFragment;
 import com.example.task_1.ui.fragments.SavedImageFragment;
 import com.example.task_1.ui.fragments.VideosFragment;

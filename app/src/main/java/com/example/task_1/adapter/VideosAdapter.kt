@@ -17,12 +17,10 @@ import com.example.task_1.R
 import com.example.task_1.extension.MyActionModeCallback
 import com.example.task_1.interfaces.CopyImageProgressListener
 import com.example.task_1.model.Media
-import com.example.task_1.utils.Common
 import com.example.task_1.utils.Constant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 
 class VideosAdapter (private val progressListener: CopyImageProgressListener?) : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
     companion object{
@@ -71,7 +69,7 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .override(300,300)
                 Glide.with(holder.itemView.context)
-                    .load(File(Common.getFilePathFromVideoUri(holder.itemView.context,mediaList.uri).orEmpty()))
+                    .load(mediaList.uri)
                     .apply(requestOptions)
                     .placeholder(R.drawable.ic_photo)
                     .error(R.drawable.ic_photo)
@@ -87,7 +85,7 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .override(300,300)
                 Glide.with(holder.itemView.context)
-                    .load(File(Common.getFilePathFromImageUri(holder.itemView.context,mediaList.uri).orEmpty()))
+                    .load(mediaList.uri)
                     .apply(requestOptions)
                     .placeholder(R.drawable.ic_photo)
                     .error(R.drawable.ic_photo)
@@ -123,8 +121,10 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
                         clearSelections()
                         actionMode = null
                         notifyDataSetChanged()
-                        Log.i(TAG, "onDestroyActionMode: ")}
+                        Log.i(TAG, "onDestroyActionMode: ")},
+                    onDeleteItemListener = {}
                 ))
+                Constant.actionMode = actionMode
             }
             toggleSelection(mediaList)
             if(isSelected(mediaList)) holder.selectImageview.visibility = View.VISIBLE else holder.selectImageview.visibility = View.GONE
@@ -217,6 +217,6 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
     fun onPageUpdate(onPageSelected: Int) {
         Log.i(TAG, "onPageUpdate: $onPageSelected $actionMode")
         clearSelections()
-        actionMode?.finish() // Finish the ActionMode
+        Constant.actionMode?.finish() // Finish the ActionMode
     }
 }

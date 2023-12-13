@@ -28,6 +28,7 @@ dimen stroke_medium
 dimen stroke_small
 drawable baseline_camera_24
 drawable baseline_check_circle_24
+drawable baseline_image_24
 drawable ic_back
 drawable ic_back_screen
 drawable ic_camera
@@ -46,6 +47,7 @@ id action_cameraFragment_to_galleryFragment
 id action_cameraFragment_to_permissionsFragment
 id action_permissionsFragment_to_cameraFragment
 id appbarLayout
+id backButtonImageview
 id backImageButton
 id back_button
 id button

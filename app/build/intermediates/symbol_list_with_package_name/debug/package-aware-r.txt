@@ -3055,6 +3055,7 @@ drawable avd_hide_password
 drawable avd_show_password
 drawable baseline_camera_24
 drawable baseline_check_circle_24
+drawable baseline_image_24
 drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
@@ -3273,6 +3274,7 @@ id auto
 id autoComplete
 id autoCompleteToEnd
 id autoCompleteToStart
+id backButtonImageview
 id backImageButton
 id back_button
 id barrier

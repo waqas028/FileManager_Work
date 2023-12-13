@@ -4,6 +4,7 @@ package com.example.task_1.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -20,11 +21,15 @@ public final class FragmentCropImagesBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
+  public final ImageView backButtonImageview;
+
+  @NonNull
   public final RecyclerView cropImagesRecyclerView;
 
   private FragmentCropImagesBinding(@NonNull ConstraintLayout rootView,
-      @NonNull RecyclerView cropImagesRecyclerView) {
+      @NonNull ImageView backButtonImageview, @NonNull RecyclerView cropImagesRecyclerView) {
     this.rootView = rootView;
+    this.backButtonImageview = backButtonImageview;
     this.cropImagesRecyclerView = cropImagesRecyclerView;
   }
 
@@ -55,13 +60,20 @@ public final class FragmentCropImagesBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.backButtonImageview;
+      ImageView backButtonImageview = ViewBindings.findChildViewById(rootView, id);
+      if (backButtonImageview == null) {
+        break missingId;
+      }
+
       id = R.id.cropImagesRecyclerView;
       RecyclerView cropImagesRecyclerView = ViewBindings.findChildViewById(rootView, id);
       if (cropImagesRecyclerView == null) {
         break missingId;
       }
 
-      return new FragmentCropImagesBinding((ConstraintLayout) rootView, cropImagesRecyclerView);
+      return new FragmentCropImagesBinding((ConstraintLayout) rootView, backButtonImageview,
+          cropImagesRecyclerView);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

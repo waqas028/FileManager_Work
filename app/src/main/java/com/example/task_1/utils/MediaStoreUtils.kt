@@ -18,7 +18,7 @@ class MediaStoreUtils(private val context: Context) {
     private val mediaStoreCollection: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
     } else {
-        context.getExternalFilesDir(null)?.toUri()
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     }
 
     private suspend fun getMediaStoreImageCursor(mediaStoreCollection: Uri): Cursor? {
@@ -63,7 +63,7 @@ class MediaStoreUtils(private val context: Context) {
                         id
                     )
                     val contentFile = File(cursor.getString(imageDataColumn))
-                    files.add(Media(contentUri, name,0))
+                    files.add(Media(contentUri, name ?: "",0))
                 }
             }
         }

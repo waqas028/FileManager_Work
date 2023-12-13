@@ -3054,6 +3054,7 @@ int drawable avd_hide_password 0x7f070078
 int drawable avd_show_password 0x7f070079
 int drawable baseline_camera_24 0x7f07007a
 int drawable baseline_check_circle_24 0x7f07007b
+int drawable baseline_image_24 0x7f0700f7
 int drawable btn_checkbox_checked_mtrl 0x7f07007c
 int drawable btn_checkbox_checked_to_unchecked_mtrl_animation 0x7f07007d
 int drawable btn_checkbox_unchecked_mtrl 0x7f07007e
@@ -3272,6 +3273,7 @@ int id auto 0x7f08005b
 int id autoComplete 0x7f08005c
 int id autoCompleteToEnd 0x7f08005d
 int id autoCompleteToStart 0x7f08005e
+int id backButtonImageview 0x7f080235
 int id backImageButton 0x7f08005f
 int id back_button 0x7f080060
 int id barrier 0x7f080061

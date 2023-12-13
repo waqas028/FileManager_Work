@@ -26,6 +26,7 @@ class MyActionModeCallback(
     private var onClearSelectionClickListener: () -> Unit,
     private var onSelectAllItemsClickListener: () -> Unit,
     private var onDestroyActionModeClickListener: () -> Unit,
+    private var onDeleteItemListener: () -> Unit,
 ): ActionMode.Callback {
 
     companion object{
@@ -105,10 +106,12 @@ class MyActionModeCallback(
                                     selectedItems
                                 ){
                                     onClearSelectionClickListener()
+                                    onDeleteItemListener()
                                 }
                                 if(Constant.isItCancel) {
                                     Constant.isItCancel = false
                                     onClearSelectionClickListener()
+                                    onDeleteItemListener()
                                     withContext(Dispatchers.Main){
                                         mode?.finish()
                                     }

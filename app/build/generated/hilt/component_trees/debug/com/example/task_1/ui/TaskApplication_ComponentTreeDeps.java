@@ -18,6 +18,7 @@ import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_andro
 import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_android_internal_builders_ViewWithFragmentComponentBuilder;
 import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_components_SingletonComponent;
 import hilt_aggregated_deps._com_example_task_1_ui_TaskApplication_GeneratedInjector;
+import hilt_aggregated_deps._com_example_task_1_ui_activity_CameraPreviewActivity_GeneratedInjector;
 import hilt_aggregated_deps._com_example_task_1_ui_activity_ImagePreviewActivity_GeneratedInjector;
 import hilt_aggregated_deps._com_example_task_1_ui_activity_MainActivity_GeneratedInjector;
 import hilt_aggregated_deps._com_example_task_1_ui_fragments_SavedImageFragment_GeneratedInjector;
@@ -63,6 +64,7 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
     },
     aggregatedDeps = {
         _com_example_task_1_ui_TaskApplication_GeneratedInjector.class,
+        _com_example_task_1_ui_activity_CameraPreviewActivity_GeneratedInjector.class,
         _com_example_task_1_ui_activity_ImagePreviewActivity_GeneratedInjector.class,
         _com_example_task_1_ui_activity_MainActivity_GeneratedInjector.class,
         _com_example_task_1_ui_fragments_SavedImageFragment_GeneratedInjector.class,

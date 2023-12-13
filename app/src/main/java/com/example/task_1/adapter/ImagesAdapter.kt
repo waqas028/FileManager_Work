@@ -1,11 +1,8 @@
 package com.example.task_1.adapter
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.view.ActionMode
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -25,10 +22,9 @@ import com.example.task_1.utils.Constant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
-class ImagesAdapter (private val progressListener: CopyImageProgressListener?): RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
+class ImagesAdapter (private val progressListener: CopyImageProgressListener?,val onDeleteItemListener: () -> Unit): RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
     companion object{
         const val TAG = "ImagesAdapterInfo"
     }
@@ -68,18 +64,20 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
         val mediaList = differ.currentList[position]
         holder.imageNameTextview.text = mediaList.name
         holder.imageview.layout(0,0,0,0)
+        Log.i(TAG, "onBindViewHolder: URI: ${mediaList.uri}")
         try{
             val requestOptions = RequestOptions
                 .fitCenterTransform()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .override(300,300)
             Glide.with(holder.itemView.context)
-                .load(File(Common.getFilePathFromImageUri(holder.itemView.context,mediaList.uri)!!))
+                .load(mediaList.uri)
                 .apply(requestOptions)
-                .placeholder(R.drawable.ic_photo)
+                .placeholder(R.drawable.baseline_image_24)
+                .error(R.drawable.baseline_image_24)
                 .into(holder.imageview)
         }catch (e:Exception){
-            Log.i(TAG, "onBindViewHolder: Exception: $e")
+            Log.i(TAG, "onBindViewHolder: Exception: $e   //  ${File(Common.getFilePathFromImageUri(holder.itemView.context,mediaList.uri).orEmpty())}")
         }
         if(isSelected(mediaList)) holder.selectImageview.visibility = View.VISIBLE else holder.selectImageview.visibility = View.GONE
         // Set click listener for item selection
@@ -109,8 +107,13 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
                             clearSelections()
                             actionMode = null
                             notifyDataSetChanged()
-                            Log.i(VideosAdapter.TAG, "onDestroyActionMode: ")}
+                            Log.i(TAG, "onDestroyActionMode: ")
+                        },
+                        onDeleteItemListener = {
+                            onDeleteItemListener()
+                        }
                     ))
+                    Constant.actionMode = actionMode
                 }
                 toggleSelection(mediaList)
                 checkPosition.add(mediaList)
@@ -217,6 +220,6 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
     fun onPageUpdate(onPageSelected: Int) {
         Log.i(TAG, "onPageUpdate: $onPageSelected")
         clearSelections()
-        actionMode?.finish() // Finish the ActionMode
+        Constant.actionMode?.finish() // Finish the ActionMode
     }
 }

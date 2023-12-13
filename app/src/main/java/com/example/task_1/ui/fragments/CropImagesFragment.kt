@@ -27,7 +27,12 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
     private var _binding: FragmentCropImagesBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel : MainViewModel by activityViewModels()
-    private var imagesAdapter : ImagesAdapter = ImagesAdapter(this)
+    var imagesAdapter : ImagesAdapter = ImagesAdapter(this){
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main){binding.backButtonImageview.visibility = View.GONE}
+            mainViewModel.getNonEmptyDirectoriesWithFiles("")
+        }
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCropImagesBinding.inflate(inflater, container, false)
         binding.cropImagesRecyclerView.apply {
@@ -50,11 +55,13 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
                             Common.getImageContentUri(requireContext(),it[files])
                                 ?.let { it1 -> Media(it1,it[files].name,1) }
                                 ?.let { it2 -> imagesList.add(it2) }
+                            withContext(Dispatchers.Main){binding.backButtonImageview.visibility = View.VISIBLE}
                         }else{
+                            withContext(Dispatchers.Main){binding.backButtonImageview.visibility = View.GONE}
                             imagesList.add(Media(it[files].absolutePath.toUri(),it[files].name,1))
                         }
                     }
-                    Log.i(TAG, "collectCropImageDirList: $imagesList")
+                    Log.i(TAG, "collectCropImageDirList: ${imagesList.size}  //  $imagesList")
                 }
                 withContext(Dispatchers.Main){
                     imagesAdapter.differ.submitList(imagesList)
@@ -63,9 +70,25 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
         }
 
         imagesAdapter.stOnItemClickListener{
-            mainViewModel.getCropImagesList(it.name)
+            binding.backButtonImageview.visibility = View.VISIBLE
+            if(!it.name.endsWith(".jpg")  &&  !it.name.endsWith(".png")){
+                mainViewModel.getCropImagesList(it.name)
+            }
+        }
+
+        binding.backButtonImageview.setOnClickListener{
+            binding.backButtonImageview.visibility = View.GONE
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                mainViewModel.getNonEmptyDirectoriesWithFiles("")
+            }
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+    
     companion object {
         const val TAG = "CropImagesFragInfo"
     }

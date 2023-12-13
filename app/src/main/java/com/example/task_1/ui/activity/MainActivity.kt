@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.task_1.adapter.ViewPagerAdapter
 import com.example.task_1.databinding.ActivityMainBinding
+import com.example.task_1.ui.fragments.CropImagesFragment
 import com.example.task_1.ui.fragments.ImagesFragment
 import com.example.task_1.ui.fragments.SavedImageFragment
 import com.example.task_1.ui.fragments.VideosFragment
@@ -51,12 +52,10 @@ class MainActivity : AppCompatActivity() {
                     Fragments.IMAGE_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as ImagesFragment).imagesAdapter.onPageUpdate(position)
                     Fragments.VIDEO_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as VideosFragment).videosAdapter.onPageUpdate(position)
                     Fragments.SAVED_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as SavedImageFragment).videosAdapter.onPageUpdate(position)
+                    Fragments.CROP_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as CropImagesFragment).imagesAdapter.onPageUpdate(position)
                     else -> {
                         Log.i(TAG, "onPageSelected: else part: ${viewPagerAdapter.getPageTitle(position)}")}
                 }
-               // ImagesFragment().imagesAdapter.onPageUpdate(position)
-               // VideosFragment().videosAdapter.onPageUpdate(position)
-               // SavedImageFragment().videosAdapter.onPageUpdate(position)
                 if(position == 2){
                     lifecycleScope.launch(Dispatchers.IO) { mainViewModel.getSaveVideoImagesList() }
                 }
@@ -164,8 +163,7 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.getVideosList()
             mainViewModel.getImagesList()
             mainViewModel.getSaveVideoImagesList()
-            mainViewModel.getCropImagesList("")
-            mainViewModel.getAllImages(this@MainActivity)
+            mainViewModel.getNonEmptyDirectoriesWithFiles("")
         }
     }
 

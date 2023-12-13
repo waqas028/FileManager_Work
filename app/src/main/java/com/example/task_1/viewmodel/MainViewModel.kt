@@ -22,8 +22,8 @@ class MainViewModel @Inject constructor(private val mainRepo: MainRepo) : ViewMo
     val imageList: StateFlow<List<Media>> = _imageList
     private val _savedVideoImageList = MutableStateFlow(emptyArray<File>())
     val savedVideoImageList: StateFlow<Array<File>> = _savedVideoImageList
-    private val _savedCropImageList = MutableStateFlow(emptyArray<File>())
-    val savedCropImageList: StateFlow<Array<File>> = _savedCropImageList
+    private val _savedCropImageList = MutableStateFlow(emptyList<File>())
+    val savedCropImageList: StateFlow<List<File>> = _savedCropImageList
     private val _allImageList = MutableStateFlow(emptyList<Media>())
     val allImageList: StateFlow<List<Media>> = _allImageList
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -44,6 +44,10 @@ class MainViewModel @Inject constructor(private val mainRepo: MainRepo) : ViewMo
     }
 
     fun getCropImagesList(dirName:String){
-        _savedCropImageList.value = mainRepo.getCropImagesList(dirName)
+        _savedCropImageList.value = mainRepo.getCropImagesList(dirName).toList()
+    }
+
+    fun getNonEmptyDirectoriesWithFiles(dirName: String){
+        _savedCropImageList.value = mainRepo.getNonEmptyDirectoriesWithFiles(dirName)
     }
 }

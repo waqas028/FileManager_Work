@@ -1,59 +1,63 @@
 [
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/activity_main.xml",
-        "source": "com.example.task_1.app-main-60:/layout/activity_main.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\ic_videos_layout.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\ic_videos_layout.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/fragment_gallery.xml",
-        "source": "com.example.task_1.app-main-60:/layout/fragment_gallery.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\fragment_videos.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\fragment_videos.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/camera_ui_container.xml",
-        "source": "com.example.task_1.app-main-60:/layout/camera_ui_container.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\fragment_images.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\fragment_images.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/activity_video_preview.xml",
-        "source": "com.example.task_1.app-main-60:/layout/activity_video_preview.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\activity_video_preview.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\activity_video_preview.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/fragment_saved_image.xml",
-        "source": "com.example.task_1.app-main-60:/layout/fragment_saved_image.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\activity_camera_preview.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\activity_camera_preview.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/activity_camera_preview.xml",
-        "source": "com.example.task_1.app-main-60:/layout/activity_camera_preview.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\activity_image_preview.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\activity_image_preview.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/fragment_camera.xml",
-        "source": "com.example.task_1.app-main-60:/layout/fragment_camera.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\ic_image_slider_layout.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\ic_image_slider_layout.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/ic_image_slider_layout.xml",
-        "source": "com.example.task_1.app-main-60:/layout/ic_image_slider_layout.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\activity_main.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/activity_image_preview.xml",
-        "source": "com.example.task_1.app-main-60:/layout/activity_image_preview.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\fragment_camera.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\fragment_camera.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/fragment_images.xml",
-        "source": "com.example.task_1.app-main-60:/layout/fragment_images.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\fragment_saved_image.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\fragment_saved_image.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/fragment_videos.xml",
-        "source": "com.example.task_1.app-main-60:/layout/fragment_videos.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\ic_images_layout.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\ic_images_layout.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/ic_images_layout.xml",
-        "source": "com.example.task_1.app-main-60:/layout/ic_images_layout.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\fragment_photo.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\fragment_photo.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/fragment_photo.xml",
-        "source": "com.example.task_1.app-main-60:/layout/fragment_photo.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\fragment_crop_images.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\fragment_crop_images.xml"
     },
     {
-        "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/ic_videos_layout.xml",
-        "source": "com.example.task_1.app-main-60:/layout/ic_videos_layout.xml"
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\camera_ui_container.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\camera_ui_container.xml"
+    },
+    {
+        "merged": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-mergeDebugResources-57:\\layout\\fragment_gallery.xml",
+        "source": "C:\\Users\\MuhammadWaqas\\.gradle\\daemon\\8.2\\com.example.task_1.app-main-60:\\layout\\fragment_gallery.xml"
     },
     {
         "merged": "com.example.task_1.app-mergeDebugResources-57:/layout/fragment_crop_images.xml",

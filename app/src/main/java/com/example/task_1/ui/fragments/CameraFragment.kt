@@ -1,6 +1,7 @@
 package com.example.task_1.ui.fragments
 
 import android.content.BroadcastReceiver
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -12,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.KeyEvent
@@ -36,6 +38,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.concurrent.futures.await
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.Navigation
@@ -52,10 +55,17 @@ import com.example.task_1.utils.ANIMATION_FAST_MILLIS
 import com.example.task_1.utils.ANIMATION_SLOW_MILLIS
 import com.example.task_1.utils.MediaStoreUtils
 import com.example.task_1.utils.simulateClick
+import com.example.task_1.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.ByteBuffer
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.ArrayDeque
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -68,6 +78,7 @@ typealias LumaListener = (luma: Double) -> Unit
 class CameraFragment : Fragment() {
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
     private val fragmentCameraBinding get() = _fragmentCameraBinding
+    private val mainViewModel : MainViewModel by activityViewModels()
     private var cameraUiContainerBinding: CameraUiContainerBinding? = null
     private lateinit var broadcastManager: LocalBroadcastManager
     private lateinit var mediaStoreUtils: MediaStoreUtils
@@ -218,7 +229,7 @@ class CameraFragment : Fragment() {
             .build()
             .also {
                 it.setAnalyzer(cameraExecutor, LuminosityAnalyzer { luma ->
-                    Log.d(TAG, "Average luminosity: $luma")
+                    //Log.d(TAG, "Average luminosity: $luma")
                 })
             }
 
@@ -333,44 +344,62 @@ class CameraFragment : Fragment() {
 
         // Listener for button used to capture photo
         cameraUiContainerBinding?.cameraCaptureButton?.setOnClickListener {
-
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                mainViewModel.getNonEmptyDirectoriesWithFiles("")
+            }
             // Get a stable reference of the modifiable image capture use case
             imageCapture?.let { imageCapture ->
-                val targetDirectory = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    File(Environment.getExternalStorageDirectory(), "CropDirectory/Crop_$currentTimeSession")
-                }else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
-                    File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CropDirectory/Crop_$currentTimeSession")
-                }
-                else{
-                    File(Environment.getExternalStorageDirectory(), "CropDirectory/Crop_$currentTimeSession")
-                }
-                if (!targetDirectory.exists()) {
-                    targetDirectory.mkdir()
-                }
-                val filename = "Crop_" + System.currentTimeMillis() + ".jpg"
-                val imageFile = File(targetDirectory, filename)
-                val outputOptions = ImageCapture.OutputFileOptions.Builder(imageFile).build()
+                val contentValues: ContentValues
+                val outputOptions: ImageCapture.OutputFileOptions
+                val name = "Crop_${LocalDateTime.now()}.jpg"
                 /*val name = SimpleDateFormat(FILENAME, Locale.US)
-                    .format(System.currentTimeMillis())
-                val contentValues = ContentValues().apply {
-                    put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-                    put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
-                    if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    .format(System.currentTimeMillis())*/
+                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+                    contentValues = ContentValues().apply {
+                        put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                        put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
                         put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/CropDirectory/Crop_$currentTimeSession")
-                    }else{
-                        requireActivity().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, this)
-                        //put(MediaStore.Images.Media.DATA,"/CropDirectory/Crop_$currentTimeSession")
                     }
-                }*/
+                    outputOptions = ImageCapture.OutputFileOptions
+                        .Builder(requireContext().contentResolver,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            contentValues)
+                        .build()
+                }else{
+                    val targetDirectory =File(Environment.getExternalStorageDirectory(), "CropDirectory/Crop_$currentTimeSession")
+                    if (!targetDirectory.exists()) {
+                        targetDirectory.mkdir()
+                    }
+                    val filename = "Crop_${LocalDateTime.now()}.jpg"
+                    val imageFile = File(targetDirectory, filename)
+                    outputOptions = ImageCapture.OutputFileOptions.Builder(imageFile).build()
+                    //
+                    /*contentValues = ContentValues().apply {
+                        put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                        put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
+                        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                            put(MediaStore.Images.Media.RELATIVE_PATH, "/CropDirectory/Crop_$currentTimeSession")
+                        }
+                    }*/
+                }
+               imageCapture.takePicture(
+                   outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
+                        override fun onError(exc: ImageCaptureException) {
+                            Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                        }
 
-                // Create output options object which contains file + metadata
-               /* val outputOptions = ImageCapture.OutputFileOptions
-                    .Builder(requireContext().contentResolver,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        contentValues)
-                    .build()*/
+                        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                            sessionImageCounter++
+                            val savedUri = output.savedUri
+                            Log.d(TAG, "Photo capture succeeded: $savedUri")
+                            savedUri?.let { it1 ->
+                                setGalleryThumbnail(it1)
+                                (activity as CameraPreviewActivity).imageUriList.add(TempImage(sessionImageCounter,it1))
+                            }
+                        }
+                    })
 
-              /*//temporary file code
+                /*//temporary file code
                 // Setup image capture listener which is triggered after photo has been taken
                 // Create an output file to store the captured image temporarily (you can use a temporary file)
                 Constant.currentImageCaptureSession = "CropDirectory_${System.currentTimeMillis()}"
@@ -391,23 +420,6 @@ class CameraFragment : Fragment() {
                         Log.e(TAG, "Capture failed: ${exception.message}", exception)
                     }
                 })*/
-
-               imageCapture.takePicture(
-                   outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
-                        override fun onError(exc: ImageCaptureException) {
-                            Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                        }
-
-                        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                            sessionImageCounter++
-                            val savedUri = output.savedUri
-                            Log.d(TAG, "Photo capture succeeded: $savedUri")
-                            savedUri?.let { it1 ->
-                                setGalleryThumbnail(it1)
-                                (activity as CameraPreviewActivity).imageUriList.add(TempImage(sessionImageCounter,it1))
-                            }
-                        }
-                    })
 
                 // Display flash animation to indicate that photo was captured
                 fragmentCameraBinding?.root?.postDelayed({
@@ -437,7 +449,6 @@ class CameraFragment : Fragment() {
         cameraUiContainerBinding?.photoViewButton?.setOnClickListener {
             // Only navigate when the gallery has photos
             lifecycleScope.launch {
-                Log.i(TAG, "updateCameraUi: photoViewButton?.setOnClickListener : ${mediaStoreUtils.getImages().size}")
                 if (mediaStoreUtils.getImages().isNotEmpty()) {
                     Navigation.findNavController(requireActivity(), R.id.fragment_container)
                         .navigate(R.id.action_cameraFragment_to_galleryFragment)
