@@ -1,0 +1,273 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.task_1"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:5:5-67
+11-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:5:22-64
+12    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+12-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:6:5-76
+12-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:6:22-73
+13    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+13-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:7:5-75
+13-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:7:22-72
+14    <uses-permission
+14-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:8:5-10:38
+15        android:name="android.permission.READ_EXTERNAL_STORAGE"
+15-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:9:9-64
+16        android:maxSdkVersion="32" />
+16-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:10:9-35
+17    <uses-permission
+17-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:11:5-13:38
+18        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+18-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:12:9-65
+19        android:maxSdkVersion="29" />
+19-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:13:9-35
+20
+21    <uses-feature android:name="android.hardware.camera.any" />
+21-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:15:5-64
+21-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:15:19-61
+22
+23    <uses-permission android:name="android.permission.CAMERA" />
+23-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:17:5-65
+23-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:17:22-62
+24
+25    <queries>
+25-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:9:5-20:15
+26        <intent>
+26-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:10:9-16:18
+27            <action android:name="android.intent.action.GET_CONTENT" />
+27-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:11:13-72
+27-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:11:21-69
+28
+29            <category android:name="android.intent.category.OPENABLE" />
+29-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:13:13-73
+29-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:13:23-70
+30
+31            <data android:mimeType="*/*" />
+31-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:15:13-44
+31-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:15:19-41
+32        </intent>
+33        <intent>
+33-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:17:9-19:18
+34            <action android:name="android.media.action.IMAGE_CAPTURE" />
+34-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:18:13-73
+34-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:18:21-70
+35        </intent>
+36        <intent>
+36-->[androidx.camera:camera-extensions:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7fb18d1b2b78f7abf1b4adc33a9f1a28\transformed\camera-extensions-1.3.0\AndroidManifest.xml:23:9-25:18
+37            <action android:name="androidx.camera.extensions.action.VENDOR_ACTION" />
+37-->[androidx.camera:camera-extensions:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7fb18d1b2b78f7abf1b4adc33a9f1a28\transformed\camera-extensions-1.3.0\AndroidManifest.xml:24:13-86
+37-->[androidx.camera:camera-extensions:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7fb18d1b2b78f7abf1b4adc33a9f1a28\transformed\camera-extensions-1.3.0\AndroidManifest.xml:24:21-83
+38        </intent>
+39    </queries>
+40
+41    <permission
+41-->[androidx.core:core:1.10.1] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e66dfd527ae8a9816d62d684ec027516\transformed\core-1.10.1\AndroidManifest.xml:22:5-24:47
+42        android:name="com.example.task_1.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+42-->[androidx.core:core:1.10.1] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e66dfd527ae8a9816d62d684ec027516\transformed\core-1.10.1\AndroidManifest.xml:23:9-81
+43        android:protectionLevel="signature" />
+43-->[androidx.core:core:1.10.1] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e66dfd527ae8a9816d62d684ec027516\transformed\core-1.10.1\AndroidManifest.xml:24:9-44
+44
+45    <uses-permission android:name="com.example.task_1.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+45-->[androidx.core:core:1.10.1] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e66dfd527ae8a9816d62d684ec027516\transformed\core-1.10.1\AndroidManifest.xml:26:5-97
+45-->[androidx.core:core:1.10.1] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e66dfd527ae8a9816d62d684ec027516\transformed\core-1.10.1\AndroidManifest.xml:26:22-94
+46
+47    <application
+47-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:19:5-49:19
+48        android:name="com.example.task_1.ui.TaskApplication"
+48-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:20:9-43
+49        android:allowBackup="true"
+49-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:21:9-35
+50        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+50-->[androidx.core:core:1.10.1] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e66dfd527ae8a9816d62d684ec027516\transformed\core-1.10.1\AndroidManifest.xml:28:18-86
+51        android:dataExtractionRules="@xml/data_extraction_rules"
+51-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:22:9-65
+52        android:debuggable="true"
+53        android:extractNativeLibs="false"
+54        android:fullBackupContent="@xml/backup_rules"
+54-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:23:9-54
+55        android:icon="@mipmap/ic_launcher"
+55-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:24:9-43
+56        android:label="@string/app_name"
+56-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:25:9-41
+57        android:requestLegacyExternalStorage="true"
+57-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:26:9-52
+58        android:roundIcon="@mipmap/ic_launcher_round"
+58-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:27:9-54
+59        android:supportsRtl="true"
+59-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:28:9-35
+60        android:testOnly="true"
+61        android:theme="@style/Theme.Task_1" >
+61-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:29:9-44
+62        <activity
+62-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:31:9-33:40
+63            android:name="com.example.task_1.ui.activity.CameraPreviewActivity"
+63-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:32:13-62
+64            android:exported="false" />
+64-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:33:13-37
+65        <activity
+65-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:34:9-36:40
+66            android:name="com.example.task_1.ui.activity.VideoPreviewActivity"
+66-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:35:13-61
+67            android:exported="false" />
+67-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:36:13-37
+68        <activity
+68-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:37:9-39:40
+69            android:name="com.example.task_1.ui.activity.ImagePreviewActivity"
+69-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:38:13-61
+70            android:exported="false" />
+70-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:39:13-37
+71        <activity
+71-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:40:9-48:20
+72            android:name="com.example.task_1.ui.activity.MainActivity"
+72-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:41:13-53
+73            android:exported="true" >
+73-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:42:13-36
+74            <intent-filter>
+74-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:43:13-47:29
+75                <action android:name="android.intent.action.MAIN" />
+75-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:44:17-69
+75-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:44:25-66
+76
+77                <category android:name="android.intent.category.LAUNCHER" />
+77-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:46:17-77
+77-->D:\Waqas_Code\Github\FileManager_Work\app\src\main\AndroidManifest.xml:46:27-74
+78            </intent-filter>
+79        </activity>
+80
+81        <provider
+81-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:23:9-31:20
+82            android:name="com.canhub.cropper.CropFileProvider"
+82-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:24:13-63
+83            android:authorities="com.example.task_1.cropper.fileprovider"
+83-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:25:13-72
+84            android:exported="false"
+84-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:26:13-37
+85            android:grantUriPermissions="true" >
+85-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:27:13-47
+86            <meta-data
+86-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:28:13-30:62
+87                android:name="android.support.FILE_PROVIDER_PATHS"
+87-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:29:17-67
+88                android:resource="@xml/library_file_paths" />
+88-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:30:17-59
+89        </provider>
+90
+91        <activity
+91-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:33:9-35:39
+92            android:name="com.canhub.cropper.CropImageActivity"
+92-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:34:13-64
+93            android:exported="true" />
+93-->[com.vanniktech:android-image-cropper:4.3.3] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8ef92b710e4ea73b9c16b73bf84e5a26\transformed\android-image-cropper-4.3.3\AndroidManifest.xml:35:13-36
+94
+95        <uses-library
+95-->[androidx.camera:camera-extensions:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7fb18d1b2b78f7abf1b4adc33a9f1a28\transformed\camera-extensions-1.3.0\AndroidManifest.xml:29:9-31:40
+96            android:name="androidx.camera.extensions.impl"
+96-->[androidx.camera:camera-extensions:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7fb18d1b2b78f7abf1b4adc33a9f1a28\transformed\camera-extensions-1.3.0\AndroidManifest.xml:30:13-59
+97            android:required="false" />
+97-->[androidx.camera:camera-extensions:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7fb18d1b2b78f7abf1b4adc33a9f1a28\transformed\camera-extensions-1.3.0\AndroidManifest.xml:31:13-37
+98
+99        <service
+99-->[androidx.camera:camera-camera2:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8e76cdf481a3239fef82a57a60a0bbfd\transformed\camera-camera2-1.3.0\AndroidManifest.xml:24:9-33:19
+100            android:name="androidx.camera.core.impl.MetadataHolderService"
+100-->[androidx.camera:camera-camera2:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8e76cdf481a3239fef82a57a60a0bbfd\transformed\camera-camera2-1.3.0\AndroidManifest.xml:25:13-75
+101            android:enabled="false"
+101-->[androidx.camera:camera-camera2:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8e76cdf481a3239fef82a57a60a0bbfd\transformed\camera-camera2-1.3.0\AndroidManifest.xml:26:13-36
+102            android:exported="false" >
+102-->[androidx.camera:camera-camera2:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8e76cdf481a3239fef82a57a60a0bbfd\transformed\camera-camera2-1.3.0\AndroidManifest.xml:27:13-37
+103            <meta-data
+103-->[androidx.camera:camera-camera2:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8e76cdf481a3239fef82a57a60a0bbfd\transformed\camera-camera2-1.3.0\AndroidManifest.xml:30:13-32:89
+104                android:name="androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER"
+104-->[androidx.camera:camera-camera2:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8e76cdf481a3239fef82a57a60a0bbfd\transformed\camera-camera2-1.3.0\AndroidManifest.xml:31:17-103
+105                android:value="androidx.camera.camera2.Camera2Config$DefaultProvider" />
+105-->[androidx.camera:camera-camera2:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\8e76cdf481a3239fef82a57a60a0bbfd\transformed\camera-camera2-1.3.0\AndroidManifest.xml:32:17-86
+106        </service>
+107
+108        <provider
+108-->[androidx.emoji2:emoji2:1.2.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7dbefae3e7d44d29ca89a8aa12e54d6a\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+109            android:name="androidx.startup.InitializationProvider"
+109-->[androidx.emoji2:emoji2:1.2.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7dbefae3e7d44d29ca89a8aa12e54d6a\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+110            android:authorities="com.example.task_1.androidx-startup"
+110-->[androidx.emoji2:emoji2:1.2.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7dbefae3e7d44d29ca89a8aa12e54d6a\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+111            android:exported="false" >
+111-->[androidx.emoji2:emoji2:1.2.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7dbefae3e7d44d29ca89a8aa12e54d6a\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+112            <meta-data
+112-->[androidx.emoji2:emoji2:1.2.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7dbefae3e7d44d29ca89a8aa12e54d6a\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+113                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+113-->[androidx.emoji2:emoji2:1.2.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7dbefae3e7d44d29ca89a8aa12e54d6a\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+114                android:value="androidx.startup" />
+114-->[androidx.emoji2:emoji2:1.2.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\7dbefae3e7d44d29ca89a8aa12e54d6a\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+115            <meta-data
+115-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\3fb8182468693d75eefa10626ece4a68\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
+116                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+116-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\3fb8182468693d75eefa10626ece4a68\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
+117                android:value="androidx.startup" />
+117-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\3fb8182468693d75eefa10626ece4a68\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
+118            <meta-data
+118-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+119                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+119-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+120                android:value="androidx.startup" />
+120-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+121        </provider>
+122
+123        <uses-library
+123-->[androidx.window:window:1.0.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\773f836b5ce1b7e135558fde887c8678\transformed\window-1.0.0\AndroidManifest.xml:25:9-27:40
+124            android:name="androidx.window.extensions"
+124-->[androidx.window:window:1.0.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\773f836b5ce1b7e135558fde887c8678\transformed\window-1.0.0\AndroidManifest.xml:26:13-54
+125            android:required="false" />
+125-->[androidx.window:window:1.0.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\773f836b5ce1b7e135558fde887c8678\transformed\window-1.0.0\AndroidManifest.xml:27:13-37
+126        <uses-library
+126-->[androidx.window:window:1.0.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\773f836b5ce1b7e135558fde887c8678\transformed\window-1.0.0\AndroidManifest.xml:28:9-30:40
+127            android:name="androidx.window.sidecar"
+127-->[androidx.window:window:1.0.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\773f836b5ce1b7e135558fde887c8678\transformed\window-1.0.0\AndroidManifest.xml:29:13-51
+128            android:required="false" />
+128-->[androidx.window:window:1.0.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\773f836b5ce1b7e135558fde887c8678\transformed\window-1.0.0\AndroidManifest.xml:30:13-37
+129
+130        <receiver
+130-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+131            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+131-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+132            android:directBootAware="false"
+132-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+133            android:enabled="true"
+133-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+134            android:exported="true"
+134-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+135            android:permission="android.permission.DUMP" >
+135-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+136            <intent-filter>
+136-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+137                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+137-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+137-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+138            </intent-filter>
+139            <intent-filter>
+139-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+140                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+140-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+140-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+141            </intent-filter>
+142            <intent-filter>
+142-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+143                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+143-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+143-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+144            </intent-filter>
+145            <intent-filter>
+145-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+146                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+146-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+146-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\MuhammadWaqas\.gradle\caches\transforms-3\e0d7e1c7f1f9de0e8425051a473e751a\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+147            </intent-filter>
+148        </receiver>
+149    </application>
+150
+151</manifest>

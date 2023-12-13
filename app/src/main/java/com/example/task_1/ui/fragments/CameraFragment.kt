@@ -336,9 +336,12 @@ class CameraFragment : Fragment() {
 
             // Get a stable reference of the modifiable image capture use case
             imageCapture?.let { imageCapture ->
-                val targetDirectory = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+                val targetDirectory = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    File(Environment.getExternalStorageDirectory(), "CropDirectory/Crop_$currentTimeSession")
+                }else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
                     File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CropDirectory/Crop_$currentTimeSession")
-                }else{
+                }
+                else{
                     File(Environment.getExternalStorageDirectory(), "CropDirectory/Crop_$currentTimeSession")
                 }
                 if (!targetDirectory.exists()) {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="icActive">#FFFFFFFF</color>
+    <color name="icFocused">#DDFFFFFF</color>
+    <color name="icPressed">#AAFFFFFF</color>
+    <color name="textColor">#FF0057</color>
+    <color name="white">#FFFFFFFF</color>
+    <dimen name="margin_large">64dp</dimen>
+    <dimen name="margin_medium">48dp</dimen>
+    <dimen name="margin_small">32dp</dimen>
+    <dimen name="margin_xlarge">92dp</dimen>
+    <dimen name="margin_xsmall">16dp</dimen>
+    <dimen name="rect_button_height">24dp</dimen>
+    <dimen name="rect_button_margin">12dp</dimen>
+    <dimen name="rect_button_width">80dp</dimen>
+    <dimen name="round_button_large">92dp</dimen>
+    <dimen name="round_button_medium">64dp</dimen>
+    <dimen name="round_button_small">32dp</dimen>
+    <dimen name="shutter_button_margin">80dp</dimen>
+    <dimen name="spacing_large">16dp</dimen>
+    <dimen name="spacing_medium">8dp</dimen>
+    <dimen name="spacing_small">4dp</dimen>
+    <dimen name="stroke_large">12dp</dimen>
+    <dimen name="stroke_medium">8dp</dimen>
+    <dimen name="stroke_small">4dp</dimen>
+    <string name="app_name">Task_1</string>
+    <string name="back_button_alt">Back</string>
+    <string name="capture_button_alt">Capture</string>
+    <string name="capture_mode_camera">Camera</string>
+    <string name="capture_mode_hdr">HDR</string>
+    <string name="capture_mode_night">Night</string>
+    <string name="delete">Delete</string>
+    <string name="delete_button_alt">Delete</string>
+    <string name="delete_dialog">Delete current photo?</string>
+    <string name="delete_title">Confirm</string>
+    <string name="gallery_button_alt">Gallery</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="image">Images</string>
+    <string name="save">Save</string>
+    <string name="share_button_alt">Share</string>
+    <string name="share_hint">Share using</string>
+    <string name="switch_camera_button_alt">Switch camera</string>
+    <string name="videos">Videos</string>
+    <style name="Base.Theme.Task_1" parent="Theme.Material3.Light.NoActionBar">
+        
+        
+    </style>
+    <style name="Theme.Task_1" parent="Base.Theme.Task_1"/>
+</resources>

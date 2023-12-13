@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         checkPermissionForAllVersion() //check permission
+
         viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         binding.viewPager.adapter = viewPagerAdapter
         binding.tabLayout.setupWithViewPager(binding.viewPager)
@@ -71,10 +72,29 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkPermissionForAllVersion() {
         Log.i(TAG, "checkPermissionForAllVersion: ${Build.VERSION.SDK_INT}")
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
             checkRequestPermissionFor14()
+        }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q  && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU){
+            checkRequestPermissionAboveTen()
         }else{
             checkRequestPermissionBelowTen()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun checkRequestPermissionAboveTen(){
+        when (PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) -> {
+                getAllListOfData()
+                Log.i(TAG, "checkRequestPermissionAboveTen: collect videos list")
+            }
+            else -> {
+                Log.i(TAG, "checkRequestPermissionAboveTen: requestPermission")
+                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_WRITE_REQUEST_CODE)
+            }
         }
     }
 
