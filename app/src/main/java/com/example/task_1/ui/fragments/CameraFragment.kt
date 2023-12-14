@@ -56,15 +56,12 @@ import com.example.task_1.utils.ANIMATION_SLOW_MILLIS
 import com.example.task_1.utils.MediaStoreUtils
 import com.example.task_1.utils.simulateClick
 import com.example.task_1.viewmodel.MainViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.ArrayDeque
-import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -349,16 +346,15 @@ class CameraFragment : Fragment() {
             }
             // Get a stable reference of the modifiable image capture use case
             imageCapture?.let { imageCapture ->
-                val contentValues: ContentValues
                 val outputOptions: ImageCapture.OutputFileOptions
-                val name = "Crop_${LocalDateTime.now()}.jpg"
                 /*val name = SimpleDateFormat(FILENAME, Locale.US)
                     .format(System.currentTimeMillis())*/
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
-                    contentValues = ContentValues().apply {
-                        put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                    val filename = "Crop_${System.currentTimeMillis()}.jpg"
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
                         put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
-                        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/CropDirectory/Crop_$currentTimeSession")
+                        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Crop_Directory/Crop_$currentTimeSession")
                     }
                     outputOptions = ImageCapture.OutputFileOptions
                         .Builder(requireContext().contentResolver,
@@ -366,21 +362,18 @@ class CameraFragment : Fragment() {
                             contentValues)
                         .build()
                 }else{
-                    val targetDirectory =File(Environment.getExternalStorageDirectory(), "CropDirectory/Crop_$currentTimeSession")
-                    if (!targetDirectory.exists()) {
-                        targetDirectory.mkdir()
+                    Log.i(TAG, "updateCameraUi: $currentTimeSession")
+                    val appName = "Crop_Directory/Crop_${currentTimeSession}"
+                    val rootDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), appName)
+
+                    if (!rootDirectory.exists()) {
+                        rootDirectory.mkdirs()
                     }
-                    val filename = "Crop_${LocalDateTime.now()}.jpg"
-                    val imageFile = File(targetDirectory, filename)
+
+                    val filename = SimpleDateFormat(FILENAME, Locale.US).format(System.currentTimeMillis()) + ".jpg"
+                    val imageFile = File(rootDirectory, filename)
+
                     outputOptions = ImageCapture.OutputFileOptions.Builder(imageFile).build()
-                    //
-                    /*contentValues = ContentValues().apply {
-                        put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-                        put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
-                        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                            put(MediaStore.Images.Media.RELATIVE_PATH, "/CropDirectory/Crop_$currentTimeSession")
-                        }
-                    }*/
                 }
                imageCapture.takePicture(
                    outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {

@@ -137,11 +137,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
 
     fun getCropImagesList(dirName:String) : Array<File> {
         var allFiles: Array<File> = emptyArray()
-        val targetDirectory = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CropDirectory")
-        }else{
-            File(Environment.getExternalStorageDirectory(), "CropDirectory")
-        }
+        val targetDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Crop_Directory")
         val folder = File("$targetDirectory/$dirName")
         Log.i("MainRepoInfo", "getCropImagesList: folder:${folder.isDirectory}  // ${folder.listFiles()?.isEmpty() == true}  //   Size:${folder.listFiles()?.size}")
         if (folder.isDirectory && folder.listFiles()?.isEmpty() == true) {
@@ -167,11 +163,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
 
     fun getNonEmptyDirectoriesWithFiles(directoryName: String): List<File> {
         val nonEmptyDirectories = mutableListOf<File>()
-        val targetDirectory = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CropDirectory")
-        }else{
-            File(Environment.getExternalStorageDirectory(), "CropDirectory")
-        }
+        val targetDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Crop_Directory")
         val folder = File("$targetDirectory/$directoryName")
         if (folder.isDirectory) {
             val subdirectories = folder.listFiles { file -> file.isDirectory } ?: emptyArray()

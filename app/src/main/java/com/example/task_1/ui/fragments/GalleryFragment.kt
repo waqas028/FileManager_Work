@@ -62,6 +62,7 @@ class GalleryFragment : Fragment() {
 
         // Handle back button press
         fragmentGalleryBinding.backButton.setOnClickListener {
+            (activity as CameraPreviewActivity).imageUriList.clear()
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigateUp()
         }
 

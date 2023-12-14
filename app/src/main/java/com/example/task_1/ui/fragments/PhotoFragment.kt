@@ -6,7 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import com.example.task_1.R
 import com.example.task_1.ui.fragments.PhotoFragment
 import com.example.task_1.databinding.FragmentPhotoBinding
 import com.example.task_1.extension.cropImage
@@ -29,7 +32,7 @@ class PhotoFragment internal constructor() : Fragment() {
         var imageList = (activity as CameraPreviewActivity).imageUriList
         imageList = imageList.reversed().toMutableList()
         imageUri = imageList[resource].imageUri
-        Log.i(TAG, "onViewCreated: $resource  //  $imageList")
+        Log.i(TAG, "onViewCreated: $resource  //  ${imageList.size}  $imageUri")
         /*Glide.with(view)
             .load(imageUri)
             .placeholder(R.drawable.ic_photo)
@@ -43,11 +46,18 @@ class PhotoFragment internal constructor() : Fragment() {
                 cropImage(bitmap, Common.getFilePathFromImageUri(requireContext(), imageUri))
             }
         }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        (activity as CameraPreviewActivity).imageUriList.clear()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) { // `true` indicates the callback consumes the event by default
+                override fun handleOnBackPressed() {
+                    // Perform your desired action on back press
+                    Log.i(TAG, "handleOnBackPressed: backpress button")
+                    (activity as CameraPreviewActivity).imageUriList.clear()
+                    Navigation.findNavController(requireActivity(), R.id.fragment_container).navigateUp()
+                }
+            }
+        )
     }
 
     companion object {
