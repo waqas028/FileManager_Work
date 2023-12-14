@@ -1,10 +1,11 @@
 package com.example.task_1.ui.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -45,6 +46,12 @@ class CameraPreviewActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        val data = "UpdateCropFolderList"
+        val intent = Intent().apply {
+            putExtra("key", data)
+        }
+        setResult(Activity.RESULT_OK, intent)
+        finish()
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             finishAfterTransition()
         } else {
@@ -56,7 +63,8 @@ class CameraPreviewActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, binding.fragmentContainer).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
-            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     }
 }

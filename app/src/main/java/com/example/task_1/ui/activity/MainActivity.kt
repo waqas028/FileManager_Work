@@ -1,11 +1,13 @@
 package com.example.task_1.ui.activity
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -21,11 +23,10 @@ import com.example.task_1.ui.fragments.VideosFragment
 import com.example.task_1.utils.Constant
 import com.example.task_1.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.cameraPreviewButton.setOnClickListener{
-            startActivity(Intent(this,CameraPreviewActivity::class.java))
+            startReceivingActivity()
         }
     }
 
@@ -165,6 +166,21 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.getSaveVideoImagesList()
             mainViewModel.getNonEmptyDirectoriesWithFiles("")
         }
+    }
+
+    private val someActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val receivedValue = data?.getStringExtra("key")
+            Log.i(TAG, "onActivityResult: $receivedValue")
+            mainViewModel.getNonEmptyDirectoriesWithFiles("")
+        }
+    }
+
+    // Trigger this function to start the receiving activity and wait for the result
+    private fun startReceivingActivity() {
+        val intent = Intent(this, CameraPreviewActivity::class.java)
+        someActivityResultLauncher.launch(intent)
     }
 
     companion object{
