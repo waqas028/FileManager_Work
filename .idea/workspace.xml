@@ -5,6 +5,11 @@
       <config />
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/camera_ui_container.xml">
+        <config>
+          <theme>@style/Theme.Task_1</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_crop_images.xml">
         <config>
           <theme>@style/Theme.Task_1</theme>
@@ -16,30 +21,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0016625-52c0-49f3-a77d-45b763163c87" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/adapter/SlidePhotoAdapter_Factory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/repository/MainRepo_Factory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/TaskApplication_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/activity/CameraPreviewActivity_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/activity/Hilt_CameraPreviewActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/activity/Hilt_ImagePreviewActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/activity/Hilt_MainActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/activity/ImagePreviewActivity_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/activity/ImagePreviewActivity_MembersInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/activity/MainActivity_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/fragments/Hilt_SavedImageFragment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/fragments/SavedImageFragment_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/viewmodel/MainViewModel_Factory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/viewmodel/MainViewModel_HiltModules.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/viewmodel/MainViewModel_HiltModules_KeyModule_ProvideFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/dagger/hilt/internal/aggregatedroot/codegen/_com_example_task_1_ui_TaskApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/hilt_aggregated_deps/_com_example_task_1_ui_TaskApplication_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/hilt_aggregated_deps/_com_example_task_1_ui_activity_CameraPreviewActivity_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/hilt_aggregated_deps/_com_example_task_1_ui_activity_ImagePreviewActivity_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/hilt_aggregated_deps/_com_example_task_1_ui_activity_MainActivity_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/hilt_aggregated_deps/_com_example_task_1_ui_fragments_SavedImageFragment_GeneratedInjector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/hilt_aggregated_deps/_com_example_task_1_viewmodel_MainViewModel_HiltModules_BindsModule.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/hilt_aggregated_deps/_com_example_task_1_viewmodel_MainViewModel_HiltModules_KeyModule.java" afterDir="false" />
+    <list default="true" id="a0016625-52c0-49f3-a77d-45b763163c87" name="Changes" comment="fix crash in Gallery Click Fragment">
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" afterDir="false" />
@@ -47,14 +29,9 @@
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/repository/MainRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/repository/MainRepo.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/CameraFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/CameraFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/GalleryFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/GalleryFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/PhotoFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/PhotoFragment.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,6 +191,23 @@
       <option name="presentableId" value="Default" />
       <updated>1702453223518</updated>
     </task>
+    <task id="LOCAL-00001" summary="fix crash in Photo Fragment, Capture image issue">
+      <option name="closed" value="true" />
+      <created>1702539978246</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1702539978246</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fix crash in Gallery Click Fragment">
+      <option name="closed" value="true" />
+      <created>1702540347106</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1702540347106</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -229,6 +223,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="fix crash in Photo Fragment, Capture image issue" />
+    <MESSAGE value="fix crash in Gallery Click Fragment" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix crash in Gallery Click Fragment" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -240,12 +237,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/CameraFragment.kt</url>
-          <line>381</line>
+          <line>364</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/CameraFragment.kt</url>
-          <line>385</line>
+          <line>368</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>

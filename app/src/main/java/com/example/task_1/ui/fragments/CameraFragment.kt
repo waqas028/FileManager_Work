@@ -38,7 +38,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.concurrent.futures.await
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.Navigation
@@ -55,14 +54,10 @@ import com.example.task_1.utils.ANIMATION_FAST_MILLIS
 import com.example.task_1.utils.ANIMATION_SLOW_MILLIS
 import com.example.task_1.utils.MediaStoreUtils
 import com.example.task_1.utils.simulateClick
-import com.example.task_1.viewmodel.MainViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.ByteBuffer
-import java.text.SimpleDateFormat
 import java.util.ArrayDeque
-import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -75,7 +70,6 @@ typealias LumaListener = (luma: Double) -> Unit
 class CameraFragment : Fragment() {
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
     private val fragmentCameraBinding get() = _fragmentCameraBinding
-    private val mainViewModel : MainViewModel by activityViewModels()
     private var cameraUiContainerBinding: CameraUiContainerBinding? = null
     private lateinit var broadcastManager: LocalBroadcastManager
     private lateinit var mediaStoreUtils: MediaStoreUtils
@@ -225,7 +219,7 @@ class CameraFragment : Fragment() {
             .setTargetRotation(rotation)
             .build()
             .also {
-                it.setAnalyzer(cameraExecutor, LuminosityAnalyzer { luma ->
+                it.setAnalyzer(cameraExecutor, LuminosityAnalyzer {
                     //Log.d(TAG, "Average luminosity: $luma")
                 })
             }
@@ -341,16 +335,11 @@ class CameraFragment : Fragment() {
 
         // Listener for button used to capture photo
         cameraUiContainerBinding?.cameraCaptureButton?.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                mainViewModel.getNonEmptyDirectoriesWithFiles("")
-            }
             // Get a stable reference of the modifiable image capture use case
             imageCapture?.let { imageCapture ->
                 val outputOptions: ImageCapture.OutputFileOptions
-                /*val name = SimpleDateFormat(FILENAME, Locale.US)
-                    .format(System.currentTimeMillis())*/
+                val filename = "Crop_${System.currentTimeMillis()}.jpg"
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
-                    val filename = "Crop_${System.currentTimeMillis()}.jpg"
                     val contentValues = ContentValues().apply {
                         put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
                         put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
@@ -362,17 +351,12 @@ class CameraFragment : Fragment() {
                             contentValues)
                         .build()
                 }else{
-                    Log.i(TAG, "updateCameraUi: $currentTimeSession")
-                    val appName = "Crop_Directory/Crop_${currentTimeSession}"
-                    val rootDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), appName)
-
+                    val dirName = "Crop_Directory/Crop_${currentTimeSession}"
+                    val rootDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), dirName)
                     if (!rootDirectory.exists()) {
                         rootDirectory.mkdirs()
                     }
-
-                    val filename = SimpleDateFormat(FILENAME, Locale.US).format(System.currentTimeMillis()) + ".jpg"
                     val imageFile = File(rootDirectory, filename)
-
                     outputOptions = ImageCapture.OutputFileOptions.Builder(imageFile).build()
                 }
                imageCapture.takePicture(
@@ -526,7 +510,6 @@ class CameraFragment : Fragment() {
 
     companion object {
         private const val TAG = "CameraFragInfo"
-        private const val FILENAME = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val PHOTO_TYPE = "image/jpeg"
         private const val RATIO_4_3_VALUE = 4.0 / 3.0
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
