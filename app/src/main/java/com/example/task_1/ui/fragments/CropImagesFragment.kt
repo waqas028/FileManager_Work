@@ -46,21 +46,26 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            mainViewModel.savedCropImageList.collect{
-                Log.i(TAG, "collectCropImageDirList: ${it.size}  //  $it")
+            mainViewModel.savedCropImageList.collect{cropFolderList->
+                Log.i(TAG, "collectCropImageDirList: ${cropFolderList.size}")
                 val imagesList = mutableListOf<Media>()
-                if(it.isNotEmpty()){
-                    for( files in it.indices){
-                        if(it[files].name.endsWith(".jpg") || it[files].name.endsWith(".png")){
-                            Common.getImageContentUri(requireContext(),it[files])
-                                ?.let { it1 -> Media(it1,it[files].name,1) }
-                                ?.let { it2 -> imagesList.add(it2) }
-                            withContext(Dispatchers.Main){binding.backButtonImageview.visibility = View.VISIBLE}
-                        }else{
-                            withContext(Dispatchers.Main){binding.backButtonImageview.visibility = View.GONE}
-                            imagesList.add(Media(it[files].absolutePath.toUri(),it[files].name,1))
+                if(cropFolderList.isNotEmpty()){
+                    val filteredImages = cropFolderList.filter { file ->
+                        file.name.endsWith(".jpg") || file.name.endsWith(".png")
+                    }.mapNotNull { file ->
+                        withContext(Dispatchers.Main) { binding.backButtonImageview.visibility  = View.VISIBLE }
+                        Common.getImageContentUri(requireContext(), file)?.let { uri ->
+                            Media(uri, file.name, 1)
                         }
                     }
+                    imagesList.addAll(filteredImages)
+                    val nonImageFiles = cropFolderList.filterNot { file ->
+                        file.name.endsWith(".jpg") || file.name.endsWith(".png")
+                    }.map { file ->
+                        withContext(Dispatchers.Main) { binding.backButtonImageview.visibility  = View.GONE }
+                        Media(file.absolutePath.toUri(), file.name, 1)
+                    }
+                    imagesList.addAll(nonImageFiles)
                     Log.i(TAG, "collectCropImageDirList: ${imagesList.size}  //  $imagesList")
                 }
                 withContext(Dispatchers.Main){

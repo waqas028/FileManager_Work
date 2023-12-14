@@ -51,7 +51,6 @@ class CameraPreviewActivity : AppCompatActivity() {
             putExtra("key", data)
         }
         setResult(Activity.RESULT_OK, intent)
-        finish()
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             finishAfterTransition()
         } else {

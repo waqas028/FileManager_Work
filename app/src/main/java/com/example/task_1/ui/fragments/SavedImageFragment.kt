@@ -56,21 +56,35 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
 
     private fun collectSavedImageVideosListFromStorage() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            mainViewModel.savedVideoImageList.collect{
+            mainViewModel.savedVideoImageList.collect{savedFileList->
+                Log.i(TAG, "collectSavedImageVideosListFromStorage: ${savedFileList.size}  //  $savedFileList")
                 val imagesList = mutableListOf<Media>()
-                if(it.isNotEmpty()){
-                    for( files in it.indices){
-                        if(it[files].name.endsWith(".mp4")){
-                            Common.getVideoContentUri(requireContext(),it[files])
-                                ?.let { it1 -> Media(it1,it[files].name,1) }
+                if(savedFileList.isNotEmpty()){
+                    val videoFileList = savedFileList.filter { file -> file.name.endsWith(".mp4") }
+                        .mapNotNull { file ->
+                            Common.getVideoContentUri(requireContext(), file)?.let { uri ->
+                                Media(uri, file.name, 1)
+                            }
+                        }
+                    val imageFileList = savedFileList.filter { file-> file.name.endsWith(".jpg") || file.name.endsWith(".png") }
+                        .mapNotNull {file->
+                            Common.getImageContentUri(requireContext(), file)?.let { uri ->
+                                Media(uri, file.name, 1)
+                            }
+                        }
+                    imagesList.addAll(videoFileList + imageFileList)
+                    /*for( files in savedFileList.indices){
+                        if(savedFileList[files].name.endsWith(".mp4")){
+                            Common.getVideoContentUri(requireContext(),savedFileList[files])
+                                ?.let { it1 -> Media(it1,savedFileList[files].name,1) }
                                 ?.let { it2 -> imagesList.add(it2) }
                         }else{
-                            Common.getImageContentUri(requireContext(),it[files])
-                                ?.let { it1 -> Media(it1,it[files].name,1) }
+                            Common.getImageContentUri(requireContext(),savedFileList[files])
+                                ?.let { it1 -> Media(it1,savedFileList[files].name,1) }
                                 ?.let { it2 -> imagesList.add(it2) }
                         }
-                    }
-                    Log.i(TAG, "onViewCreated: ${it.size}  //  $imagesList")
+                    }*/
+                    Log.i(TAG, "onViewCreated: ${imagesList.size}  //  $imagesList")
                 }
                 withContext(Dispatchers.Main){
                     videosAdapter.differ.submitList(imagesList)
