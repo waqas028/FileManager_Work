@@ -442,7 +442,7 @@ class CameraFragment : Fragment() {
         cameraUiContainerBinding?.photoViewButton?.setOnClickListener {
             // Only navigate when the gallery has photos
             lifecycleScope.launch {
-                if (mediaStoreUtils.getImages().isNotEmpty()) {
+                if ((activity as CameraPreviewActivity).imageUriList.isNotEmpty()) {
                     Navigation.findNavController(requireActivity(), R.id.fragment_container)
                         .navigate(R.id.action_cameraFragment_to_galleryFragment)
                 }
