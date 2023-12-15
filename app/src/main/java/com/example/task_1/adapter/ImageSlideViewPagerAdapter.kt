@@ -1,8 +1,6 @@
 package com.example.task_1.adapter
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +9,8 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.example.task_1.R
 import com.example.task_1.model.Media
-import com.example.task_1.utils.Common
-import com.example.task_1.utils.Constant
-import java.io.File
 import java.util.Objects
 
 class ImageSlideViewPagerAdapter (val context: Context, private val imageList: List<Media>) : PagerAdapter()  {
@@ -35,7 +27,12 @@ class ImageSlideViewPagerAdapter (val context: Context, private val imageList: L
         val itemView: View = mLayoutInflater.inflate(R.layout.ic_image_slider_layout, container, false)
         val imageView: ImageView = itemView.findViewById<View>(R.id.imageview) as ImageView
         Log.i("ImageSlideAdapterInfo", "instantiateItem: $position  //  ${imageList[position].name}")
-        if (!Constant.currentImageBitmap.containsKey(position)) {
+        Glide.with(context)
+            .load(imageList[position].uri)
+            .placeholder(R.drawable.baseline_image_24)
+            .error(R.drawable.baseline_image_24)
+            .into(imageView)
+        /*if (!Constant.currentImageBitmap.containsKey(position)) {
             Glide.with(context)
                 .asBitmap()
                 .load(File(Common.getFilePathFromImageUri(context,imageList[position].uri).orEmpty()))
@@ -52,7 +49,7 @@ class ImageSlideViewPagerAdapter (val context: Context, private val imageList: L
             val bitmap = Constant.currentImageBitmap[position]
             imageView.setImageBitmap(bitmap)
             Log.i("ImageSliderAdapterInfo", "else part: ${Constant.currentImageBitmap[position]}")
-        }
+        }*/
         Objects.requireNonNull(container).addView(itemView)
         return itemView
     }

@@ -4,9 +4,6 @@ import android.graphics.Bitmap
 import android.view.ActionMode
 
 object Constant {
-    const val SELECT_IMAGE_PATH = "SelectImage Path"
-    const val SELECT_IMAGE_NAME = "SelectImage Name"
-
     const val SELECT_VIDEO_PATH = "Select Video Path"
     const val SELECT_VIDEO_NAME = "Select Video Name"
 
@@ -19,8 +16,5 @@ object Constant {
     var currentFragment = 0
 
     var isItCancel = false
-
-    //var currentImageCaptureSession = 0L
-
     var actionMode : ActionMode? = null
 }

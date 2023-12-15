@@ -12,8 +12,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.ActionMode
-import com.example.task_1.adapter.ImagesAdapter
-import com.example.task_1.extension.saveImagesBitmap
 import com.example.task_1.interfaces.CopyImageProgressListener
 import com.example.task_1.model.Media
 import kotlinx.coroutines.CoroutineScope
@@ -237,5 +235,63 @@ object Common {
         } catch (e: Exception) {
             Log.i("CopyImageInfo", "copyImageToFolder: $e")
         }
+    }
+
+
+    fun copyImagesToFolder(
+        sourceImagePath: String,
+        progressListener: CopyImageProgressListener?,
+        mode: ActionMode?,
+        copiedImagesCount: Int,
+        selectedItems: MutableList<Media>,
+        onComplete: () -> Unit
+    ) {
+        val sourceDir = File(sourceImagePath)
+        val targetFile = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "TaskImages")
+        }else{
+            File(Environment.getExternalStorageDirectory(), "TaskImages")
+        }
+        if (!targetFile.exists()) {
+            targetFile.mkdirs()
+        }
+
+        val fileName = sourceDir.name
+        val extension = fileName.substringAfterLast(".") // Extract extension
+        var targetFileName = fileName
+
+        // Loop until a unique target file name is found
+        var i = 1
+        while (File(targetFile, targetFileName).exists()) {
+            targetFileName = "${fileName.substringBeforeLast(".")}_$i.$extension"
+            i++
+        }
+
+        try {
+            // Try-with-resources for automatic stream closing
+            FileInputStream(sourceDir).use { inputStream ->
+                FileOutputStream(File(targetFile, targetFileName)).use { outputStream ->
+                    val buffer = ByteArray(8192) // Increase buffer size for better performance
+                    var bytesRead: Int
+                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                        if (Constant.isItCancel) break // Check cancellation flag during loop
+                        outputStream.write(buffer, 0, bytesRead)
+                    }
+                }
+            }
+            CoroutineScope(Dispatchers.Main).launch {
+                progressListener?.onProgressUpdate(copiedImagesCount)
+                if(copiedImagesCount == selectedItems.size){
+                    Log.i("CopyImageInfo", "copyImageFolder: Image copy $copiedImagesCount // ${selectedItems.size}")
+                    onComplete()
+                    mode?.finish() // Finish the ActionMode
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("CopyImageInfo", "Error copying $fileName: $e")
+        }
+
+        // Display the number of copied images
+        Log.i("CopyImageInfo", "copyImagesToFolder: Copied $copiedImagesCount images")
     }
 }

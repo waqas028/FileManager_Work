@@ -1,5 +1,7 @@
 package com.example.task_1.ui.activity
 
+import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -84,7 +86,9 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
             }else{
                 Environment.getExternalStorageDirectory()
             }
-            saveImagesBitmap(Constant.currentImageBitmap[currentImagePosition],File(targetDirectory, "TaskImages"))
+            val inputStream = contentResolver.openInputStream(mediaImageList[currentImagePosition].uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            saveImagesBitmap(bitmap,File(targetDirectory, "TaskImages"))
             Log.i(TAG, "onCreate: $targetDirectory")
         }
 
@@ -93,6 +97,7 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateImageCount(position: Int) {
         val currentCount = position + 1
         binding.imageCounterTextview.text = "$currentCount / ${mediaImageList.size}"

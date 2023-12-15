@@ -54,9 +54,8 @@ class MyActionModeCallback(
                             try {
                                 val currentSourceImagePath = Common.getFilePathFromVideoUri(context,selectedItems[img].uri)
                                 copiedImagesCount++
-                                Common.copyFileToFolder(
-                                    context,
-                                    currentSourceImagePath,
+                                Common.copyImagesToFolder(
+                                    currentSourceImagePath.orEmpty(),
                                     progressListener,
                                     mode,
                                     copiedImagesCount,
