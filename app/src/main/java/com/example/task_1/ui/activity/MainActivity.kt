@@ -54,8 +54,6 @@ class MainActivity : AppCompatActivity() {
                     Fragments.VIDEO_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as VideosFragment).videosAdapter.onPageUpdate(position)
                     Fragments.SAVED_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as SavedImageFragment).videosAdapter.onPageUpdate(position)
                     Fragments.CROP_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as CropImagesFragment).imagesAdapter.onPageUpdate(position)
-                    else -> {
-                        Log.i(TAG, "onPageSelected: else part: ${viewPagerAdapter.getPageTitle(position)}")}
                 }
                 if(position == 2){
                     lifecycleScope.launch(Dispatchers.IO) { mainViewModel.getSaveVideoImagesList() }
@@ -65,7 +63,8 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.cameraPreviewButton.setOnClickListener{
-            startReceivingActivity()
+            val intent = Intent(this, CameraPreviewActivity::class.java)
+            cameraActivityResultLauncher.launch(intent)
         }
     }
 
@@ -168,19 +167,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val someActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val cameraActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             val receivedValue = data?.getStringExtra("key")
             Log.i(TAG, "onActivityResult: $receivedValue")
             mainViewModel.getNonEmptyDirectoriesWithFiles("")
         }
-    }
-
-    // Trigger this function to start the receiving activity and wait for the result
-    private fun startReceivingActivity() {
-        val intent = Intent(this, CameraPreviewActivity::class.java)
-        someActivityResultLauncher.launch(intent)
     }
 
     companion object{

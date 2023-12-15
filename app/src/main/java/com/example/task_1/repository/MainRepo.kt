@@ -183,20 +183,4 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
         Log.i("MainRepoInfo", "getNonEmptyDirectoriesWithFiles: ${nonEmptyDirectories.size}")
         return nonEmptyDirectories
     }
-
-    fun getCropImagesList1(directoryName: String): List<File> {
-        val targetDirectory = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CropDirectory")
-        }else{
-            File(Environment.getExternalStorageDirectory(), "CropDirectory")
-        }
-        val directory = File("$targetDirectory/$directoryName")
-        Log.i("MainRepoInfo", "getCropImagesList: $directory")
-        val fileList = directory.listFiles()?.toList() ?: emptyList()
-        if (fileList.isEmpty()) {
-            directory.delete()
-        }
-        Log.i("MainRepoInfo", "getCropImagesList: ${fileList.size}  //  ${fileList.isEmpty()}")
-        return fileList
-    }
 }

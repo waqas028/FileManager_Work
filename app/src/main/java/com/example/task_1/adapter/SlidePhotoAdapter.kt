@@ -22,7 +22,7 @@ import com.example.task_1.utils.Constant
 import java.io.File
 import javax.inject.Inject
 
-class SlidePhotoAdapter @Inject constructor() : RecyclerView.Adapter<SlidePhotoAdapter.ViewHolder>() {
+class SlidePhotoAdapter : RecyclerView.Adapter<SlidePhotoAdapter.ViewHolder>() {
     private val differCallback = object : DiffUtil.ItemCallback<Media>() {
         override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
             return oldItem.name == newItem.name
@@ -43,7 +43,7 @@ class SlidePhotoAdapter @Inject constructor() : RecyclerView.Adapter<SlidePhotoA
 
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val mediaList = differ.currentList[position]
-        if (!Constant.currentImageBitmap1.containsKey(position)) {
+        if (!Constant.currentImageBitmap.containsKey(position)) {
             Glide.with(holder.itemView.context)
                 .asBitmap()
                 .load(File(Common.getFilePathFromImageUri(holder.itemView.context,mediaList.uri)!!))
@@ -51,15 +51,15 @@ class SlidePhotoAdapter @Inject constructor() : RecyclerView.Adapter<SlidePhotoA
                 .into(object : CustomTarget<Bitmap>(){
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         holder.imageview.setImageBitmap(resource)
-                        Constant.currentImageBitmap1[position] = resource
-                        Log.i("SlidePhotoAdapterInfo", "onResourceReady: ${Constant.currentImageBitmap1[position]}")
+                        Constant.currentImageBitmap[position] = resource
+                        Log.i("SlidePhotoAdapterInfo", "onResourceReady: ${Constant.currentImageBitmap[position]}")
                     }
                     override fun onLoadCleared(placeholder: Drawable?) {}
                 })
         } else {
-            val bitmap = Constant.currentImageBitmap1[position]
+            val bitmap = Constant.currentImageBitmap[position]
             holder.imageview.setImageBitmap(bitmap)
-            Log.i("SlidePhotoAdapterInfo", "else part: ${Constant.currentImageBitmap1[position]}")
+            Log.i("SlidePhotoAdapterInfo", "else part: ${Constant.currentImageBitmap[position]}")
         }
     }
 

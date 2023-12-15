@@ -1,6 +1,7 @@
 package com.example.task_1.ui.fragments
 
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -43,7 +44,11 @@ class PhotoFragment internal constructor() : Fragment() {
             val bitmap = fragmentPhotoBinding.cropImageView.croppedImage
             fragmentPhotoBinding.cropImageView.setImageBitmap(bitmap)
             if (bitmap != null) {
-                cropImage(bitmap, Common.getFilePathFromImageUri(requireContext(), imageUri))
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                    cropImage(bitmap, Common.getFilePathFromImageUri(requireContext(),imageUri))
+                }else{
+                    cropImage(bitmap, imageUri?.path)
+                }
             }
         }
 

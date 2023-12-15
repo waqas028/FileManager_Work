@@ -13,8 +13,7 @@ object Constant {
     var selectImagePosition = 0
     var selectVideoPosition = 0
 
-    //var currentImageBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-    var currentImageBitmap1 = HashMap<Int, Bitmap>()
+    var currentImageBitmap = HashMap<Int, Bitmap>()
 
     var totalImagesToCopy = 0
     var currentFragment = 0

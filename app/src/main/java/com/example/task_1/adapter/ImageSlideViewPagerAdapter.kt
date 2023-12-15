@@ -35,23 +35,23 @@ class ImageSlideViewPagerAdapter (val context: Context, private val imageList: L
         val itemView: View = mLayoutInflater.inflate(R.layout.ic_image_slider_layout, container, false)
         val imageView: ImageView = itemView.findViewById<View>(R.id.imageview) as ImageView
         Log.i("ImageSlideAdapterInfo", "instantiateItem: $position  //  ${imageList[position].name}")
-        if (!Constant.currentImageBitmap1.containsKey(position)) {
+        if (!Constant.currentImageBitmap.containsKey(position)) {
             Glide.with(context)
                 .asBitmap()
-                .load(File(Common.getFilePathFromImageUri(context,imageList[position].uri)!!))
+                .load(File(Common.getFilePathFromImageUri(context,imageList[position].uri).orEmpty()))
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(object : CustomTarget<Bitmap>(){
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         imageView.setImageBitmap(resource)
-                        Constant.currentImageBitmap1[position] = resource
-                        Log.i("ImageSliderAdapterInfo", "onResourceReady: ${Constant.currentImageBitmap1[position]}")
+                        Constant.currentImageBitmap[position] = resource
+                        Log.i("ImageSliderAdapterInfo", "onResourceReady: ${Constant.currentImageBitmap[position]}")
                     }
                     override fun onLoadCleared(placeholder: Drawable?) {}
                 })
         } else {
-            val bitmap = Constant.currentImageBitmap1[position]
+            val bitmap = Constant.currentImageBitmap[position]
             imageView.setImageBitmap(bitmap)
-            Log.i("ImageSliderAdapterInfo", "else part: ${Constant.currentImageBitmap1[position]}")
+            Log.i("ImageSliderAdapterInfo", "else part: ${Constant.currentImageBitmap[position]}")
         }
         Objects.requireNonNull(container).addView(itemView)
         return itemView

@@ -5,12 +5,32 @@
       <config />
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_example.xml">
+        <config>
+          <theme>@style/Theme.Task_1</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_image_preview.xml">
+        <config>
+          <theme>@style/Theme.Task_1</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/camera_ui_container.xml">
         <config>
           <theme>@style/Theme.Task_1</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/example_item.xml">
+        <config>
+          <theme>@style/Theme.Task_1</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_crop_images.xml">
+        <config>
+          <theme>@style/Theme.Task_1</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/ic_image_slider_layout.xml">
         <config>
           <theme>@style/Theme.Task_1</theme>
         </config>
@@ -21,7 +41,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0016625-52c0-49f3-a77d-45b763163c87" name="Changes" comment="fix crop fragment update list issue">
+    <list default="true" id="a0016625-52c0-49f3-a77d-45b763163c87" name="Changes" comment="refactor code">
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" afterDir="false" />
@@ -29,11 +49,20 @@
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/activity/CameraPreviewActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/activity/CameraPreviewActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/CropImagesFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/CropImagesFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/GalleryFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/GalleryFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/SavedImageFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/SavedImageFragment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/adapter/SlidePhotoAdapter_Factory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/generated/source/kapt/debug/com/example/task_1/ui/activity/ImagePreviewActivity_MembersInjector.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/adapter/ImageSlideViewPagerAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/adapter/ImageSlideViewPagerAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/adapter/SlidePhotoAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/adapter/SlidePhotoAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/repository/MainRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/repository/MainRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/activity/ImagePreviewActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/activity/ImagePreviewActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/activity/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/activity/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/PhotoFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/ui/fragments/PhotoFragment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/utils/Constant.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/task_1/utils/Constant.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_image_preview.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_image_preview.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/ic_image_slider_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/ic_image_slider_layout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +72,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[adb-92UAY04HJ6-jK0G5k._adb-tls-connect._tcp]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[a233f05c]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -87,6 +116,13 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="layoutResourceFile" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -112,9 +148,14 @@
     "cidr.known.project.marker": "true",
     "com.google.services.firebase.aqiPopupShown": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/Waqas_Code/AndroidStudioProjects/camera-samples-master/CameraXBasic"
+    "last_opened_file_path": "D:/Waqas_Code/AndroidStudioProjects/camera-samples-master/camera-samples-master/CameraXBasic"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="android.template.2076895689">
+      <recent name="com.example.task_1.ui.activity" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="Hazel_Task_1.app.main" />
@@ -225,7 +266,15 @@
       <option name="project" value="LOCAL" />
       <updated>1702553654938</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="refactor code">
+      <option name="closed" value="true" />
+      <created>1702558955258</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1702558955258</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -245,7 +294,8 @@
     <MESSAGE value="fix crash in Gallery Click Fragment" />
     <MESSAGE value="fix camera image capture issue" />
     <MESSAGE value="fix crop fragment update list issue" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix crop fragment update list issue" />
+    <MESSAGE value="refactor code" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor code" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
