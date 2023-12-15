@@ -3,6 +3,7 @@
 package com.example.task_1.ui.fragments
 
 import android.app.ProgressDialog
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -66,7 +67,10 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
                                 Media(uri, file.name, 1)
                             }
                         }
-                    val imageFileList = savedFileList.filter { file-> file.name.endsWith(".jpg") || file.name.endsWith(".png") }
+                    val imageFileList = savedFileList.filter { file->
+                        file.name.endsWith(".jpg") ||
+                                file.name.endsWith(".jpeg") ||
+                                file.name.endsWith(".png") }
                         .mapNotNull {file->
                             Common.getImageContentUri(requireContext(), file)?.let { uri ->
                                 Media(uri, file.name, 1)

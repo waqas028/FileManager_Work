@@ -120,9 +120,9 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
     fun getSaveVideoImagesList() : Array<File> {
         var allFiles: Array<File> = emptyArray()
         val folder = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-             File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/TaskImages/")
+             File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/TaskImages")
         }else{
-             File(Environment.getExternalStorageDirectory().toString() + "/TaskImages/")
+             File(Environment.getExternalStorageDirectory().toString() + "/TaskImages")
         }
         if(folder.exists()){
             allFiles = folder.listFiles { dir, name ->
@@ -131,6 +131,9 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                 ) || name.endsWith(".png") || name.endsWith(".mp4")
             } ?: emptyArray()
             Log.i("MainRepoInfo", "getSaveVideoImagesList: ${allFiles.size}")
+        }
+        for(files in allFiles.indices){
+            Log.i("MainRepoInfo", "getSaveVideoImagesList: ${allFiles[files].name}")
         }
         return allFiles
     }

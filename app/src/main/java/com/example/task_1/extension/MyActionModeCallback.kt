@@ -20,7 +20,6 @@ class MyActionModeCallback(
     private val context: Context,
     private val menuSelection: Int,
     private val selectedItems: MutableList<Media>,
-    private var copiedImagesCount: Int,
     private val progressListener: CopyImageProgressListener?,
     private var onCopyClickListener: () -> Unit,
     private var onClearSelectionClickListener: () -> Unit,
@@ -28,7 +27,7 @@ class MyActionModeCallback(
     private var onDestroyActionModeClickListener: () -> Unit,
     private var onDeleteItemListener: () -> Unit,
 ): ActionMode.Callback {
-
+    private var copiedImagesCount = 0
     companion object{
         const val TAG = "MyActionModeInfo"
     }
@@ -44,37 +43,31 @@ class MyActionModeCallback(
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_action_save -> {
-                if(selectedItems.size>0){
+                if(selectedItems.size > 0){
                     Constant.isItCancel = false
                     onCopyClickListener()
                     CoroutineScope(Dispatchers.IO).launch {
-                        Log.i(TAG, "onActionItemClicked: ${selectedItems.size}")
-                        for(img in selectedItems.indices){
-                            Log.i(TAG, "onActionItemClicked: $img  //for loop")
-                            try {
-                                val currentSourceImagePath = Common.getFilePathFromVideoUri(context,selectedItems[img].uri)
-                                copiedImagesCount++
-                                Common.copyImagesToFolder(
-                                    currentSourceImagePath.orEmpty(),
-                                    progressListener,
-                                    mode,
-                                    copiedImagesCount,
-                                    selectedItems
-                                ){
-                                    onClearSelectionClickListener()
-                                }
-                                if(Constant.isItCancel) {
-                                    Constant.isItCancel = false
-                                    onClearSelectionClickListener()
-                                    withContext(Dispatchers.Main){
-                                        mode?.finish()
-                                    }
-                                    return@launch
-                                }
-                            }catch (e:Exception){
-                                copiedImagesCount++
-                                Log.i(TAG, "onActionItemClicked: Exception: $e")
+                        Log.i(TAG, "onActionItemClicked: Copy-> ${selectedItems.size}")
+                        selectedItems.forEach {
+                            val currentSourceImagePath = Common.getFilePathFromVideoUri(context,it.uri)
+                            Common.copyImagesToFolder(
+                                currentSourceImagePath.orEmpty(),
+                                progressListener,
+                                mode,
+                                copiedImagesCount,
+                                selectedItems
+                            ){
+                                onClearSelectionClickListener()
                             }
+                            if(Constant.isItCancel) {
+                                Constant.isItCancel = false
+                                onClearSelectionClickListener()
+                                withContext(Dispatchers.Main){
+                                    mode?.finish()
+                                }
+                                return@launch
+                            }
+                            copiedImagesCount++
                         }
                     }
                 }
@@ -87,7 +80,7 @@ class MyActionModeCallback(
                     Constant.isItCancel = false
                     onCopyClickListener()
                     CoroutineScope(Dispatchers.IO).launch {
-                        Log.i(TAG, "onActionItemClicked: ${selectedItems.size}  //  ${Constant.isItCancel}")
+                        Log.i(TAG, "onActionItemClicked: Delete-> ${selectedItems.size}  //  ${Constant.isItCancel}")
                         for(img in selectedItems.indices){
                             try {
                                 copiedImagesCount++
@@ -118,14 +111,11 @@ class MyActionModeCallback(
                                 }
                             }catch (e:Exception){
                                 copiedImagesCount++
-                                Log.i(TAG, "onActionItemClicked: $e")
+                                Log.i(TAG, "onActionItemClicked: Delete-> $e")
                             }
                         }
                     }
                 }
-            }
-            else -> {
-                Log.i(TAG, "onActionItemClicked: else")
             }
         }
         return false

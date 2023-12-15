@@ -52,26 +52,32 @@ object Common {
 
     @SuppressLint("Range")
     fun getImageContentUri(context: Context,imageFile: File): Uri? {
-        val filePath = imageFile.absolutePath
-        val cursor = context.contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media._ID),
-            MediaStore.Images.Media.DATA + "=? ", arrayOf(filePath), null
-        )
-        return if (cursor != null && cursor.moveToFirst()) {
-            val id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
-            cursor.close()
-            Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id)
-        } else {
-            if (imageFile.exists()) {
-                val values = ContentValues()
-                values.put(MediaStore.Images.Media.DATA, filePath)
-                context.contentResolver.insert(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
-                )
+        var imageUri = Uri.parse("")
+        try {
+            val filePath = imageFile.absolutePath
+            val cursor = context.contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media._ID),
+                MediaStore.Images.Media.DATA + "=? ", arrayOf(filePath), null
+            )
+            imageUri =  if (cursor != null && cursor.moveToFirst()) {
+                val id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
+                cursor.close()
+                Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id)
             } else {
-                null
+                if (imageFile.exists()) {
+                    val values = ContentValues()
+                    values.put(MediaStore.Images.Media.DATA, filePath)
+                    context.contentResolver.insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
+                    )
+                } else {
+                    null
+                }
             }
+        }catch (e:Exception){
+            Log.i("getImageContentUri", "getImageContentUri: $e")
         }
+        return imageUri
     }
 
     @SuppressLint("Range")
@@ -282,16 +288,15 @@ object Common {
             CoroutineScope(Dispatchers.Main).launch {
                 progressListener?.onProgressUpdate(copiedImagesCount)
                 if(copiedImagesCount == selectedItems.size){
-                    Log.i("CopyImageInfo", "copyImageFolder: Image copy $copiedImagesCount // ${selectedItems.size}")
+                    Log.i("CopyImageInfo", "copyImageFolder: All Select Image copy $copiedImagesCount // ${selectedItems.size}")
                     onComplete()
                     mode?.finish() // Finish the ActionMode
                 }
             }
         } catch (e: Exception) {
-            Log.e("CopyImageInfo", "Error copying $fileName: $e")
+            Log.e("CopyImageInfo", "Error copying $sourceImagePath: $e")
         }
-
         // Display the number of copied images
-        Log.i("CopyImageInfo", "copyImagesToFolder: Copied $copiedImagesCount images")
+        Log.i("CopyImageInfo", "copyImagesToFolder: Copied $copiedImagesCount images  ^^ $sourceImagePath")
     }
 }

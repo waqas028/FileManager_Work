@@ -28,7 +28,6 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?,va
     companion object{
         const val TAG = "ImagesAdapterInfo"
     }
-    var copiedImagesCount = 0
     private var isSelected = mutableListOf<Boolean>()
     private val selectedItems = mutableListOf<Media>() // Replace T with your data type
     private var actionMode: ActionMode? = null
@@ -95,7 +94,6 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?,va
                         holder.itemView.context,
                         menuSelection,
                         selectedItems,
-                        copiedImagesCount,
                         progressListener,
                         onCopyClickListener = {
                             onCopyClickListener?.let {
@@ -181,8 +179,7 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?,va
     private fun isSelected(item: Media): Boolean {
         return selectedItems.contains(item)
     }
-    fun clearSelections() {
-        copiedImagesCount = 0
+    private fun clearSelections() {
         selectAllItems = false
         selectedItems.clear()
         for (i in 0 until differ.currentList.size) {
