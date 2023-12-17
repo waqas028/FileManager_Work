@@ -32,24 +32,6 @@ class ImageSlideViewPagerAdapter (val context: Context, private val imageList: L
             .placeholder(R.drawable.baseline_image_24)
             .error(R.drawable.baseline_image_24)
             .into(imageView)
-        /*if (!Constant.currentImageBitmap.containsKey(position)) {
-            Glide.with(context)
-                .asBitmap()
-                .load(File(Common.getFilePathFromImageUri(context,imageList[position].uri).orEmpty()))
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .into(object : CustomTarget<Bitmap>(){
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        imageView.setImageBitmap(resource)
-                        Constant.currentImageBitmap[position] = resource
-                        Log.i("ImageSliderAdapterInfo", "onResourceReady: ${Constant.currentImageBitmap[position]}")
-                    }
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                })
-        } else {
-            val bitmap = Constant.currentImageBitmap[position]
-            imageView.setImageBitmap(bitmap)
-            Log.i("ImageSliderAdapterInfo", "else part: ${Constant.currentImageBitmap[position]}")
-        }*/
         Objects.requireNonNull(container).addView(itemView)
         return itemView
     }

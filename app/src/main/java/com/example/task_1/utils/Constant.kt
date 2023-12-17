@@ -10,10 +10,10 @@ object Constant {
     var selectImagePosition = 0
     var selectVideoPosition = 0
 
+    //use in slide adapter but now its not used
     var currentImageBitmap = HashMap<Int, Bitmap>()
 
     var totalImagesToCopy = 0
-    var currentFragment = 0
 
     var isItCancel = false
     var actionMode : ActionMode? = null

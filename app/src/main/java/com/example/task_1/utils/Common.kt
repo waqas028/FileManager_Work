@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -152,7 +153,7 @@ object Common {
         }
     }
 
-    fun deleteMultipleFile(
+    suspend fun deleteMultipleFile(
         context: Context,
         selectImageUri: Uri,
         imageFile: File,
@@ -171,7 +172,7 @@ object Common {
                 MediaStore.Files.FileColumns.DISPLAY_NAME + "=?",
                 selectionArgsPdf
             )
-            CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Main){
                 progressListener?.onProgressUpdate(copiedImagesCount)
                 Log.i("DeleteImagesInfo", "deleteFileUsingDisplayName: Image progress $copiedImagesCount")
                 if(copiedImagesCount == selectedItems.size){
@@ -188,7 +189,7 @@ object Common {
         }
     }
 
-    fun copyFileToFolder(
+    suspend fun copyFileToFolder(
         context: Context,
         sourceImagePath: String?,
         progressListener: CopyImageProgressListener?,
@@ -229,7 +230,7 @@ object Common {
             }
             inputStream.close()
             outputStream.close()
-            CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Main){
                 progressListener?.onProgressUpdate(copiedImagesCount)
                 if(copiedImagesCount == selectedItems.size){
                     Log.i("CopyImageInfo", "copyImageFolder: Image copy $copiedImagesCount // ${selectedItems.size}")
@@ -244,7 +245,7 @@ object Common {
     }
 
 
-    fun copyImagesToFolder(
+    suspend fun copyImagesToFolder(
         sourceImagePath: String,
         progressListener: CopyImageProgressListener?,
         mode: ActionMode?,
@@ -262,7 +263,7 @@ object Common {
             targetFile.mkdirs()
         }
 
-        val fileName = sourceDir.name
+        val fileName = "Copy_" + sourceDir.name
         val extension = fileName.substringAfterLast(".") // Extract extension
         var targetFileName = fileName
 
@@ -285,7 +286,7 @@ object Common {
                     }
                 }
             }
-            CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Main){
                 progressListener?.onProgressUpdate(copiedImagesCount)
                 if(copiedImagesCount == selectedItems.size){
                     Log.i("CopyImageInfo", "copyImageFolder: All Select Image copy $copiedImagesCount // ${selectedItems.size}")
@@ -294,9 +295,10 @@ object Common {
                 }
             }
         } catch (e: Exception) {
+            progressListener?.onProgressUpdate(copiedImagesCount)
             Log.e("CopyImageInfo", "Error copying $sourceImagePath: $e")
         }
         // Display the number of copied images
-        Log.i("CopyImageInfo", "copyImagesToFolder: Copied $copiedImagesCount images  ^^ $sourceImagePath")
+        Log.i("CopyImageInfo", "copyImagesToFolder: Copied $copiedImagesCount   TotalSize: ${selectedItems.size}  Path-> $sourceImagePath")
     }
 }

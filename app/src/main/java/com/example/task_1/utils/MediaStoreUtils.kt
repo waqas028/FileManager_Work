@@ -7,11 +7,9 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import androidx.core.net.toUri
 import com.example.task_1.model.Media
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 
 class MediaStoreUtils(private val context: Context) {
 
@@ -62,7 +60,7 @@ class MediaStoreUtils(private val context: Context) {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         id
                     )
-                    val contentFile = File(cursor.getString(imageDataColumn))
+                    //val contentFile = File(cursor.getString(imageDataColumn))
                     files.add(Media(contentUri, name ?: "",0))
                 }
             }

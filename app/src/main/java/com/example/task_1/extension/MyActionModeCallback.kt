@@ -25,7 +25,6 @@ class MyActionModeCallback(
     private var onClearSelectionClickListener: () -> Unit,
     private var onSelectAllItemsClickListener: () -> Unit,
     private var onDestroyActionModeClickListener: () -> Unit,
-    private var onDeleteItemListener: () -> Unit,
 ): ActionMode.Callback {
     private var copiedImagesCount = 0
     companion object{
@@ -49,6 +48,7 @@ class MyActionModeCallback(
                     CoroutineScope(Dispatchers.IO).launch {
                         Log.i(TAG, "onActionItemClicked: Copy-> ${selectedItems.size}")
                         selectedItems.forEach {
+                            copiedImagesCount++
                             val currentSourceImagePath = Common.getFilePathFromVideoUri(context,it.uri)
                             Common.copyImagesToFolder(
                                 currentSourceImagePath.orEmpty(),
@@ -67,7 +67,6 @@ class MyActionModeCallback(
                                 }
                                 return@launch
                             }
-                            copiedImagesCount++
                         }
                     }
                 }
@@ -98,12 +97,12 @@ class MyActionModeCallback(
                                     selectedItems
                                 ){
                                     onClearSelectionClickListener()
-                                    onDeleteItemListener()
+                                    progressListener?.onDeleteItemListener()
                                 }
                                 if(Constant.isItCancel) {
                                     Constant.isItCancel = false
                                     onClearSelectionClickListener()
-                                    onDeleteItemListener()
+                                    progressListener?.onDeleteItemListener()
                                     withContext(Dispatchers.Main){
                                         mode?.finish()
                                     }

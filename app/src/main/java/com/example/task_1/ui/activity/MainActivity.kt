@@ -16,11 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.task_1.adapter.ViewPagerAdapter
 import com.example.task_1.databinding.ActivityMainBinding
-import com.example.task_1.ui.fragments.CropImagesFragment
-import com.example.task_1.ui.fragments.ImagesFragment
-import com.example.task_1.ui.fragments.SavedImageFragment
-import com.example.task_1.ui.fragments.VideosFragment
-import com.example.task_1.utils.Constant
 import com.example.task_1.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -47,14 +42,8 @@ class MainActivity : AppCompatActivity() {
         binding.viewPager.addOnPageChangeListener(object : OnPageChangeListener{
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                Log.i(TAG, "onPageSelected: $position  //  ${viewPagerAdapter.getPageTitle(position)}")
-                Constant.currentFragment = position
-                when(viewPagerAdapter.getPageTitle(position).toString()){
-                    Fragments.IMAGE_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as ImagesFragment).imagesAdapter.onPageUpdate(position)
-                    Fragments.VIDEO_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as VideosFragment).videosAdapter.onPageUpdate(position)
-                    Fragments.SAVED_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as SavedImageFragment).videosAdapter.onPageUpdate(position)
-                    Fragments.CROP_FRAGMENTS.label -> (viewPagerAdapter.getItem(position) as CropImagesFragment).imagesAdapter.onPageUpdate(position)
-                }
+                Log.i(TAG, "onPageSelected: $position")
+                mainViewModel.currentFragment.value = position
                 if(position == 2){
                     lifecycleScope.launch(Dispatchers.IO) { mainViewModel.getSaveVideoImagesList() }
                 }
@@ -180,7 +169,4 @@ class MainActivity : AppCompatActivity() {
         const val TAG = "MainActivityInfo"
         const val READ_WRITE_REQUEST_CODE = 123
     }
-}
-enum class Fragments(val label : String){
-    IMAGE_FRAGMENTS("Images"),VIDEO_FRAGMENTS("Videos"),SAVED_FRAGMENTS("Saved"),CROP_FRAGMENTS("Crop")
 }

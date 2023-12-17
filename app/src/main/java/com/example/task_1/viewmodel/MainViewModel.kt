@@ -1,12 +1,10 @@
 package com.example.task_1.viewmodel
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.example.task_1.model.Media
 import com.example.task_1.repository.MainRepo
-import com.example.task_1.utils.MediaStoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,8 +22,7 @@ class MainViewModel @Inject constructor(private val mainRepo: MainRepo) : ViewMo
     val savedVideoImageList: StateFlow<Array<File>> = _savedVideoImageList
     private val _savedCropImageList = MutableStateFlow(emptyList<File>())
     val savedCropImageList: StateFlow<List<File>> = _savedCropImageList
-    private val _allImageList = MutableStateFlow(emptyList<Media>())
-    val allImageList: StateFlow<List<Media>> = _allImageList
+    val currentFragment = MutableStateFlow(0)
     @RequiresApi(Build.VERSION_CODES.Q)
     fun getVideosList(){
         _videoList.value = mainRepo.getAllVideoListFromStorage()
@@ -33,10 +30,6 @@ class MainViewModel @Inject constructor(private val mainRepo: MainRepo) : ViewMo
 
     fun getImagesList(){
         _imageList.value = mainRepo.getAllImageListFromStorage()
-    }
-
-    suspend fun getAllImages(context: Context){
-        _allImageList.value = MediaStoreUtils(context).getImages()
     }
 
     fun getSaveVideoImagesList(){

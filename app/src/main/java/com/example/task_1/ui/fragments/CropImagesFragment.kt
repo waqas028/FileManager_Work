@@ -27,12 +27,7 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
     private var _binding: FragmentCropImagesBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel : MainViewModel by activityViewModels()
-    var imagesAdapter : ImagesAdapter = ImagesAdapter(this){
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.Main){binding.backButtonImageview.visibility = View.GONE}
-            mainViewModel.getNonEmptyDirectoriesWithFiles("")
-        }
-    }
+    private var imagesAdapter : ImagesAdapter = ImagesAdapter(this)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCropImagesBinding.inflate(inflater, container, false)
         binding.cropImagesRecyclerView.apply {
@@ -44,6 +39,13 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            mainViewModel.currentFragment.collect{
+                Log.i(TAG, "onViewCreated: $it")
+                imagesAdapter.onPageUpdate(it)
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             mainViewModel.savedCropImageList.collect{cropFolderList->
@@ -98,7 +100,11 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
         const val TAG = "CropImagesFragInfo"
     }
 
-    override fun onProgressUpdate(progress: Int) {
-
+    override fun onProgressUpdate(progress: Int) {}
+    override fun onDeleteItemListener() {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main){binding.backButtonImageview.visibility = View.GONE}
+            mainViewModel.getNonEmptyDirectoriesWithFiles("")
+        }
     }
 }

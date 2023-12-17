@@ -18,15 +18,11 @@ import com.example.task_1.extension.MyActionModeCallback
 import com.example.task_1.interfaces.CopyImageProgressListener
 import com.example.task_1.model.Media
 import com.example.task_1.utils.Constant
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class VideosAdapter (private val progressListener: CopyImageProgressListener?) : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
     companion object{
         const val TAG = "VideosAdapterInfo"
     }
-    private var isSelected = mutableListOf<Boolean>()
     private val selectedItems = mutableListOf<Media>()
     private var actionMode: ActionMode? = null
     private var menuSelection = R.menu.selection_menu
@@ -42,12 +38,6 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
 
     }
     val differ = AsyncListDiffer(this, differCallback)
-
-    init {
-        for (i in 0 until differ.currentList.size) {
-            isSelected.add(false)
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ic_videos_layout, parent, false))
@@ -98,12 +88,6 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
         // Set click listener for item selection
         holder.itemView.setOnLongClickListener {
             if (actionMode == null) {
-                when(Constant.currentFragment){
-                    0 -> {menuSelection = R.menu.selection_menu}
-                    1 -> {menuSelection = R.menu.selection_menu}
-                    2 -> { menuSelection = R.menu.ic_delete_menu}
-                    3 -> { menuSelection = R.menu.ic_delete_menu}
-                }
                 actionMode = holder.itemView.startActionMode(MyActionModeCallback(
                     holder.itemView.context,
                     menuSelection,
@@ -120,7 +104,6 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
                         actionMode = null
                         notifyDataSetChanged()
                         Log.i(TAG, "onDestroyActionMode: ")},
-                    onDeleteItemListener = {}
                 ))
                 Constant.actionMode = actionMode
             }
@@ -172,15 +155,11 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
         Constant.totalImagesToCopy = selectedItems.size
     }
 
-    private fun isSelected(item: Media): Boolean {
-        return selectedItems.contains(item)
-    }
+    private fun isSelected(item: Media): Boolean  = selectedItems.contains(item)
+
     private fun clearSelections() {
         selectAllItems = false
         selectedItems.clear()
-        for (i in 0 until differ.currentList.size) {
-            isSelected.add(false)
-        }
     }
 
     private fun selectAllItems() {
@@ -188,12 +167,6 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
         selectedItems.clear()
         selectedItems.addAll(differ.currentList)
         Constant.totalImagesToCopy = selectedItems.size
-        CoroutineScope(Dispatchers.IO).launch {
-            for (i in 0 until differ.currentList.size) {
-                //Log.i(TAG, "selectAllItems: $i  //  ${isSelected(selectedItems[i])} // ${selectedItems.size}  //  ${differ.currentList.size}")
-                isSelected.add(true)
-            }
-        }
         actionMode?.title = "${selectedItems.size} selected"
         notifyDataSetChanged()
     }
@@ -202,11 +175,6 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
         selectAllItems = false
         selectedItems.clear()
         Constant.totalImagesToCopy = selectedItems.size
-        CoroutineScope(Dispatchers.IO).launch {
-            for (i in 0 until differ.currentList.size) {
-                isSelected.add(false)
-            }
-        }
         actionMode?.title = "${selectedItems.size} selected"
         notifyDataSetChanged()
     }
@@ -215,5 +183,12 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
         Log.i(TAG, "onPageUpdate: $onPageSelected $actionMode")
         clearSelections()
         Constant.actionMode?.finish() // Finish the ActionMode
+        when(onPageSelected)
+        {
+            0 -> {menuSelection = R.menu.selection_menu}
+            1 -> {menuSelection = R.menu.selection_menu}
+            2 -> { menuSelection = R.menu.ic_delete_menu}
+            3 -> { menuSelection = R.menu.ic_delete_menu}
+        }
     }
 }

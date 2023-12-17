@@ -3,7 +3,6 @@
 package com.example.task_1.ui.fragments
 
 import android.app.ProgressDialog
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -34,7 +33,7 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
     private var _binding: FragmentSavedImageBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel : MainViewModel by activityViewModels()
-    var videosAdapter: VideosAdapter = VideosAdapter(this)
+    private var videosAdapter: VideosAdapter = VideosAdapter(this)
     private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSavedImageBinding.inflate(inflater, container, false)
@@ -77,22 +76,18 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
                             }
                         }
                     imagesList.addAll(videoFileList + imageFileList)
-                    /*for( files in savedFileList.indices){
-                        if(savedFileList[files].name.endsWith(".mp4")){
-                            Common.getVideoContentUri(requireContext(),savedFileList[files])
-                                ?.let { it1 -> Media(it1,savedFileList[files].name,1) }
-                                ?.let { it2 -> imagesList.add(it2) }
-                        }else{
-                            Common.getImageContentUri(requireContext(),savedFileList[files])
-                                ?.let { it1 -> Media(it1,savedFileList[files].name,1) }
-                                ?.let { it2 -> imagesList.add(it2) }
-                        }
-                    }*/
                     Log.i(TAG, "onViewCreated: ${imagesList.size}  //  $imagesList")
                 }
                 withContext(Dispatchers.Main){
                     videosAdapter.differ.submitList(imagesList)
                 }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            mainViewModel.currentFragment.collect{
+                Log.i(TAG, "onViewCreated: $it")
+                videosAdapter.onPageUpdate(it)
             }
         }
     }
@@ -118,6 +113,10 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
                 }
             }
         }
+    }
+
+    override fun onDeleteItemListener() {
+
     }
 
     private fun showDialogue(){
