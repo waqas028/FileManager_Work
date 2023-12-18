@@ -108,5 +108,5 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
     }
 
     override fun onProgressUpdate(progress: Int) {}
-    override fun onDeleteItemListener() {}
+    override fun onDeleteOrCopyItemListener() {}
 }

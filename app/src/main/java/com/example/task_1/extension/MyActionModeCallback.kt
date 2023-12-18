@@ -58,10 +58,12 @@ class MyActionModeCallback(
                                 selectedItems
                             ){
                                 onClearSelectionClickListener()
+                                progressListener?.onDeleteOrCopyItemListener()
                             }
                             if(Constant.isItCancel) {
                                 Constant.isItCancel = false
                                 onClearSelectionClickListener()
+                                progressListener?.onDeleteOrCopyItemListener()
                                 withContext(Dispatchers.Main){
                                     mode?.finish()
                                 }
@@ -79,7 +81,7 @@ class MyActionModeCallback(
                     Constant.isItCancel = false
                     onCopyClickListener()
                     CoroutineScope(Dispatchers.IO).launch {
-                        Log.i(TAG, "onActionItemClicked: Delete-> ${selectedItems.size}  //  ${Constant.isItCancel}")
+                        Log.i(TAG, "onActionItemClicked: Delete-> ${selectedItems.size}  //  ${Constant.isItCancel}  //  DeleteFile-> ${selectedItems[0].uri}")
                         for(img in selectedItems.indices){
                             try {
                                 copiedImagesCount++
@@ -97,12 +99,12 @@ class MyActionModeCallback(
                                     selectedItems
                                 ){
                                     onClearSelectionClickListener()
-                                    progressListener?.onDeleteItemListener()
+                                    progressListener?.onDeleteOrCopyItemListener()
                                 }
                                 if(Constant.isItCancel) {
                                     Constant.isItCancel = false
                                     onClearSelectionClickListener()
-                                    progressListener?.onDeleteItemListener()
+                                    progressListener?.onDeleteOrCopyItemListener()
                                     withContext(Dispatchers.Main){
                                         mode?.finish()
                                     }

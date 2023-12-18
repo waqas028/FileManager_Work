@@ -262,8 +262,12 @@ object Common {
         if (!targetFile.exists()) {
             targetFile.mkdirs()
         }
-
-        val fileName = "Copy_" + sourceDir.name
+        val fileName = if(sourceDir.name.endsWith(".png") || sourceDir.name.endsWith(".jpg") || sourceDir.name.endsWith(".jpeg")){
+            "Copy_${System.currentTimeMillis()}.jpg"
+        } else {
+            "Copy_${System.currentTimeMillis()}.mp4"
+        }
+        //val fileName = "Copy_${System.currentTimeMillis()}.jpg"
         val extension = fileName.substringAfterLast(".") // Extract extension
         var targetFileName = fileName
 
@@ -299,6 +303,6 @@ object Common {
             Log.e("CopyImageInfo", "Error copying $sourceImagePath: $e")
         }
         // Display the number of copied images
-        Log.i("CopyImageInfo", "copyImagesToFolder: Copied $copiedImagesCount   TotalSize: ${selectedItems.size}  Path-> $sourceImagePath")
+        Log.i("CopyImageInfo", "copyImagesToFolder: Copied $copiedImagesCount   TotalSize: ${selectedItems.size}  Name:$fileName  Path-> $sourceImagePath")
     }
 }

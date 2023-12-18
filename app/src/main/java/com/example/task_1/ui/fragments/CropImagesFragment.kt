@@ -101,7 +101,7 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
     }
 
     override fun onProgressUpdate(progress: Int) {}
-    override fun onDeleteItemListener() {
+    override fun onDeleteOrCopyItemListener() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main){binding.backButtonImageview.visibility = View.GONE}
             mainViewModel.getNonEmptyDirectoriesWithFiles("")

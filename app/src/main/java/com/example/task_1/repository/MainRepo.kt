@@ -132,9 +132,6 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
             } ?: emptyArray()
             Log.i("MainRepoInfo", "getSaveVideoImagesList: ${allFiles.size}")
         }
-        for(files in allFiles.indices){
-            Log.i("MainRepoInfo", "getSaveVideoImagesList: ${allFiles[files].name}")
-        }
         return allFiles
     }
 

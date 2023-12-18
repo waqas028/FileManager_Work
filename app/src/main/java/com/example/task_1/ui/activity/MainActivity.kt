@@ -44,9 +44,6 @@ class MainActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 Log.i(TAG, "onPageSelected: $position")
                 mainViewModel.currentFragment.value = position
-                if(position == 2){
-                    lifecycleScope.launch(Dispatchers.IO) { mainViewModel.getSaveVideoImagesList() }
-                }
             }
             override fun onPageScrollStateChanged(state: Int) {}
         })

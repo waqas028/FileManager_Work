@@ -86,7 +86,7 @@ class VideosFragment : Fragment() , CopyImageProgressListener {
         }
     }
 
-    override fun onDeleteItemListener() {}
+    override fun onDeleteOrCopyItemListener() { viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { mainViewModel.getSaveVideoImagesList() } }
 
     private fun showDialogue(){
         progressDialog = ProgressDialog(requireActivity())

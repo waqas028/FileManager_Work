@@ -57,27 +57,17 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
     private fun collectSavedImageVideosListFromStorage() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             mainViewModel.savedVideoImageList.collect{savedFileList->
-                Log.i(TAG, "collectSavedImageVideosListFromStorage: ${savedFileList.size}  //  $savedFileList")
-                val imagesList = mutableListOf<Media>()
-                if(savedFileList.isNotEmpty()){
-                    val videoFileList = savedFileList.filter { file -> file.name.endsWith(".mp4") }
-                        .mapNotNull { file ->
-                            Common.getVideoContentUri(requireContext(), file)?.let { uri ->
-                                Media(uri, file.name, 1)
-                            }
-                        }
-                    val imageFileList = savedFileList.filter { file->
-                        file.name.endsWith(".jpg") ||
-                                file.name.endsWith(".jpeg") ||
-                                file.name.endsWith(".png") }
-                        .mapNotNull {file->
-                            Common.getImageContentUri(requireContext(), file)?.let { uri ->
-                                Media(uri, file.name, 1)
-                            }
-                        }
-                    imagesList.addAll(videoFileList + imageFileList)
-                    Log.i(TAG, "onViewCreated: ${imagesList.size}  //  $imagesList")
+                Log.i(TAG, "collectSavedImageVideosListFromStorage: CollectList: ${savedFileList.size}  //  ${savedFileList[0].absolutePath}")
+                val imagesList: List<Media> = savedFileList.mapNotNull { file ->
+                    when (file.extension) {
+                        "mp4" -> Common.getVideoContentUri(requireContext(), file)
+                            ?.let { Media(it, file.name, 1) }
+                        "jpg", "jpeg", "png" -> Common.getImageContentUri(requireContext(), file)
+                            ?.let { Media(it, file.name, 1) }
+                        else -> null
+                    }
                 }
+                Log.i(TAG, "collectSavedImageVideosListFromStorage: Final List: ${imagesList.size}  URI->${imagesList[0].uri}  //  $imagesList")
                 withContext(Dispatchers.Main){
                     videosAdapter.differ.submitList(imagesList)
                 }
@@ -115,9 +105,7 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
         }
     }
 
-    override fun onDeleteItemListener() {
-
-    }
+    override fun onDeleteOrCopyItemListener() {}
 
     private fun showDialogue(){
         progressDialog = ProgressDialog(requireActivity())
