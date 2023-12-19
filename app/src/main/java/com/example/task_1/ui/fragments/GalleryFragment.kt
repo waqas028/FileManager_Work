@@ -1,5 +1,6 @@
 package com.example.task_1.ui.fragments
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -17,11 +19,13 @@ import com.example.task_1.model.TempImage
 import com.example.task_1.ui.activity.CameraPreviewActivity
 import com.example.task_1.utils.MediaStoreUtils
 import com.example.task_1.utils.padWithDisplayCutout
+import com.example.task_1.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
 class GalleryFragment : Fragment() {
     private var _fragmentGalleryBinding: FragmentGalleryBinding? = null
     private val fragmentGalleryBinding get() = _fragmentGalleryBinding!!
+    private val mainViewModel : MainViewModel by activityViewModels()
     private lateinit var mediaPagerAdapter: MediaPagerAdapter
     private var mediaList: MutableList<TempImage> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,12 +33,11 @@ class GalleryFragment : Fragment() {
         lifecycleScope.launch {
             // Get images this app has access to from MediaStore
             for(i in (activity as CameraPreviewActivity).imageUriList.indices){
-                mediaList.add(TempImage(i,MediaStoreUtils(requireContext()).getImages()[i].uri))
+                mediaList.add(TempImage(i,MediaStoreUtils(requireContext()).getImages()[i].uri,""))
             }
             Log.i(TAG, "onCreate: ${(activity as CameraPreviewActivity).imageUriList.size}")
             (fragmentGalleryBinding.photoViewPager.adapter as MediaPagerAdapter)
                 .setMediaListAndNotify(mediaList)
-            Log.i(TAG, "onCreate: ")
         }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -42,6 +45,7 @@ class GalleryFragment : Fragment() {
         return fragmentGalleryBinding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -51,7 +55,6 @@ class GalleryFragment : Fragment() {
             offscreenPageLimit = 2
             adapter = mediaPagerAdapter
         }
-        Log.i(TAG, "onViewCreated: ")
 
         // Make sure that the cutout "safe area" avoids the screen notch if any
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -82,6 +85,11 @@ class GalleryFragment : Fragment() {
         }
 
         fragmentGalleryBinding.imageCounterTextview.text = "${fragmentGalleryBinding.photoViewPager.currentItem+1}/${(activity as CameraPreviewActivity).imageUriList.size}"
+
+        //handle Done Button work
+        fragmentGalleryBinding.doneButton.setOnClickListener{
+            mainViewModel.buttonClicked.value = 1
+        }
     }
 
     override fun onDestroyView() {

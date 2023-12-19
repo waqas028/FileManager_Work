@@ -18,9 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.task_1.adapter.ImagesAdapter
 import com.example.task_1.databinding.FragmentImagesBinding
 import com.example.task_1.interfaces.CopyImageProgressListener
-import com.example.task_1.ui.activity.CameraPreviewActivity
 import com.example.task_1.ui.activity.ImagePreviewActivity
-import com.example.task_1.ui.activity.MainActivity
 import com.example.task_1.utils.Constant
 import com.example.task_1.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers

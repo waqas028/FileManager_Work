@@ -3,6 +3,7 @@ package com.example.task_1.viewmodel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.task_1.model.Media
 import com.example.task_1.repository.MainRepo
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 import javax.inject.Inject
 
-@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class MainViewModel @Inject constructor(private val mainRepo: MainRepo) : ViewModel() {
     private val _videoList = MutableStateFlow(emptyList<Media>())
@@ -24,6 +24,7 @@ class MainViewModel @Inject constructor(private val mainRepo: MainRepo) : ViewMo
     private val _savedCropImageList = MutableStateFlow(emptyList<File>())
     val savedCropImageList: StateFlow<List<File>> = _savedCropImageList
     val currentFragment = MutableStateFlow(0)
+    val buttonClicked = MutableStateFlow(0)
     @RequiresApi(Build.VERSION_CODES.Q)
     fun getVideosList(){
         _videoList.value = mainRepo.getAllVideoListFromStorage()

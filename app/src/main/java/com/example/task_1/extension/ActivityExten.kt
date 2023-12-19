@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -93,11 +94,17 @@ fun Activity.saveImagesBitmap(bitmap: Bitmap?,directory:File){
     }
 }
 
-fun cropImage(bitmap: Bitmap, originalImagePath: String?){
+fun cropImage(bitmap: Bitmap, currentTimeSession: String?){
     try {
-        val file = File(originalImagePath.orEmpty())
-        Log.i("CropImageInfo", "cropImage: ${file.absolutePath}  //  $originalImagePath")
-        val outputStream = FileOutputStream(file)
+        val dirName = "Crop_Directory/Crop_${currentTimeSession}"
+        val filename = "Crop_${System.currentTimeMillis()}.jpg"
+        val rootDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), dirName)
+        if (!rootDirectory.exists()) {
+            rootDirectory.mkdirs()
+        }
+        val imageFile = File(rootDirectory, filename)
+        Log.i("CropImageInfo", "cropImage: ${imageFile.absolutePath} ")
+        val outputStream = FileOutputStream(imageFile)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream) // Save the cropped bitmap as a JPEG file
         outputStream.flush()
         outputStream.close()

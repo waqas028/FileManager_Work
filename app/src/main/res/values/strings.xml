@@ -7,6 +7,8 @@
     <string name="image">Images</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+    <string name="imageCount">0</string>
+    <string name="done">Done</string>
 
     <string name="capture_button_alt">Capture</string>
     <string name="switch_camera_button_alt">Switch camera</string>

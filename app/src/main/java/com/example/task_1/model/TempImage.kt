@@ -4,5 +4,6 @@ import android.net.Uri
 
 data class TempImage(
     var id: Int,
-    val imageUri: Uri
+    val imageUri: Uri,
+    val currentTimeSession: String
 )

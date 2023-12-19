@@ -48,4 +48,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:contentDescription="@string/gallery_button_alt" />
 
+    <TextView
+        android:id="@+id/totalImageCountTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/imageCount"
+        android:textColor="@color/textColor"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@id/photo_view_button"
+        app:layout_constraintTop_toTopOf="@id/photo_view_button"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 package com.example.task_1.ui.fragments
 
 import android.content.BroadcastReceiver
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -12,8 +11,6 @@ import android.hardware.display.DisplayManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.KeyEvent
@@ -54,6 +51,7 @@ import com.example.task_1.utils.ANIMATION_FAST_MILLIS
 import com.example.task_1.utils.ANIMATION_SLOW_MILLIS
 import com.example.task_1.utils.MediaStoreUtils
 import com.example.task_1.utils.simulateClick
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.ByteBuffer
@@ -337,7 +335,7 @@ class CameraFragment : Fragment() {
         cameraUiContainerBinding?.cameraCaptureButton?.setOnClickListener {
             // Get a stable reference of the modifiable image capture use case
             imageCapture?.let { imageCapture ->
-                val outputOptions: ImageCapture.OutputFileOptions
+                /*val outputOptions: ImageCapture.OutputFileOptions
                 val filename = "Crop_${System.currentTimeMillis()}.jpg"
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
                     val contentValues = ContentValues().apply {
@@ -374,12 +372,11 @@ class CameraFragment : Fragment() {
                                 (activity as CameraPreviewActivity).imageUriList.add(TempImage(sessionImageCounter,it1))
                             }
                         }
-                    })
+                    })*/
 
-                /*//temporary file code
+                //temporary file code
                 // Setup image capture listener which is triggered after photo has been taken
                 // Create an output file to store the captured image temporarily (you can use a temporary file)
-                Constant.currentImageCaptureSession = "CropDirectory_${System.currentTimeMillis()}"
                 val tempFile = File.createTempFile("temp_image", ".jpg", requireContext().cacheDir)
                 val outputOptions = ImageCapture.OutputFileOptions.Builder(tempFile).build()
                 imageCapture.takePicture(outputOptions,cameraExecutor, object : ImageCapture.OnImageSavedCallback {
@@ -388,15 +385,18 @@ class CameraFragment : Fragment() {
                         val savedUri = outputFileResults.savedUri
                         Log.i(TAG, "onImageSaved: $savedUri")
                         if (savedUri != null) {
-                            (activity as CameraPreviewActivity).imageUriList.add(TempImage(sessionImageCounter,savedUri))
+                            (activity as CameraPreviewActivity).imageUriList.add(TempImage(sessionImageCounter, savedUri, currentTimeSession.toString()))
                             setGalleryThumbnail(savedUri)
+                        }
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
+                            cameraUiContainerBinding?.totalImageCountTextview?.text = (activity as CameraPreviewActivity).imageUriList.size.toString()
                         }
                     }
 
                     override fun onError(exception: ImageCaptureException) {
                         Log.e(TAG, "Capture failed: ${exception.message}", exception)
                     }
-                })*/
+                })
 
                 // Display flash animation to indicate that photo was captured
                 fragmentCameraBinding?.root?.postDelayed({
@@ -510,7 +510,6 @@ class CameraFragment : Fragment() {
 
     companion object {
         private const val TAG = "CameraFragInfo"
-        private const val PHOTO_TYPE = "image/jpeg"
         private const val RATIO_4_3_VALUE = 4.0 / 3.0
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }

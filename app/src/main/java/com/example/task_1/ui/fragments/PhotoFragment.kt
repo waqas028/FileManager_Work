@@ -9,23 +9,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.example.task_1.R
-import com.example.task_1.ui.fragments.PhotoFragment
 import com.example.task_1.databinding.FragmentPhotoBinding
 import com.example.task_1.extension.cropImage
 import com.example.task_1.ui.activity.CameraPreviewActivity
-import com.example.task_1.utils.Common
+import com.example.task_1.viewmodel.MainViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class PhotoFragment internal constructor() : Fragment() {
     private var _fragmentPhotoBinding: FragmentPhotoBinding? = null
     private val fragmentPhotoBinding get() = _fragmentPhotoBinding!!
     private var imageUri: Uri? = null
-   // override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) = CropImageView(requireContext())
+    private val mainViewModel : MainViewModel by activityViewModels()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
        _fragmentPhotoBinding = FragmentPhotoBinding.inflate(inflater, container, false)
         return fragmentPhotoBinding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val args = arguments ?: return
@@ -34,20 +38,21 @@ class PhotoFragment internal constructor() : Fragment() {
         imageList = imageList.reversed().toMutableList()
         imageUri = imageList[resource].imageUri
         Log.i(TAG, "onViewCreated: $resource  //  ${imageList.size}  $imageUri")
-        /*Glide.with(view)
-            .load(imageUri)
-            .placeholder(R.drawable.ic_photo)
-            .error(R.drawable.ic_photo)
-            .into(view as ImageView)*/
         fragmentPhotoBinding.cropImageView.setImageUriAsync(imageUri)
-        fragmentPhotoBinding.button.setOnClickListener {
-            val bitmap = fragmentPhotoBinding.cropImageView.croppedImage
-            fragmentPhotoBinding.cropImageView.setImageBitmap(bitmap)
-            if (bitmap != null) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-                    cropImage(bitmap, Common.getFilePathFromImageUri(requireContext(),imageUri))
-                }else{
-                    cropImage(bitmap, imageUri?.path)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            mainViewModel.buttonClicked.collectLatest{
+                Log.i(TAG, "onViewCreated: $it  ${imageList.size}")
+                if(it == 1){
+                    val bitmap = fragmentPhotoBinding.cropImageView.croppedImage
+                    Log.i(TAG, "onViewCreated: ${imageList[resource]}  $bitmap")
+                    if (bitmap != null) {
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                            cropImage(bitmap,imageList[resource].currentTimeSession)
+                        }else{
+                            cropImage(bitmap, imageList[resource].currentTimeSession)
+                        }
+                    }
                 }
             }
         }
@@ -57,7 +62,7 @@ class PhotoFragment internal constructor() : Fragment() {
             object : OnBackPressedCallback(true) { // `true` indicates the callback consumes the event by default
                 override fun handleOnBackPressed() {
                     // Perform your desired action on back press
-                    Log.i(TAG, "handleOnBackPressed: backpress button")
+                    Log.i(TAG, "handleOnBackPressed: back press button")
                     (activity as CameraPreviewActivity).imageUriList.clear()
                     Navigation.findNavController(requireActivity(), R.id.fragment_container).navigateUp()
                 }
