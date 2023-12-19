@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Hazel_Task_1"
 include(":app")
+include(":benchmark")

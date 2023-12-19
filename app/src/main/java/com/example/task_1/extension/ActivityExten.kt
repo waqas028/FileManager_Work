@@ -2,26 +2,17 @@ package com.example.task_1.extension
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import com.example.task_1.ui.activity.MainActivity
 import com.example.task_1.utils.Common
-import com.example.task_1.utils.Constant
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-
 
 @SuppressLint("Range")
 fun Activity.getFilePathFromImageUri(uri: Uri): String? {
@@ -116,26 +107,7 @@ fun cropImage(bitmap: Bitmap, originalImagePath: String?){
     }
 }
 
- @RequiresApi(Build.VERSION_CODES.O)
- fun Activity.showDialogue(progress: Int){
-    val progressDialog = ProgressDialog(this)
-    progressDialog.max = Constant.totalImagesToCopy // Progress Dialog Max Value
-    progressDialog.setMessage("Loading...") // Setting Message
-    progressDialog.setTitle("ProgressDialog") // Setting Title
-    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL) // Progress Dialog Style Horizontal
-    progressDialog.setButton("Cancel"
-    ) { _, _ ->
-        Constant.isItCancel = true
-        CoroutineScope(Dispatchers.IO).launch {
-            //(this@showDialogue as MainActivity).mainViewModel.getImagesList()
-        }
-        progressDialog.dismiss()
-    }
-    progressDialog.show() // Display Progress Dialog
-    progressDialog.setCancelable(false)
-}
-
-fun Activity.deleteSingleFile(selectImageUri: Uri) {
+fun Activity.deleteSingleFile(selectImageUri: Uri, onDeleteComplete:() -> Unit) {
     val imageFile = File(Common.getFilePathFromImageUri(this,selectImageUri)!!)
     Log.i("DeleteSingleFile", "deleteImages: $selectImageUri  //  ${imageFile.name}")
     val resolver = contentResolver
@@ -146,7 +118,7 @@ fun Activity.deleteSingleFile(selectImageUri: Uri) {
             MediaStore.Files.FileColumns.DISPLAY_NAME + "=?",
             selectionArgsPdf
         )
-        onBackPressed()
+        onDeleteComplete()
     } catch (ex: Exception) {
         ex.printStackTrace()
         Log.i("DeleteSingleFile", "deleteFileUsingDisplayName: $ex")

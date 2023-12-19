@@ -88,11 +88,7 @@ class MyActionModeCallback(
                                 Common.deleteMultipleFile(
                                     context,
                                     selectedItems[img].uri,
-                                    File(
-                                        Common.getFilePathFromImageUri(
-                                        context,
-                                        selectedItems[img].uri)!!
-                                    ),
+                                    File(selectedItems[img].uri.path.orEmpty()),
                                     mode,
                                     progressListener,
                                     copiedImagesCount,

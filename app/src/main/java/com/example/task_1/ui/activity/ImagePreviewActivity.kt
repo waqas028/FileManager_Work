@@ -1,6 +1,8 @@
 package com.example.task_1.ui.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
@@ -93,7 +95,13 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
         }
 
         binding.deleteButton.setOnClickListener {
-            deleteSingleFile(currentImageUri)
+            deleteSingleFile(currentImageUri){
+                val intent = Intent().apply {
+                    putExtra("key", "UpdateImagesList")
+                }
+                setResult(Activity.RESULT_OK, intent)
+                onBackPressed()
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.task_1.ui.fragments
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Build
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,7 +18,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.task_1.adapter.ImagesAdapter
 import com.example.task_1.databinding.FragmentImagesBinding
 import com.example.task_1.interfaces.CopyImageProgressListener
+import com.example.task_1.ui.activity.CameraPreviewActivity
 import com.example.task_1.ui.activity.ImagePreviewActivity
+import com.example.task_1.ui.activity.MainActivity
 import com.example.task_1.utils.Constant
 import com.example.task_1.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
@@ -64,13 +68,24 @@ class ImagesFragment : Fragment(), CopyImageProgressListener {
 
         imagesAdapter.stOnItemClickListener {
             val intent = Intent(requireContext(), ImagePreviewActivity::class.java)
-            startActivity(intent)
+            imagePreviewActivityResultLauncher.launch(intent)
         }
 
         imagesAdapter.stOnCopyClickListener {
             showDialogue()
         }
 
+    }
+
+    private val imagePreviewActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val receivedValue = data?.getStringExtra("key")
+            Log.i(TAG, "onActivityResult: $receivedValue")
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                mainViewModel.getImagesList()
+            }
+        }
     }
 
     companion object {

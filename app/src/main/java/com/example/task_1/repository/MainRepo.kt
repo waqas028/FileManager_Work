@@ -9,7 +9,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import com.example.task_1.model.Media
+import com.example.task_1.utils.Common
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
@@ -44,14 +46,12 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
         query?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
             val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
-            val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)
 
             while (cursor.moveToNext()) {
                 // Get values of columns for a given video.
                 val id = cursor.getLong(idColumn)
                 val name = cursor.getString(nameColumn)
-                val duration = cursor.getInt(durationColumn)
                 val size = cursor.getInt(sizeColumn)
 
                 val contentUri: Uri = ContentUris.withAppendedId(
@@ -95,14 +95,12 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
         query?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
             val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-            val dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED)
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
 
             while (cursor.moveToNext()) {
                 // Get values of columns for a given video.
                 val id = cursor.getLong(idColumn)
                 val name = cursor.getString(nameColumn)
-                val dateModified = cursor.getInt(dateModifiedColumn)
                 val size = cursor.getInt(sizeColumn)
 
                 val contentUri: Uri = ContentUris.withAppendedId(
@@ -117,22 +115,26 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
         return imagesList
     }
 
-    fun getSaveVideoImagesList() : Array<File> {
-        var allFiles: Array<File> = emptyArray()
+    fun getSaveVideoImagesList() : List<Media> {
+        var imagesList: List<Media> = emptyList()
         val folder = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
              File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/TaskImages")
         }else{
              File(Environment.getExternalStorageDirectory().toString() + "/TaskImages")
         }
         if(folder.exists()){
-            allFiles = folder.listFiles { dir, name ->
+            val allFiles = folder.listFiles { dir, name ->
                 name.endsWith(".jpg") || name.endsWith(
                     ".jpeg"
                 ) || name.endsWith(".png") || name.endsWith(".mp4")
             } ?: emptyArray()
             Log.i("MainRepoInfo", "getSaveVideoImagesList: ${allFiles.size}")
+            imagesList = allFiles.map { file ->
+                Media(file.toUri(),file.name,1)
+            }
         }
-        return allFiles
+        Log.i("MainRepoInfo", "getSaveVideoImagesList: ${imagesList.size}")
+        return imagesList
     }
 
     fun getCropImagesList(dirName:String) : Array<File> {

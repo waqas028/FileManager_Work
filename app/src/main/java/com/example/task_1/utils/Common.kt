@@ -167,11 +167,14 @@ object Common {
         val resolver = context.contentResolver
         val selectionArgsPdf = arrayOf(imageFile.name)
         try {
-            resolver.delete(
+            /*resolver.delete(
                 selectImageUri,
                 MediaStore.Files.FileColumns.DISPLAY_NAME + "=?",
                 selectionArgsPdf
-            )
+            )*/
+            if(imageFile.exists()){
+                imageFile.delete()
+            }
             withContext(Dispatchers.Main){
                 progressListener?.onProgressUpdate(copiedImagesCount)
                 Log.i("DeleteImagesInfo", "deleteFileUsingDisplayName: Image progress $copiedImagesCount")
@@ -262,10 +265,10 @@ object Common {
         if (!targetFile.exists()) {
             targetFile.mkdirs()
         }
-        val fileName = if(sourceDir.name.endsWith(".png") || sourceDir.name.endsWith(".jpg") || sourceDir.name.endsWith(".jpeg")){
-            "Copy_${System.currentTimeMillis()}.jpg"
-        } else {
+        val fileName = if(sourceDir.name.endsWith(".mp4")){
             "Copy_${System.currentTimeMillis()}.mp4"
+        } else {
+            "Copy_${System.currentTimeMillis()}.jpg"
         }
         //val fileName = "Copy_${System.currentTimeMillis()}.jpg"
         val extension = fileName.substringAfterLast(".") // Extract extension
