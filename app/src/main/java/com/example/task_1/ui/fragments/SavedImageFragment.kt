@@ -31,10 +31,11 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
     private var _binding: FragmentSavedImageBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel : MainViewModel by activityViewModels()
-    private var videosAdapter: VideosAdapter = VideosAdapter(this)
+    private lateinit var videosAdapter: VideosAdapter
     private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSavedImageBinding.inflate(inflater, container, false)
+        videosAdapter = VideosAdapter(this)
         binding.savedVideoImageRecyclerView.apply {
             adapter = videosAdapter
             layoutManager = GridLayoutManager(requireContext(),3)
@@ -46,19 +47,12 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        collectSavedImageVideosListFromStorage()
-
-        videosAdapter.stOnCopyClickListener {
-            showDialogue()
-        }
-    }
-
-    private fun collectSavedImageVideosListFromStorage() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             mainViewModel.savedVideoImageList.collect{savedFileList->
                 Log.i(TAG, "collectSavedImageVideosListFromStorage: CollectList: ${savedFileList.size}")
                 withContext(Dispatchers.Main){
                     videosAdapter.differ.submitList(savedFileList)
+                    videosAdapter.updateAdapterDataList(savedFileList)
                 }
             }
         }
@@ -68,6 +62,10 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
                 Log.i(TAG, "onViewCreated: $it")
                 videosAdapter.onPageUpdate(it)
             }
+        }
+
+        videosAdapter.stOnCopyClickListener {
+            showDialogue()
         }
     }
 
@@ -86,7 +84,6 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
         progressDialog.progress = progress
         if(progress == Constant.totalImagesToCopy) {
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                collectSavedImageVideosListFromStorage()
                 mainViewModel.getImagesList()
                 mainViewModel.getVideosList()
                 mainViewModel.getSaveVideoImagesList()
@@ -112,10 +109,9 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
             ) { _, _ ->
                 Constant.isItCancel = true
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
-                    collectSavedImageVideosListFromStorage()
+                    mainViewModel.getSaveVideoImagesList()
                     mainViewModel.getImagesList()
                     mainViewModel.getVideosList()
-                    mainViewModel.getSaveVideoImagesList()
                 }
                 dismiss()
             }

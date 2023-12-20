@@ -2,6 +2,7 @@ package com.example.task_1.utils
 
 import android.graphics.Bitmap
 import android.view.ActionMode
+import com.example.task_1.model.TempImage
 
 object Constant {
     const val SELECT_VIDEO_PATH = "Select Video Path"
@@ -17,4 +18,7 @@ object Constant {
 
     var isItCancel = false
     var actionMode : ActionMode? = null
+
+    var cropImageList : MutableMap<Int, TempImage> = mutableMapOf()
+
 }

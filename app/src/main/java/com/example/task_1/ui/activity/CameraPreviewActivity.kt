@@ -11,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.task_1.databinding.ActivityCameraPreviewBinding
-import com.example.task_1.model.TempImage
 import dagger.hilt.android.AndroidEntryPoint
 
 const val KEY_EVENT_ACTION = "key_event_action"
@@ -20,7 +19,6 @@ private const val IMMERSIVE_FLAG_TIMEOUT = 500L
 @AndroidEntryPoint
 class CameraPreviewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCameraPreviewBinding
-    var imageUriList = mutableListOf<TempImage>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCameraPreviewBinding.inflate(layoutInflater)

@@ -1,5 +1,6 @@
 package com.example.task_1.adapter
 
+import android.net.Uri
 import android.util.Log
 import android.view.ActionMode
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
     private var actionMode: ActionMode? = null
     private var menuSelection = R.menu.selection_menu
     private var selectAllItems = false
+    private val mediaVideoList = mutableListOf<Media>()
     private val differCallback = object : DiffUtil.ItemCallback<Media>() {
         override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
             return oldItem.name == newItem.name
@@ -39,6 +41,10 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
     }
     val differ = AsyncListDiffer(this, differCallback)
 
+    init {
+        mediaVideoList.addAll(differ.currentList)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ic_videos_layout, parent, false))
     }
@@ -48,7 +54,7 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val mediaList = differ.currentList[position]
+        val mediaList = mediaVideoList[position]
         holder.imageNameTextview.text = mediaList.name
         if(mediaList.name.endsWith(".mp4")) {
             holder.videoPlayImageview.visibility = View.VISIBLE
@@ -190,5 +196,19 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
             2 -> { menuSelection = R.menu.ic_delete_menu}
             3 -> { menuSelection = R.menu.ic_delete_menu}
         }
+    }
+
+    fun updateDataList(){
+        mediaVideoList.removeAt(Constant.selectImagePosition)
+        notifyItemRemoved(Constant.selectImagePosition)
+        notifyItemRangeChanged(Constant.selectImagePosition, mediaVideoList.size)
+        notifyDataSetChanged()
+    }
+
+    fun updateAdapterDataList(list:List<Media>){
+        Log.i(TAG, "updateAdapterDataList: old: ${mediaVideoList.size}   //   new: ${list.size}")
+        mediaVideoList.clear()
+        mediaVideoList.addAll(list)
+        //notifyDataSetChanged()
     }
 }

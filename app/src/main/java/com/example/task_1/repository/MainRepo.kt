@@ -58,7 +58,8 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                     id
                 )
-                videoList += Media(contentUri, name, size)
+                Log.i("MainRepoInfo", "getAllVideoListFromStorage: $id")
+                videoList += Media(id.toInt(),contentUri, name, size)
             }
         }
         Log.i("MainRepoInfo", "getAllVideoListFromStorage: ${videoList.size}")
@@ -108,7 +109,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                     id
                 )
 
-                imagesList += Media(contentUri, name ?: "", size)
+                imagesList += Media(id.toInt(),contentUri, name ?: "", size)
             }
         }
         Log.i("MainRepoInfo", "getAllImageListFromStorage: ${imagesList.size}")
@@ -130,14 +131,15 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
             } ?: emptyArray()
             Log.i("MainRepoInfo", "getSaveVideoImagesList: ${allFiles.size}")
             imagesList = allFiles.map { file ->
-                Media(file.toUri(),file.name,1)
+                Media(1, file.toUri(),file.name,1)
             }
         }
         Log.i("MainRepoInfo", "getSaveVideoImagesList: ${imagesList.size}")
         return imagesList
     }
 
-    fun getCropImagesList(dirName:String) : Array<File> {
+    fun getCropImagesList(dirName:String) : List<Media> {
+        var imagesList: List<Media> = emptyList()
         var allFiles: Array<File> = emptyArray()
         val targetDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Crop_Directory")
         val folder = File("$targetDirectory/$dirName")
@@ -155,16 +157,19 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                 }else{
                     name.endsWith(".jpg") || name.endsWith(
                         ".jpeg"
-                    ) || name.endsWith(".png") || name.endsWith(".mp4")
+                    ) || name.endsWith(".png")
                 }
             } ?: emptyArray()
+            imagesList = allFiles.map { file ->
+                Media(1, file.toUri(),file.name,1)
+            }
         }
-        //Log.i("MainRepoInfo", "getCropImagesList: FinalList Return:${folder.exists()}  //  Folder:$folder   //  Size:${allFiles.size}")
-        return allFiles
+        Log.i("MainRepoInfo", "getCropImagesList: FinalList Return:${folder.exists()}  //  Folder:$folder   //  Size:${allFiles.size}  // $allFiles")
+        return imagesList
     }
 
-    fun getNonEmptyDirectoriesWithFiles(directoryName: String): List<File> {
-        val nonEmptyDirectories = mutableListOf<File>()
+    fun getNonEmptyDirectoriesWithFiles(directoryName: String): List<Media> {
+        val nonEmptyDirectories = mutableListOf<Media>()
         val targetDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Crop_Directory")
         val folder = File("$targetDirectory/$directoryName")
         if (folder.isDirectory) {
@@ -175,7 +180,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                 Log.i("MainRepoInfo", "getNonEmptyDirectoriesWithFiles: File in Directory:${filesInDirectory.size}")
                 if (filesInDirectory.isNotEmpty()) {
                     // Directory has content, add it to the list of non-empty directories
-                    nonEmptyDirectories.add(directory)
+                    nonEmptyDirectories.add(Media(1,directory.toUri(),directory.name,1))
                 } else {
                     // Directory is empty, delete it
                     directory.delete()

@@ -1,6 +1,10 @@
 package com.example.task_1.ui.fragments
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,31 +19,25 @@ import androidx.navigation.Navigation
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.task_1.R
 import com.example.task_1.databinding.FragmentGalleryBinding
+import com.example.task_1.extension.cropImage
 import com.example.task_1.model.TempImage
-import com.example.task_1.ui.activity.CameraPreviewActivity
+import com.example.task_1.utils.Constant
 import com.example.task_1.utils.MediaStoreUtils
 import com.example.task_1.utils.padWithDisplayCutout
 import com.example.task_1.viewmodel.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class GalleryFragment : Fragment() {
     private var _fragmentGalleryBinding: FragmentGalleryBinding? = null
     private val fragmentGalleryBinding get() = _fragmentGalleryBinding!!
     private val mainViewModel : MainViewModel by activityViewModels()
+    private var imageUriList = mutableListOf<TempImage>()
     private lateinit var mediaPagerAdapter: MediaPagerAdapter
-    private var mediaList: MutableList<TempImage> = mutableListOf()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            // Get images this app has access to from MediaStore
-            for(i in (activity as CameraPreviewActivity).imageUriList.indices){
-                mediaList.add(TempImage(i,MediaStoreUtils(requireContext()).getImages()[i].uri,""))
-            }
-            Log.i(TAG, "onCreate: ${(activity as CameraPreviewActivity).imageUriList.size}")
-            (fragmentGalleryBinding.photoViewPager.adapter as MediaPagerAdapter)
-                .setMediaListAndNotify(mediaList)
-        }
-    }
+    private var mediaList: MutableMap<Int, TempImage> = mutableMapOf()
+    private lateinit var progressDialog: ProgressDialog
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentGalleryBinding = FragmentGalleryBinding.inflate(inflater, container, false)
         return fragmentGalleryBinding.root
@@ -49,10 +47,34 @@ class GalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            // Get images this app has access to from MediaStore
+            mainViewModel.cameraTempImageList.collect{
+                Log.i(TAG, "onCreate: ${it.size}  // $it")
+                imageUriList.addAll(it)
+                fragmentGalleryBinding.imageCounterTextview.text = "${fragmentGalleryBinding.photoViewPager.currentItem+1}/${it.size}"
+                /*for(i in it.indices){
+                    mediaList[i] = TempImage(
+                        i,
+                        MediaStoreUtils(requireContext()).getImages()[i].uri,
+                        "",
+                        Rect(0,0,1512,2688)
+                    )
+                    //mediaList.add(TempImage(i,MediaStoreUtils(requireContext()).getImages()[i].uri,""))
+
+                }*/
+                withContext(Dispatchers.Main){
+                    (fragmentGalleryBinding.photoViewPager.adapter as MediaPagerAdapter)
+                        .setMediaListAndNotify(imageUriList)
+                }
+            }
+        }
+
+
         // Populate the ViewPager and implement a cache of two media items
-        mediaPagerAdapter = MediaPagerAdapter(childFragmentManager, mediaList)
+        mediaPagerAdapter = MediaPagerAdapter(childFragmentManager, imageUriList)
         fragmentGalleryBinding.photoViewPager.apply {
-            offscreenPageLimit = 2
+            offscreenPageLimit = 15
             adapter = mediaPagerAdapter
         }
 
@@ -64,7 +86,8 @@ class GalleryFragment : Fragment() {
 
         // Handle back button press
         fragmentGalleryBinding.backButton.setOnClickListener {
-            (activity as CameraPreviewActivity).imageUriList.clear()
+            mainViewModel.cameraTempImageList.value = mutableListOf()
+            Constant.cropImageList.clear()
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigateUp()
         }
 
@@ -72,7 +95,7 @@ class GalleryFragment : Fragment() {
         fragmentGalleryBinding.backImageButton.setOnClickListener {
             if (fragmentGalleryBinding.photoViewPager.currentItem > 0) {
                 fragmentGalleryBinding.photoViewPager.currentItem = fragmentGalleryBinding.photoViewPager.currentItem - 1
-                fragmentGalleryBinding.imageCounterTextview.text = "${fragmentGalleryBinding.photoViewPager.currentItem+1}/${(activity as CameraPreviewActivity).imageUriList.size}"
+                fragmentGalleryBinding.imageCounterTextview.text = "${fragmentGalleryBinding.photoViewPager.currentItem+1}/${imageUriList.size}"
             }
         }
 
@@ -80,20 +103,47 @@ class GalleryFragment : Fragment() {
         fragmentGalleryBinding.nextImageButton.setOnClickListener {
             if (fragmentGalleryBinding.photoViewPager.currentItem < mediaPagerAdapter.itemCount - 1) {
                 fragmentGalleryBinding.photoViewPager.currentItem = fragmentGalleryBinding.photoViewPager.currentItem + 1
-                fragmentGalleryBinding.imageCounterTextview.text = "${fragmentGalleryBinding.photoViewPager.currentItem+1}/${(activity as CameraPreviewActivity).imageUriList.size}"
+                fragmentGalleryBinding.imageCounterTextview.text = "${fragmentGalleryBinding.photoViewPager.currentItem+1}/${imageUriList.size}"
             }
         }
 
-        fragmentGalleryBinding.imageCounterTextview.text = "${fragmentGalleryBinding.photoViewPager.currentItem+1}/${(activity as CameraPreviewActivity).imageUriList.size}"
-
         //handle Done Button work
         fragmentGalleryBinding.doneButton.setOnClickListener{
-            mainViewModel.buttonClicked.value = 1
+            showDialogue()
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                var cropImageCopyCount = 0
+                Constant.cropImageList.forEach{
+                    Log.i(TAG, "onViewCreated: Width: Rect:${it.value.rect}  //  Width: ${it.value.rect?.width()}   Height: ${it.value.rect?.height()}")
+                    val originalBitmap = BitmapFactory.decodeFile(it.value.imageUri.path)
+                    //val cropRect = Rect(0, 0, 1512, 2688)
+                    val originalCropRect = it.value.rect
+                    val croppedBitmap = Bitmap.createBitmap(
+                        originalBitmap,
+                        originalCropRect?.left!!,
+                        originalCropRect.top,
+                        originalCropRect.width(),
+                        originalCropRect.height()
+                    )
+                    cropImage(croppedBitmap,it.value.currentTimeSession){
+                        cropImageCopyCount++
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
+                            progressDialog.progress = cropImageCopyCount
+                            if(it.value.id == Constant.cropImageList.size) {
+                                progressDialog.dismiss()
+                                Log.i(TAG, "onViewCreated: dialogue dismiss")
+                                Navigation.findNavController(requireActivity(), R.id.fragment_container).navigateUp()
+                            }
+                        }
+                        Log.i(TAG, "onViewCreated: image Crop Saved ${it.value.id}  $cropImageCopyCount  ${Constant.cropImageList.size}")
+                    }
+                }
+            }
         }
     }
 
     override fun onDestroyView() {
         _fragmentGalleryBinding = null
+        Constant.cropImageList.clear()
         super.onDestroyView()
     }
 
@@ -106,14 +156,26 @@ class GalleryFragment : Fragment() {
         override fun getItemCount(): Int = mediaList.size
         override fun createFragment(position: Int): Fragment = PhotoFragment.create(position)
         override fun getItemId(position: Int): Long {
-            return mediaList[position].id.toLong()
+            return mediaList[position].id.toLong() ?: 0L
         }
         override fun containsItem(itemId: Long): Boolean {
-            return null != mediaList.firstOrNull { it.id.toLong() == itemId }
+            return true
         }
         fun setMediaListAndNotify(mediaList: MutableList<TempImage>) {
             this.mediaList = mediaList
             notifyDataSetChanged()
+        }
+    }
+
+    private fun showDialogue() {
+        progressDialog = ProgressDialog(requireContext())
+        progressDialog.apply {
+            max = Constant.cropImageList.size // Progress Dialog Max Value
+            setMessage("Loading...") // Setting Message
+            setTitle("ProgressDialog") // Setting Title
+            setProgressStyle(ProgressDialog.STYLE_HORIZONTAL) // Progress Dialog Style Horizontal
+            show() // Display Progress Dialog
+            setCancelable(false)
         }
     }
 }

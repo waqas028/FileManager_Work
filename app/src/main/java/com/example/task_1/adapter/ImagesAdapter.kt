@@ -29,9 +29,10 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
     private var actionMode: ActionMode? = null
     private var menuSelection = R.menu.selection_menu
     private var selectAllItems = false
+    private var mediaImageList = mutableListOf<Media>()
     private val differCallback = object : DiffUtil.ItemCallback<Media>() {
         override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
-            return oldItem.name == newItem.name
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean {
@@ -39,6 +40,10 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
         }
     }
     val differ = AsyncListDiffer(this, differCallback)
+
+    init {
+        mediaImageList.addAll(differ.currentList)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ic_images_layout, parent, false))
@@ -49,7 +54,7 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val mediaList = differ.currentList[position]
+        val mediaList = mediaImageList[position]
         holder.imageNameTextview.text = mediaList.name
         Log.i(TAG, "onBindViewHolder: URI: ${mediaList.uri}")
         try{
@@ -157,7 +162,7 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
     private fun selectAllItems() {
         selectAllItems = true
         selectedItems.clear()
-        selectedItems.addAll(differ.currentList)
+        selectedItems.addAll(mediaImageList)
         actionMode?.title = "${selectedItems.size} selected"
         Constant.totalImagesToCopy = selectedItems.size
         notifyDataSetChanged()
@@ -182,4 +187,19 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
             3 -> { menuSelection = R.menu.ic_delete_menu}
         }
     }
+
+    fun updateDataList(){
+        mediaImageList.removeAt(Constant.selectImagePosition)
+        notifyItemRemoved(Constant.selectImagePosition)
+        notifyItemRangeChanged(Constant.selectImagePosition, mediaImageList.size)
+        notifyDataSetChanged()
+    }
+
+    fun updateAdapterDataList(list:List<Media>){
+        Log.i(TAG, "updateAdapterDataList: old: ${mediaImageList.size}   //   new: ${list.size}")
+        mediaImageList.clear()
+        mediaImageList.addAll(list)
+        notifyDataSetChanged()
+    }
+
 }

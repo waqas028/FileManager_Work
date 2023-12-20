@@ -31,11 +31,12 @@ class ImagesFragment : Fragment(), CopyImageProgressListener {
     private var _binding: FragmentImagesBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel : MainViewModel by activityViewModels()
-    private var imagesAdapter : ImagesAdapter = ImagesAdapter(this)
+    private lateinit var imagesAdapter : ImagesAdapter
     private lateinit var progressDialog: ProgressDialog
     private var currentFragmentPosition = 0
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentImagesBinding.inflate(inflater, container, false)
+        imagesAdapter = ImagesAdapter(this)
         binding.imagesRecyclerView.apply {
             adapter = imagesAdapter
             layoutManager = GridLayoutManager(requireContext(),3)
@@ -47,12 +48,11 @@ class ImagesFragment : Fragment(), CopyImageProgressListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+        viewLifecycleOwner.lifecycleScope.launch {
             mainViewModel.imageList.collect{
                 Log.i(TAG, "collectImagesList: ${it.size}  //  $it")
-                withContext(Dispatchers.Main){
-                    imagesAdapter.differ.submitList(it)
-                }
+                imagesAdapter.differ.submitList(it)
+                imagesAdapter.updateAdapterDataList(it)
             }
         }
 
@@ -80,8 +80,11 @@ class ImagesFragment : Fragment(), CopyImageProgressListener {
             val data: Intent? = result.data
             val receivedValue = data?.getStringExtra("key")
             Log.i(TAG, "onActivityResult: $receivedValue")
+            if(receivedValue.equals("DeleteImagesList")){
+                imagesAdapter.updateDataList()
+            }
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                mainViewModel.getImagesList()
+                mainViewModel.getSaveVideoImagesList()
             }
         }
     }

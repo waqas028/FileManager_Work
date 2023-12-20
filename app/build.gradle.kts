@@ -27,12 +27,19 @@ android {
                 "proguard-rules.pro"
             )
         }
-        create("benchmark") {
+        /*debug {
+            isDebuggable =  true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }*/
+       /* create("benchmark") {
             initWith(buildTypes.getByName("release"))
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += listOf("release")
             isDebuggable = true
-        }
+        }*/
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -79,6 +86,9 @@ dependencies {
 
     //crop imageview
     implementation("com.vanniktech:android-image-cropper:4.3.3")
+
+    //leak canary
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
 }
 kapt {
     correctErrorTypes = true

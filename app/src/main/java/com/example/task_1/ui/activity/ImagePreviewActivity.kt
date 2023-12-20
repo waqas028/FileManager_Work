@@ -51,6 +51,7 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
                     imageSlideViewPagerAdapter = ImageSlideViewPagerAdapter(this@ImagePreviewActivity, mediaImageList)
                     binding.idViewPager.adapter = imageSlideViewPagerAdapter
                     binding.idViewPager.currentItem = Constant.selectImagePosition
+                    Log.i("CheckPosition", "onCreate: ${Constant.selectImagePosition}")
                     updateImageCount(Constant.selectImagePosition)
                 }
             }
@@ -92,12 +93,16 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
             val bitmap = BitmapFactory.decodeStream(inputStream)
             saveImagesBitmap(bitmap,File(targetDirectory, "TaskImages"))
             Log.i(TAG, "onCreate: $targetDirectory")
+            val intent = Intent().apply {
+                putExtra("getSavedImageList", "UpdateSavedImagesList")
+            }
+            setResult(Activity.RESULT_OK, intent)
         }
 
         binding.deleteButton.setOnClickListener {
             deleteSingleFile(currentImageUri){
                 val intent = Intent().apply {
-                    putExtra("key", "UpdateImagesList")
+                    putExtra("key", "DeleteImagesList")
                 }
                 setResult(Activity.RESULT_OK, intent)
                 onBackPressed()

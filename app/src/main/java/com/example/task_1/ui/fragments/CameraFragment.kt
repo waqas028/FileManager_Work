@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.hardware.display.DisplayManager
 import android.net.Uri
@@ -35,6 +36,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.concurrent.futures.await
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.Navigation
@@ -49,8 +51,10 @@ import com.example.task_1.ui.activity.KEY_EVENT_ACTION
 import com.example.task_1.ui.activity.KEY_EVENT_EXTRA
 import com.example.task_1.utils.ANIMATION_FAST_MILLIS
 import com.example.task_1.utils.ANIMATION_SLOW_MILLIS
+import com.example.task_1.utils.Constant
 import com.example.task_1.utils.MediaStoreUtils
 import com.example.task_1.utils.simulateClick
+import com.example.task_1.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -68,6 +72,8 @@ typealias LumaListener = (luma: Double) -> Unit
 class CameraFragment : Fragment() {
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
     private val fragmentCameraBinding get() = _fragmentCameraBinding
+    private val mainViewModel : MainViewModel by activityViewModels()
+    private var imageUriList = mutableListOf<TempImage>()
     private var cameraUiContainerBinding: CameraUiContainerBinding? = null
     private lateinit var broadcastManager: LocalBroadcastManager
     private lateinit var mediaStoreUtils: MediaStoreUtils
@@ -81,6 +87,7 @@ class CameraFragment : Fragment() {
     private lateinit var windowManager: WindowManager
     private var sessionImageCounter = 0
     private var currentTimeSession = 0L
+    private var isCaptureImageSuccessfully = true
     private val displayManager by lazy {
         requireContext().getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
     }
@@ -334,77 +341,88 @@ class CameraFragment : Fragment() {
         // Listener for button used to capture photo
         cameraUiContainerBinding?.cameraCaptureButton?.setOnClickListener {
             // Get a stable reference of the modifiable image capture use case
-            imageCapture?.let { imageCapture ->
-                /*val outputOptions: ImageCapture.OutputFileOptions
-                val filename = "Crop_${System.currentTimeMillis()}.jpg"
-                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
-                    val contentValues = ContentValues().apply {
-                        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
-                        put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
-                        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Crop_Directory/Crop_$currentTimeSession")
-                    }
-                    outputOptions = ImageCapture.OutputFileOptions
-                        .Builder(requireContext().contentResolver,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            contentValues)
-                        .build()
-                }else{
-                    val dirName = "Crop_Directory/Crop_${currentTimeSession}"
-                    val rootDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), dirName)
-                    if (!rootDirectory.exists()) {
-                        rootDirectory.mkdirs()
-                    }
-                    val imageFile = File(rootDirectory, filename)
-                    outputOptions = ImageCapture.OutputFileOptions.Builder(imageFile).build()
-                }
-               imageCapture.takePicture(
-                   outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
-                        override fun onError(exc: ImageCaptureException) {
-                            Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+            if(isCaptureImageSuccessfully){
+                isCaptureImageSuccessfully = false
+                imageCapture?.let { imageCapture ->
+                    /*val outputOptions: ImageCapture.OutputFileOptions
+                    val filename = "Crop_${System.currentTimeMillis()}.jpg"
+                    if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+                        val contentValues = ContentValues().apply {
+                            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                            put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
+                            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Crop_Directory/Crop_$currentTimeSession")
                         }
-
-                        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                            sessionImageCounter++
-                            val savedUri = output.savedUri
-                            Log.d(TAG, "Photo capture succeeded: $savedUri")
-                            savedUri?.let { it1 ->
-                                setGalleryThumbnail(it1)
-                                (activity as CameraPreviewActivity).imageUriList.add(TempImage(sessionImageCounter,it1))
+                        outputOptions = ImageCapture.OutputFileOptions
+                            .Builder(requireContext().contentResolver,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                contentValues)
+                            .build()
+                    }else{
+                        val dirName = "Crop_Directory/Crop_${currentTimeSession}"
+                        val rootDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), dirName)
+                        if (!rootDirectory.exists()) {
+                            rootDirectory.mkdirs()
+                        }
+                        val imageFile = File(rootDirectory, filename)
+                        outputOptions = ImageCapture.OutputFileOptions.Builder(imageFile).build()
+                    }
+                   imageCapture.takePicture(
+                       outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
+                            override fun onError(exc: ImageCaptureException) {
+                                Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                             }
-                        }
-                    })*/
 
-                //temporary file code
-                // Setup image capture listener which is triggered after photo has been taken
-                // Create an output file to store the captured image temporarily (you can use a temporary file)
-                val tempFile = File.createTempFile("temp_image", ".jpg", requireContext().cacheDir)
-                val outputOptions = ImageCapture.OutputFileOptions.Builder(tempFile).build()
-                imageCapture.takePicture(outputOptions,cameraExecutor, object : ImageCapture.OnImageSavedCallback {
-                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                        sessionImageCounter++
-                        val savedUri = outputFileResults.savedUri
-                        Log.i(TAG, "onImageSaved: $savedUri")
-                        if (savedUri != null) {
-                            (activity as CameraPreviewActivity).imageUriList.add(TempImage(sessionImageCounter, savedUri, currentTimeSession.toString()))
-                            setGalleryThumbnail(savedUri)
-                        }
-                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
-                            cameraUiContainerBinding?.totalImageCountTextview?.text = (activity as CameraPreviewActivity).imageUriList.size.toString()
-                        }
-                    }
+                            override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                                sessionImageCounter++
+                                val savedUri = output.savedUri
+                                Log.d(TAG, "Photo capture succeeded: $savedUri")
+                                savedUri?.let { it1 ->
+                                    setGalleryThumbnail(it1)
+                                    (activity as CameraPreviewActivity).imageUriList.add(TempImage(sessionImageCounter,it1))
+                                }
+                            }
+                        })*/
 
-                    override fun onError(exception: ImageCaptureException) {
-                        Log.e(TAG, "Capture failed: ${exception.message}", exception)
-                    }
-                })
+                    //temporary file code
+                    // Setup image capture listener which is triggered after photo has been taken
+                    // Create an output file to store the captured image temporarily (you can use a temporary file)
+                    val tempFile = File.createTempFile("temp_image", ".jpg", requireContext().cacheDir)
+                    val outputOptions = ImageCapture.OutputFileOptions.Builder(tempFile).build()
+                    imageCapture.takePicture(outputOptions,cameraExecutor, object : ImageCapture.OnImageSavedCallback {
+                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                            sessionImageCounter++
+                            val savedUri = outputFileResults.savedUri
+                            Log.i(TAG, "onImageSaved: $savedUri  ${Constant.cropImageList.size}")
+                            if (savedUri != null) {
+                                Constant.cropImageList[sessionImageCounter] = TempImage(
+                                    sessionImageCounter,
+                                    savedUri,
+                                    currentTimeSession.toString(),
+                                    Rect(0,0,1512,2688)
+                                )
 
-                // Display flash animation to indicate that photo was captured
-                fragmentCameraBinding?.root?.postDelayed({
-                    fragmentCameraBinding?.root?.foreground = ColorDrawable(Color.WHITE)
-                    fragmentCameraBinding?.root?.postDelayed(
-                        { fragmentCameraBinding?.root?.foreground = null }, ANIMATION_FAST_MILLIS
-                    )
-                }, ANIMATION_SLOW_MILLIS)
+                                imageUriList.add(TempImage(sessionImageCounter, savedUri, currentTimeSession.toString()))
+                                setGalleryThumbnail(savedUri)
+                            }
+                            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
+                                cameraUiContainerBinding?.totalImageCountTextview?.text = imageUriList.size.toString()
+                            }
+                            isCaptureImageSuccessfully = true
+                        }
+
+                        override fun onError(exception: ImageCaptureException) {
+                            Log.e(TAG, "Capture failed: ${exception.message}", exception)
+                        }
+                    })
+
+                    // Display flash animation to indicate that photo was captured
+                    fragmentCameraBinding?.root?.postDelayed({
+                        fragmentCameraBinding?.root?.foreground = ColorDrawable(Color.WHITE)
+                        fragmentCameraBinding?.root?.postDelayed(
+                            { fragmentCameraBinding?.root?.foreground = null }, ANIMATION_FAST_MILLIS
+                        )
+                    }, ANIMATION_SLOW_MILLIS)
+                }
             }
         }
 
@@ -426,7 +444,9 @@ class CameraFragment : Fragment() {
         cameraUiContainerBinding?.photoViewButton?.setOnClickListener {
             // Only navigate when the gallery has photos
             lifecycleScope.launch {
-                if ((activity as CameraPreviewActivity).imageUriList.isNotEmpty()) {
+                if (imageUriList.isNotEmpty()) {
+                    sessionImageCounter = 0
+                    mainViewModel.cameraTempImageList.value = imageUriList
                     Navigation.findNavController(requireActivity(), R.id.fragment_container)
                         .navigate(R.id.action_cameraFragment_to_galleryFragment)
                 }
@@ -462,6 +482,8 @@ class CameraFragment : Fragment() {
         cameraExecutor.shutdown()
         broadcastManager.unregisterReceiver(volumeDownReceiver)
         displayManager.unregisterDisplayListener(displayListener)
+        imageUriList.clear()
+        sessionImageCounter = 0
     }
 
     private class LuminosityAnalyzer(listener: LumaListener? = null) : ImageAnalysis.Analyzer {

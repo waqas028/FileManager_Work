@@ -81,10 +81,10 @@ fun Activity.saveImagesBitmap(bitmap: Bitmap?,directory:File){
             directory.mkdirs()
         }
         val timestamp = System.currentTimeMillis()
-        val fileName = "Image_${timestamp}.jpg"
+        val fileName = "Save_${timestamp}.jpg"
         val outputFile = File(directory, fileName)
         val outputStream = FileOutputStream(outputFile)
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         outputStream.close()
         MediaScannerConnection.scanFile(this, arrayOf(outputFile.path), null, null)
         showToast("Image Saved Successfully!")
@@ -94,7 +94,7 @@ fun Activity.saveImagesBitmap(bitmap: Bitmap?,directory:File){
     }
 }
 
-fun cropImage(bitmap: Bitmap, currentTimeSession: String?){
+fun cropImage(bitmap: Bitmap, currentTimeSession: String?, onCropComplete: () -> Unit){
     try {
         val dirName = "Crop_Directory/Crop_${currentTimeSession}"
         val filename = "Crop_${System.currentTimeMillis()}.jpg"
@@ -109,6 +109,7 @@ fun cropImage(bitmap: Bitmap, currentTimeSession: String?){
         outputStream.flush()
         outputStream.close()
         Log.i("CropImageInfo", "cropImage: image saved")
+        onCropComplete()
     }catch (e:Exception){
         Log.i("CropImageInfo", "cropImage: $e")
     }

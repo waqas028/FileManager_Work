@@ -1,5 +1,6 @@
 package com.example.task_1.ui.fragments
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Build
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,10 +31,11 @@ class VideosFragment : Fragment() , CopyImageProgressListener {
     private var _binding: FragmentVideosBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel : MainViewModel by activityViewModels()
-    private var videosAdapter: VideosAdapter = VideosAdapter(this)
+    private lateinit var videosAdapter: VideosAdapter
     private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentVideosBinding.inflate(inflater, container, false)
+        videosAdapter = VideosAdapter(this)
         binding.videosRecyclerView.apply {
             adapter = videosAdapter
             layoutManager = GridLayoutManager(requireContext(),3)
@@ -46,7 +49,10 @@ class VideosFragment : Fragment() , CopyImageProgressListener {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             mainViewModel.videoList.collect{
                 Log.i(TAG, "collect videos List: ${it.size}")
-                withContext(Dispatchers.Main){ videosAdapter.differ.submitList(it) }
+                withContext(Dispatchers.Main){
+                    videosAdapter.differ.submitList(it)
+                    videosAdapter.updateAdapterDataList(it)
+                }
             }
         }
 
@@ -61,11 +67,26 @@ class VideosFragment : Fragment() , CopyImageProgressListener {
             val intent = Intent(requireContext(), VideoPreviewActivity::class.java)
             intent.putExtra(Constant.SELECT_VIDEO_PATH, it.uri)
             intent.putExtra(Constant.SELECT_VIDEO_NAME, it.name)
-            startActivity(intent)
+            imagePreviewActivityResultLauncher.launch(intent)
         }
 
         videosAdapter.stOnCopyClickListener {
             showDialogue()
+        }
+    }
+
+    private val imagePreviewActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val receivedValue = data?.getStringExtra("key")
+            Log.i(TAG, "onActivityResult: $receivedValue")
+            if(receivedValue.equals("deleteVideoList")){
+                videosAdapter.updateDataList()
+            }
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                mainViewModel.getSaveVideoImagesList()
+            }
         }
     }
 

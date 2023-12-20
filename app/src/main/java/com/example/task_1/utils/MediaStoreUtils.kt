@@ -61,7 +61,7 @@ class MediaStoreUtils(private val context: Context) {
                         id
                     )
                     //val contentFile = File(cursor.getString(imageDataColumn))
-                    files.add(Media(contentUri, name ?: "",0))
+                    files.add(Media(id.toInt(),contentUri, name ?: "",0))
                 }
             }
         }

@@ -1,5 +1,7 @@
 package com.example.task_1.ui.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -59,6 +61,10 @@ class VideoPreviewActivity : AppCompatActivity() {
             destinationStream.close()
             Log.i(TAG, "saveVideo: Done")
             showToast("Video Saved Successfully")
+            val intent = Intent().apply {
+                putExtra("getSavedVideoList", "UpdateVideoList")
+            }
+            setResult(Activity.RESULT_OK, intent)
         } catch (e: IOException) {
             Log.i(TAG, "saveVideo: $e")
             showToast(e.message.toString())
@@ -76,6 +82,10 @@ class VideoPreviewActivity : AppCompatActivity() {
                 MediaStore.Files.FileColumns.DISPLAY_NAME + "=?",
                 selectionArgsPdf
             )
+            val intent = Intent().apply {
+                putExtra("key", "deleteVideoList")
+            }
+            setResult(Activity.RESULT_OK, intent)
             onBackPressed()
         } catch (ex: Exception) {
             ex.printStackTrace()
