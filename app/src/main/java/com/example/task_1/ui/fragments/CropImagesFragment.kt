@@ -1,11 +1,14 @@
 package com.example.task_1.ui.fragments
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.task_1.adapter.CropDirectoryAdapter
 import com.example.task_1.databinding.FragmentCropImagesBinding
 import com.example.task_1.interfaces.CopyImageProgressListener
+import com.example.task_1.ui.activity.ImagePreviewActivity
 import com.example.task_1.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +29,7 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
     private val binding get() = _binding!!
     private val mainViewModel : MainViewModel by activityViewModels()
     private lateinit var cropDirectoryAdapter: CropDirectoryAdapter
+    private var parentDirectoryName = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCropImagesBinding.inflate(inflater, container, false)
         cropDirectoryAdapter = CropDirectoryAdapter(this)
@@ -77,7 +82,16 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
         cropDirectoryAdapter.stOnItemClickListener{
             binding.backButtonImageview.visibility = View.VISIBLE
             if(!it.name.endsWith(".jpg")  &&  !it.name.endsWith(".png")){
+                parentDirectoryName = it.name
                 mainViewModel.getCropImagesList(it.name)
+            }else{
+                val intent = Intent(requireContext(), ImagePreviewActivity::class.java)
+                intent.putExtra("SavedImageFragName",it.name)
+                intent.putExtra("SavedImageFragId",it.id)
+                intent.putExtra("SavedImageFragUri",it.uri.toString())
+                intent.putExtra("SavedImageFragSize",it.size)
+                intent.putExtra("SavedImageFragDirName",parentDirectoryName)
+                imagePreviewActivityResultLauncher.launch(intent)
             }
         }
 
@@ -85,6 +99,23 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
             binding.backButtonImageview.visibility = View.GONE
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                 mainViewModel.getNonEmptyDirectoriesWithFiles("")
+            }
+        }
+    }
+
+    private val imagePreviewActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val receivedValue = data?.getStringExtra("key")
+            Log.i(TAG, "onActivityResult: $receivedValue")
+            binding.backButtonImageview.visibility = View.GONE
+            if(receivedValue.equals("DeleteImagesList")  || receivedValue.equals("deleteVideoList")){
+                cropDirectoryAdapter.updateDataList()
+            }else{
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    mainViewModel.getCropImagesList("")
+                }
             }
         }
     }

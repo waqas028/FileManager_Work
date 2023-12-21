@@ -4,21 +4,20 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.MediaController
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.task_1.databinding.ActivityVideoPreviewBinding
-import com.example.task_1.extension.getFilePathFromVideoUri
+import com.example.task_1.extension.deleteSingleFile
+import com.example.task_1.extension.saveVideo
 import com.example.task_1.extension.showToast
 import com.example.task_1.utils.Common
 import com.example.task_1.utils.Constant
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class VideoPreviewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityVideoPreviewBinding
@@ -29,67 +28,53 @@ class VideoPreviewActivity : AppCompatActivity() {
 
         val selectVideoUri = intent.extras?.get(Constant.SELECT_VIDEO_PATH) as Uri
         val selectVideoName = intent.getStringExtra(Constant.SELECT_VIDEO_NAME)
+        val previousFragmentName = intent.getStringExtra(Constant.PREVIOUS_FRAG_NAME).orEmpty()
+        Log.i(TAG, "onCreate: $selectVideoUri  //  $selectVideoName  //  $previousFragmentName")
+        if(previousFragmentName == Constant.SAVED_FRAG_NAME){
+            binding.deleteButton.visibility = View.VISIBLE
+        }else{
+            binding.saveButton.visibility = View.VISIBLE
+        }
+
         binding.videoNameTextview.text = selectVideoName
-        Log.i(TAG, "onCreate: $selectVideoUri  //  $selectVideoName")
         binding.videoView.setVideoURI(selectVideoUri)
         binding.videoView.requestFocus()
-
         val mediaController = MediaController(this)
         mediaController.setAnchorView(binding.videoView)
         mediaController.setMediaPlayer(binding.videoView)
         binding.videoView.setMediaController(mediaController)
 
         binding.saveButton.setOnClickListener {
-            saveVideo(Common.getFilePathFromImageUri(this,selectVideoUri)!!)
+            lifecycleScope.launch(Dispatchers.IO) {
+                saveVideo(Common.getFilePathFromVideoUri(this@VideoPreviewActivity,selectVideoUri)!!){
+                    lifecycleScope.launch(Dispatchers.Main){
+                        showToast(it)
+                        val intent = Intent().apply {
+                            putExtra("getSavedVideoList", "UpdateVideoList")
+                        }
+                        setResult(Activity.RESULT_OK, intent)
+                    }
+                }
+            }
         }
 
         binding.deleteButton.setOnClickListener {
-            deleteVideo(selectVideoUri)
-        }
-    }
-
-    private fun saveVideo(inputPath: String) {
-        val destinationFile = File(Environment.getExternalStorageDirectory(), "TaskImages/Video_${System.currentTimeMillis()}.mp4")
-        if (!destinationFile.parentFile.exists()) { // Check if parent directory exists
-            destinationFile.parentFile.mkdirs() // Create parent directory if needed
-        }
-        try {
-            val sourceStream = FileInputStream(File(inputPath)).channel
-            val destinationStream = FileOutputStream(destinationFile).channel
-            destinationStream.transferFrom(sourceStream, 0, sourceStream.size())
-            sourceStream.close()
-            destinationStream.close()
-            Log.i(TAG, "saveVideo: Done")
-            showToast("Video Saved Successfully")
-            val intent = Intent().apply {
-                putExtra("getSavedVideoList", "UpdateVideoList")
+            lifecycleScope.launch(Dispatchers.IO) {
+                deleteSingleFile(selectVideoUri){
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        showToast(it)
+                        val intent = Intent().apply {
+                            putExtra("key", "DeleteSingleVideo")
+                        }
+                        setResult(Activity.RESULT_OK, intent)
+                        onBackPressed()
+                    }
+                }
             }
-            setResult(Activity.RESULT_OK, intent)
-        } catch (e: IOException) {
-            Log.i(TAG, "saveVideo: $e")
-            showToast(e.message.toString())
         }
-    }
 
-    private fun deleteVideo(selectVideoUri: Uri) {
-        val imageFile = File(getFilePathFromVideoUri(selectVideoUri)!!)
-        Log.i(TAG, "deleteImages: $selectVideoUri  //  ${imageFile.name}")
-        val resolver = contentResolver
-        val selectionArgsPdf = arrayOf(imageFile.name)
-        try {
-            resolver.delete(
-                selectVideoUri,
-                MediaStore.Files.FileColumns.DISPLAY_NAME + "=?",
-                selectionArgsPdf
-            )
-            val intent = Intent().apply {
-                putExtra("key", "deleteVideoList")
-            }
-            setResult(Activity.RESULT_OK, intent)
+        binding.backButtonImageview.setOnClickListener{
             onBackPressed()
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            Log.i(TAG, "deleteFileUsingDisplayName: $ex")
         }
     }
 

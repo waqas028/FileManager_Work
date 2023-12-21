@@ -257,7 +257,7 @@ object Common {
         onComplete: () -> Unit
     ) {
         val sourceDir = File(sourceImagePath)
-        val targetFile = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+        val targetFile = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
             File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "TaskImages")
         }else{
             File(Environment.getExternalStorageDirectory(), "TaskImages")

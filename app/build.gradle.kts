@@ -85,7 +85,7 @@ dependencies {
     implementation("androidx.concurrent:concurrent-futures-ktx:1.1.0")
 
     //crop imageview
-    implementation("com.vanniktech:android-image-cropper:4.3.3")
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
 
     //leak canary
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")

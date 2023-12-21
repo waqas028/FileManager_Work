@@ -2,18 +2,25 @@ package com.example.task_1.extension
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentUris
 import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import com.example.task_1.ui.activity.VideoPreviewActivity
 import com.example.task_1.utils.Common
+import com.example.task_1.utils.Constant
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.IOException
 
 @SuppressLint("Range")
 fun Activity.getFilePathFromImageUri(uri: Uri): String? {
@@ -74,9 +81,12 @@ fun Activity.getImageContentUri(imageFile: File): Uri? {
     }
 }
 
-fun Activity.saveImagesBitmap(bitmap: Bitmap?,directory:File){
+fun Activity.saveImagesBitmapBelowAndroid10(imageUri: Uri, onSaveImageComplete : (String) -> Unit){
+    Log.i("SavedImageInfo", "saveImagesBitmapBelowAndroid10: $imageUri")
     try {
-        Log.i("SavedImageInfo", "saveImagesBitmap:")
+        /*val inputStream = contentResolver.openInputStream(imageUri)
+        val bitmap = BitmapFactory.decodeStream(inputStream)
+        val directory = File(Environment.getExternalStorageDirectory().toString() + "/TaskImages")
         if (!directory.exists()) {
             directory.mkdirs()
         }
@@ -84,14 +94,60 @@ fun Activity.saveImagesBitmap(bitmap: Bitmap?,directory:File){
         val fileName = "Save_${timestamp}.jpg"
         val outputFile = File(directory, fileName)
         val outputStream = FileOutputStream(outputFile)
-        bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        outputStream.close()
-        MediaScannerConnection.scanFile(this, arrayOf(outputFile.path), null, null)
-        showToast("Image Saved Successfully!")
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+        outputStream.close()*/
+        val sourceDir = File(Common.getFilePathFromImageUri(this,imageUri).orEmpty())
+        val directory = File(Environment.getExternalStorageDirectory().toString() + "/TaskImages")
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+        val fileName = "Save_${System.currentTimeMillis()}.jpg"
+        val extension = fileName.substringAfterLast(".") // Extract extension
+        var targetFileName = fileName
+
+        // Loop until a unique target file name is found
+        var i = 1
+        while (File(directory, targetFileName).exists()) {
+            targetFileName = "${fileName.substringBeforeLast(".")}_$i.$extension"
+            i++
+        }
+        FileInputStream(sourceDir).use { inputStream ->
+            FileOutputStream(File(directory, targetFileName)).use { outputStream ->
+                val buffer = ByteArray(8192) // Increase buffer size for better performance
+                var bytesRead: Int
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    if (Constant.isItCancel) break // Check cancellation flag during loop
+                    outputStream.write(buffer, 0, bytesRead)
+                }
+            }
+        }
+        //MediaScannerConnection.scanFile(this, arrayOf(outputFile.path), null, null)
+        onSaveImageComplete("Image Saved Successfully!")
+        Log.i("SavedImageInfo", "saveImagesBitmapBelowAndroid10: Image Saved Successfully!")
     } catch (e: Exception) {
-        showToast(e.message.toString())
-        Log.i("SavedImageInfo", "saveImagesBitmap: $e")
+        onSaveImageComplete(e.message.toString())
+        Log.i("SavedImageInfo", "saveImagesBitmapBelowAndroid10: $e")
     }
+}
+
+fun Activity.saveImageBitmapAboveAndroid10(imageUri : Uri,onSaveImageComplete : (String) -> Unit){
+    val inputStream = contentResolver.openInputStream(imageUri)
+    val bitmap = BitmapFactory.decodeStream(inputStream)
+    val resolver = contentResolver
+    val contentValues = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, "Save_${System.currentTimeMillis()}.jpg")
+        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/TaskImages") // Optional directory
+    }
+    val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+    uri?.let {
+        val outputStream = resolver.openOutputStream(it)
+        outputStream?.use {output->
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 80, output)
+        }
+    }
+    onSaveImageComplete("Image Saved Successfully!")
 }
 
 fun cropImage(bitmap: Bitmap, currentTimeSession: String?, onCropComplete: () -> Unit){
@@ -115,20 +171,69 @@ fun cropImage(bitmap: Bitmap, currentTimeSession: String?, onCropComplete: () ->
     }
 }
 
-fun Activity.deleteSingleFile(selectImageUri: Uri, onDeleteComplete:() -> Unit) {
-    val imageFile = File(Common.getFilePathFromImageUri(this,selectImageUri)!!)
+@SuppressLint("Range")
+fun Activity.deleteSingleFile(selectImageUri: Uri, onDeleteComplete:(String) -> Unit) {
+    val imageFile = File(selectImageUri.path.orEmpty())
     Log.i("DeleteSingleFile", "deleteImages: $selectImageUri  //  ${imageFile.name}")
-    val resolver = contentResolver
-    val selectionArgsPdf = arrayOf(imageFile.name)
     try {
-        resolver.delete(
-            selectImageUri,
-            MediaStore.Files.FileColumns.DISPLAY_NAME + "=?",
-            selectionArgsPdf
-        )
-        onDeleteComplete()
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            if(imageFile.name.endsWith(".mp4")){
+                val projection = arrayOf(MediaStore.Video.Media._ID)
+                val selection = MediaStore.Video.Media.DATA + " = ?"
+                val selectionArgs = arrayOf(selectImageUri.path)
+                val cursor = contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs, null)
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media._ID))
+                    val contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+                    contentResolver.delete(contentUri, null, null)
+                    cursor.close()
+                }
+            }else{
+                val projection = arrayOf(MediaStore.Images.Media._ID)
+                val selection = MediaStore.Images.Media.DATA + " = ?"
+                val selectionArgs = arrayOf(selectImageUri.path)
+                val cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs, null)
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
+                    val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    contentResolver.delete(contentUri, null, null)
+                    cursor.close()
+                }
+            }
+        }else{
+            if(imageFile.exists()){
+                imageFile.delete()
+            }
+        }
+        onDeleteComplete("Delete Video Successfully!")
     } catch (ex: Exception) {
         ex.printStackTrace()
         Log.i("DeleteSingleFile", "deleteFileUsingDisplayName: $ex")
+    }
+}
+
+fun Activity.saveVideo(inputPath: String, onSaveVideoComplete: (String) -> Unit) {
+    Log.i("VideoSavedInfo", "saveVideo: $inputPath")
+    val folder = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/TaskImages")
+    }else{
+        File(Environment.getExternalStorageDirectory().toString() + "/TaskImages")
+    }
+    if (!folder.exists()) { // Check if parent directory exists
+        folder.mkdirs() // Create parent directory if needed
+    }
+    val destinationFile = File(folder, "Video_${System.currentTimeMillis()}.mp4")
+    try {
+        val sourceStream = FileInputStream(File(inputPath)).channel
+        val destinationStream = FileOutputStream(destinationFile).channel
+        destinationStream.transferFrom(sourceStream, 0, sourceStream.size())
+        sourceStream.close()
+        destinationStream.close()
+        onSaveVideoComplete("Video Saved Successfully")
+    } catch (e: IOException) {
+        onSaveVideoComplete(e.message.toString())
+        Log.i("VideoSavedInfo", "saveVideo: $e")
     }
 }

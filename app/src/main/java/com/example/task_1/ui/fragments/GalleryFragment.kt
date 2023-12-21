@@ -115,7 +115,7 @@ class GalleryFragment : Fragment() {
                 Constant.cropImageList.forEach{
                     Log.i(TAG, "onViewCreated: Width: Rect:${it.value.rect}  //  Width: ${it.value.rect?.width()}   Height: ${it.value.rect?.height()}")
                     val originalBitmap = BitmapFactory.decodeFile(it.value.imageUri.path)
-                    //val cropRect = Rect(0, 0, 1512, 2688)
+                    val cropRect = Rect(0, 0, 0, 0)
                     val originalCropRect = it.value.rect
                     val croppedBitmap = Bitmap.createBitmap(
                         originalBitmap,

@@ -182,4 +182,10 @@ class CropDirectoryAdapter (private val progressListener: CopyImageProgressListe
             3 -> { menuSelection = R.menu.ic_delete_menu}
         }
     }
+
+    fun updateDataList(){
+        Log.i(TAG, "updateDataList: ")
+        clearSelections()
+        notifyDataSetChanged()
+    }
 }

@@ -157,6 +157,7 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
     private fun clearSelections() {
         selectAllItems = false
         selectedItems.clear()
+        Constant.actionMode = null
     }
 
     private fun selectAllItems() {
@@ -180,6 +181,7 @@ class ImagesAdapter (private val progressListener: CopyImageProgressListener?): 
         Log.i(TAG, "onPageUpdate: $onPageSelected")
         clearSelections()
         Constant.actionMode?.finish() // Finish the ActionMode
+        Constant.actionMode = null
         when(onPageSelected){
             0 -> { menuSelection = R.menu.selection_menu}
             1 -> { menuSelection = R.menu.selection_menu}

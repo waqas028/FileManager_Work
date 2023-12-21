@@ -7,6 +7,8 @@ import com.example.task_1.model.TempImage
 object Constant {
     const val SELECT_VIDEO_PATH = "Select Video Path"
     const val SELECT_VIDEO_NAME = "Select Video Name"
+    const val PREVIOUS_FRAG_NAME = "Previous Frag Name"
+    const val SAVED_FRAG_NAME = "Saved Frag"
 
     var selectImagePosition = 0
     var selectVideoPosition = 0

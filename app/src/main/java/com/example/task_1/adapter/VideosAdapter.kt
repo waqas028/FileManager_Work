@@ -199,9 +199,9 @@ class VideosAdapter (private val progressListener: CopyImageProgressListener?) :
     }
 
     fun updateDataList(){
-        mediaVideoList.removeAt(Constant.selectImagePosition)
-        notifyItemRemoved(Constant.selectImagePosition)
-        notifyItemRangeChanged(Constant.selectImagePosition, mediaVideoList.size)
+        mediaVideoList.removeAt(Constant.selectVideoPosition)
+        notifyItemRemoved(Constant.selectVideoPosition)
+        notifyItemRangeChanged(Constant.selectVideoPosition, mediaVideoList.size)
         notifyDataSetChanged()
     }
 

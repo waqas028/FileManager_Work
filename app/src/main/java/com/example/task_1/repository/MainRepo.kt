@@ -118,7 +118,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
 
     fun getSaveVideoImagesList() : List<Media> {
         var imagesList: List<Media> = emptyList()
-        val folder = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        val folder = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
              File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/TaskImages")
         }else{
              File(Environment.getExternalStorageDirectory().toString() + "/TaskImages")
@@ -129,12 +129,12 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                     ".jpeg"
                 ) || name.endsWith(".png") || name.endsWith(".mp4")
             } ?: emptyArray()
-            Log.i("MainRepoInfo", "getSaveVideoImagesList: ${allFiles.size}")
+            Log.i("MainRepoInfo", "getSaveVideoImagesList: AllFileList: ${allFiles.size}")
             imagesList = allFiles.map { file ->
                 Media(1, file.toUri(),file.name,1)
             }
         }
-        Log.i("MainRepoInfo", "getSaveVideoImagesList: ${imagesList.size}")
+        Log.i("MainRepoInfo", "getSaveVideoImagesList: AllImageList-> ${imagesList.size}")
         return imagesList
     }
 
@@ -164,7 +164,7 @@ class MainRepo @Inject constructor(@ApplicationContext private val context: Cont
                 Media(1, file.toUri(),file.name,1)
             }
         }
-        Log.i("MainRepoInfo", "getCropImagesList: FinalList Return:${folder.exists()}  //  Folder:$folder   //  Size:${allFiles.size}  // $allFiles")
+        Log.i("MainRepoInfo", "getCropImagesList: FinalList Return:${folder.exists()}  //  List-> ${imagesList.size}   //  Size:${allFiles.size}  // $allFiles")
         return imagesList
     }
 

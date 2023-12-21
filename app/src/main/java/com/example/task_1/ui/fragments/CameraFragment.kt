@@ -398,7 +398,7 @@ class CameraFragment : Fragment() {
                                     sessionImageCounter,
                                     savedUri,
                                     currentTimeSession.toString(),
-                                    Rect(0,0,1512,2688)
+                                    Rect(0,0,0,0)
                                 )
 
                                 imageUriList.add(TempImage(sessionImageCounter, savedUri, currentTimeSession.toString()))

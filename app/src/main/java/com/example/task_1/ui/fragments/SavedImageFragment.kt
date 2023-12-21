@@ -2,13 +2,16 @@
 
 package com.example.task_1.ui.fragments
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -17,6 +20,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.task_1.adapter.VideosAdapter
 import com.example.task_1.databinding.FragmentSavedImageBinding
 import com.example.task_1.interfaces.CopyImageProgressListener
+import com.example.task_1.ui.activity.ImagePreviewActivity
+import com.example.task_1.ui.activity.VideoPreviewActivity
 import com.example.task_1.utils.Constant
 import com.example.task_1.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,6 +58,7 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
                 withContext(Dispatchers.Main){
                     videosAdapter.differ.submitList(savedFileList)
                     videosAdapter.updateAdapterDataList(savedFileList)
+                    videosAdapter.updateAdapterDataList(savedFileList)
                 }
             }
         }
@@ -66,6 +72,39 @@ class SavedImageFragment : Fragment(), CopyImageProgressListener {
 
         videosAdapter.stOnCopyClickListener {
             showDialogue()
+        }
+
+        videosAdapter.stOnItemClickListener {
+            if(it.name.endsWith(".mp4")){
+                val intent = Intent(requireContext(), VideoPreviewActivity::class.java)
+                intent.putExtra(Constant.SELECT_VIDEO_PATH, it.uri)
+                intent.putExtra(Constant.SELECT_VIDEO_NAME, it.name)
+                intent.putExtra(Constant.PREVIOUS_FRAG_NAME, Constant.SAVED_FRAG_NAME)
+                imagePreviewActivityResultLauncher.launch(intent)
+            }else{
+                val intent = Intent(requireContext(), ImagePreviewActivity::class.java)
+                intent.putExtra("SavedImageFragName",it.name)
+                intent.putExtra("SavedImageFragId",it.id)
+                intent.putExtra("SavedImageFragUri",it.uri.toString())
+                intent.putExtra("SavedImageFragSize",it.size)
+                imagePreviewActivityResultLauncher.launch(intent)
+            }
+        }
+    }
+
+    private val imagePreviewActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val receivedValue = data?.getStringExtra("key")
+            Log.i(TAG, "onActivityResult: $receivedValue")
+            if(receivedValue.equals("DeleteImagesList")  || receivedValue.equals("deleteVideoList")){
+                videosAdapter.updateDataList()
+            }else{
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    mainViewModel.getSaveVideoImagesList()
+                }
+            }
         }
     }
 

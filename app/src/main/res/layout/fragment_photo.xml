@@ -15,7 +15,12 @@
     <com.canhub.cropper.CropImageView
         android:id="@+id/cropImageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:cropShowLabel="false"
+        app:cropFixAspectRatio="false"
+        app:cropScaleType="fitCenter"
+        android:layout_marginBottom="20dp"
+        app:cropBorderCornerColor="@color/cardview_shadow_start_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
