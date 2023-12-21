@@ -176,7 +176,7 @@ fun Activity.deleteSingleFile(selectImageUri: Uri, onDeleteComplete:(String) -> 
     val imageFile = File(selectImageUri.path.orEmpty())
     Log.i("DeleteSingleFile", "deleteImages: $selectImageUri  //  ${imageFile.name}")
     try {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+        if(Build.VERSION.SDK_INT == Build.VERSION_CODES.Q){
             if(imageFile.name.endsWith(".mp4")){
                 val projection = arrayOf(MediaStore.Video.Media._ID)
                 val selection = MediaStore.Video.Media.DATA + " = ?"

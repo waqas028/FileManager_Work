@@ -18,6 +18,7 @@ import com.example.task_1.adapter.CropDirectoryAdapter
 import com.example.task_1.databinding.FragmentCropImagesBinding
 import com.example.task_1.interfaces.CopyImageProgressListener
 import com.example.task_1.ui.activity.ImagePreviewActivity
+import com.example.task_1.utils.Constant
 import com.example.task_1.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,6 +76,11 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
                 }*/
                 withContext(Dispatchers.Main){
                     cropDirectoryAdapter.differ.submitList(cropFolderList)
+                    cropFolderList.filter { file ->
+                        file.name.endsWith(".jpg") || file.name.endsWith(".jpeg") || file.name.endsWith(".png")
+                    }.map {
+                        withContext(Dispatchers.Main) { binding.backButtonImageview.visibility  = View.VISIBLE }
+                    }
                 }
             }
         }
@@ -108,13 +114,14 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             val receivedValue = data?.getStringExtra("key")
+            val previousDirName = data?.getStringExtra(Constant.PREVIOUS_DIR_NAME)
             Log.i(TAG, "onActivityResult: $receivedValue")
             binding.backButtonImageview.visibility = View.GONE
             if(receivedValue.equals("DeleteImagesList")  || receivedValue.equals("deleteVideoList")){
                 cropDirectoryAdapter.updateDataList()
             }else{
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                    mainViewModel.getCropImagesList("")
+                    mainViewModel.getCropImagesList(previousDirName.orEmpty())
                 }
             }
         }

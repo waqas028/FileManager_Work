@@ -180,7 +180,7 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
                 deleteSingleFile(currentImageUri){
                     lifecycleScope.launch(Dispatchers.Main) {
                         val intent = Intent().apply {
-                            putExtra("key", "DeleteSingleImage")
+                            putExtra(Constant.PREVIOUS_DIR_NAME, previousFragmentParentDirName)
                         }
                         setResult(Activity.RESULT_OK, intent)
                         onBackPressed()

@@ -9,6 +9,7 @@ object Constant {
     const val SELECT_VIDEO_NAME = "Select Video Name"
     const val PREVIOUS_FRAG_NAME = "Previous Frag Name"
     const val SAVED_FRAG_NAME = "Saved Frag"
+    const val PREVIOUS_DIR_NAME = "Previous Directory Name"
 
     var selectImagePosition = 0
     var selectVideoPosition = 0

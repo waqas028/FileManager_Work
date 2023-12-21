@@ -112,18 +112,30 @@ class GalleryFragment : Fragment() {
             showDialogue()
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                 var cropImageCopyCount = 0
+                var croppedBitmap : Bitmap
                 Constant.cropImageList.forEach{
                     Log.i(TAG, "onViewCreated: Width: Rect:${it.value.rect}  //  Width: ${it.value.rect?.width()}   Height: ${it.value.rect?.height()}")
                     val originalBitmap = BitmapFactory.decodeFile(it.value.imageUri.path)
-                    val cropRect = Rect(0, 0, 0, 0)
-                    val originalCropRect = it.value.rect
-                    val croppedBitmap = Bitmap.createBitmap(
-                        originalBitmap,
-                        originalCropRect?.left!!,
-                        originalCropRect.top,
-                        originalCropRect.width(),
-                        originalCropRect.height()
-                    )
+                    Log.i(TAG, "onViewCreated: Rect Width-> ${it.value.rect?.width()}")
+                    if(it.value.rect?.width()!!<=0){
+                        val cropRect = Rect(0, 0, 3840, 2160)
+                        croppedBitmap = Bitmap.createBitmap(
+                            originalBitmap,
+                            cropRect.left,
+                            cropRect.top,
+                            cropRect.width(),
+                            cropRect.height()
+                        )
+                    }else{
+                        val originalCropRect = it.value.rect
+                        croppedBitmap = Bitmap.createBitmap(
+                            originalBitmap,
+                            originalCropRect?.left!!,
+                            originalCropRect.top,
+                            originalCropRect.width(),
+                            originalCropRect.height()
+                        )
+                    }
                     cropImage(croppedBitmap,it.value.currentTimeSession){
                         cropImageCopyCount++
                         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
