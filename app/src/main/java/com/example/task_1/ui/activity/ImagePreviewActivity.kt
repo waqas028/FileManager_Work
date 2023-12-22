@@ -69,21 +69,23 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
             delay(100)
             mainViewModel.savedVideoImageList.collect{savedFileList->
                 Log.i(TAG, "collectSavedImageListFromStorage: Collect Saved Image Flow: ${savedFileList.size}  $savedFileList")
-                mediaImageList = savedFileList.filter { file->
-                    file.name.endsWith(".jpg") ||
-                            file.name.endsWith(".jpeg") ||
-                            file.name.endsWith(".png") }
-                    .map { file->
-                        Media(file.id, file.uri, file.name, 1)
+                if(savedFileList.isNotEmpty()){
+                    mediaImageList = savedFileList.filter { file->
+                        file.name.endsWith(".jpg") ||
+                                file.name.endsWith(".jpeg") ||
+                                file.name.endsWith(".png") }
+                        .map { file->
+                            Media(file.id, file.uri, file.name, 1)
+                        }
+                    Log.i(TAG, "onCreate: ${mediaImageList.size}  $mediaImageList")
+                    currentImagePosition = mediaImageList.indexOf(Media(previousFragmentId,Uri.parse(previousFragmentUri),previousFragmentName,previousFragmentSize))
+                    withContext(Dispatchers.Main){
+                        Log.i(TAG, "onCreate: Position->$currentImagePosition  //  mediaImageList->${mediaImageList.size}  mediaImageList->$mediaImageList")
+                        imageSlideViewPagerAdapter = ImageSlideViewPagerAdapter(this@ImagePreviewActivity, mediaImageList)
+                        binding.idViewPager.adapter = imageSlideViewPagerAdapter
+                        binding.idViewPager.currentItem = currentImagePosition
+                        updateImageCount(Constant.selectImagePosition)
                     }
-                Log.i(TAG, "onCreate: ${mediaImageList.size}  $mediaImageList")
-                currentImagePosition = mediaImageList.indexOf(Media(previousFragmentId,Uri.parse(previousFragmentUri),previousFragmentName,previousFragmentSize))
-                withContext(Dispatchers.Main){
-                    Log.i(TAG, "onCreate: Position->$currentImagePosition  //  mediaImageList->${mediaImageList.size}  mediaImageList->$mediaImageList")
-                    imageSlideViewPagerAdapter = ImageSlideViewPagerAdapter(this@ImagePreviewActivity, mediaImageList)
-                    binding.idViewPager.adapter = imageSlideViewPagerAdapter
-                    binding.idViewPager.currentItem = currentImagePosition
-                    updateImageCount(Constant.selectImagePosition)
                 }
             }
         }
@@ -98,12 +100,14 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
         coroutineScope.launch {
             mainViewModel.savedCropImageList.collect{
                 Log.i(TAG, "onCreate: Collect Crop Image-> ${it.size}")
-                mediaImageList = it
-                currentImagePosition = mediaImageList.indexOf(Media(previousFragmentId,Uri.parse(previousFragmentUri),previousFragmentName,previousFragmentSize))
-                imageSlideViewPagerAdapter = ImageSlideViewPagerAdapter(this@ImagePreviewActivity, mediaImageList)
-                binding.idViewPager.adapter = imageSlideViewPagerAdapter
-                binding.idViewPager.currentItem = currentImagePosition
-                updateImageCount(Constant.selectImagePosition)
+                if(it.isNotEmpty()){
+                    mediaImageList = it
+                    currentImagePosition = mediaImageList.indexOf(Media(previousFragmentId,Uri.parse(previousFragmentUri),previousFragmentName,previousFragmentSize))
+                    imageSlideViewPagerAdapter = ImageSlideViewPagerAdapter(this@ImagePreviewActivity, mediaImageList)
+                    binding.idViewPager.adapter = imageSlideViewPagerAdapter
+                    binding.idViewPager.currentItem = currentImagePosition
+                    updateImageCount(Constant.selectImagePosition)
+                }
             }
         }
 
@@ -111,12 +115,14 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
         lifecycleScope.launch(Dispatchers.IO) {
             mainViewModel.imageList.collect{
                 Log.i(TAG, "collectImagesList: $it")
-                mediaImageList = it
-                withContext(Dispatchers.Main){
-                    imageSlideViewPagerAdapter = ImageSlideViewPagerAdapter(this@ImagePreviewActivity, mediaImageList)
-                    binding.idViewPager.adapter = imageSlideViewPagerAdapter
-                    binding.idViewPager.currentItem = Constant.selectImagePosition
-                    updateImageCount(Constant.selectImagePosition)
+                if(it.isNotEmpty()){
+                    mediaImageList = it
+                    withContext(Dispatchers.Main){
+                        imageSlideViewPagerAdapter = ImageSlideViewPagerAdapter(this@ImagePreviewActivity, mediaImageList)
+                        binding.idViewPager.adapter = imageSlideViewPagerAdapter
+                        binding.idViewPager.currentItem = Constant.selectImagePosition
+                        updateImageCount(Constant.selectImagePosition)
+                    }
                 }
             }
         }
@@ -181,6 +187,7 @@ class ImagePreviewActivity : AppCompatActivity(), CopyImageProgressListener {
                     lifecycleScope.launch(Dispatchers.Main) {
                         val intent = Intent().apply {
                             putExtra(Constant.PREVIOUS_DIR_NAME, previousFragmentParentDirName)
+                            putExtra(Constant.IS_LAST_IMAGE, mediaImageList.size)
                         }
                         setResult(Activity.RESULT_OK, intent)
                         onBackPressed()

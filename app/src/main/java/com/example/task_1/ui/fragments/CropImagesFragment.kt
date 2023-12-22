@@ -115,13 +115,19 @@ class CropImagesFragment : Fragment(), CopyImageProgressListener {
             val data: Intent? = result.data
             val receivedValue = data?.getStringExtra("key")
             val previousDirName = data?.getStringExtra(Constant.PREVIOUS_DIR_NAME)
-            Log.i(TAG, "onActivityResult: $receivedValue")
+            val previousDirSize = data?.getIntExtra(Constant.IS_LAST_IMAGE,0)
+            Log.i(TAG, "onActivityResult: $receivedValue  ///  $previousDirName  //  $previousDirSize")
             binding.backButtonImageview.visibility = View.GONE
             if(receivedValue.equals("DeleteImagesList")  || receivedValue.equals("deleteVideoList")){
                 cropDirectoryAdapter.updateDataList()
             }else{
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                    mainViewModel.getCropImagesList(previousDirName.orEmpty())
+                    if(previousDirSize!! > 1){
+                        mainViewModel.getCropImagesList(previousDirName.orEmpty())
+                    }else{
+                        mainViewModel.getCropImagesList("")
+                    }
+                    mainViewModel.getImagesList()
                 }
             }
         }

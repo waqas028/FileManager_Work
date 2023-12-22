@@ -398,10 +398,11 @@ class CameraFragment : Fragment() {
                                     sessionImageCounter,
                                     savedUri,
                                     currentTimeSession.toString(),
-                                    Rect(0,0,0,0)
+                                    Rect(0,0,0,0),
+                                    null
                                 )
 
-                                imageUriList.add(TempImage(sessionImageCounter, savedUri, currentTimeSession.toString()))
+                                imageUriList.add(TempImage(sessionImageCounter, savedUri, currentTimeSession.toString(),Rect(0,0,0,0),null))
                                 setGalleryThumbnail(savedUri)
                             }
                             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){

@@ -7,6 +7,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -236,4 +237,30 @@ fun Activity.saveVideo(inputPath: String, onSaveVideoComplete: (String) -> Unit)
         onSaveVideoComplete(e.message.toString())
         Log.i("VideoSavedInfo", "saveVideo: $e")
     }
+}
+
+fun Activity.saveVideoAboveAndroid10(videoUri : Uri,onSaveImageComplete : (String) -> Unit){
+    val inputStream = contentResolver.openInputStream(videoUri)
+    val bitmap = BitmapFactory.decodeStream(inputStream)
+    val resolver = contentResolver
+    val contentValues = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, "Save_${System.currentTimeMillis()}.jpg")
+        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/TaskImages") // Optional directory
+    }
+    val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+    uri?.let {
+        val outputStream = resolver.openOutputStream(it)
+        outputStream?.use {output->
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 80, output)
+        }
+    }
+    onSaveImageComplete("Image Saved Successfully!")
+}
+
+fun rotateBitmap(source: Bitmap, angle: Float): Bitmap {
+    val matrix = Matrix()
+    matrix.postRotate(angle)
+    return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
 }

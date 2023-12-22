@@ -25,7 +25,9 @@ import com.example.task_1.utils.Constant
 import com.example.task_1.utils.MediaStoreUtils
 import com.example.task_1.utils.padWithDisplayCutout
 import com.example.task_1.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -112,34 +114,36 @@ class GalleryFragment : Fragment() {
             showDialogue()
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                 var cropImageCopyCount = 0
-                var croppedBitmap : Bitmap
                 Constant.cropImageList.forEach{
-                    Log.i(TAG, "onViewCreated: Width: Rect:${it.value.rect}  //  Width: ${it.value.rect?.width()}   Height: ${it.value.rect?.height()}")
-                    val originalBitmap = BitmapFactory.decodeFile(it.value.imageUri.path)
-                    Log.i(TAG, "onViewCreated: Rect Width-> ${it.value.rect?.width()}")
-                    if(it.value.rect?.width()!!<=0){
-                        val cropRect = Rect(0, 0, 3840, 2160)
-                        croppedBitmap = Bitmap.createBitmap(
-                            originalBitmap,
-                            cropRect.left,
-                            cropRect.top,
-                            cropRect.width(),
-                            cropRect.height()
-                        )
-                    }else{
-                        val originalCropRect = it.value.rect
-                        croppedBitmap = Bitmap.createBitmap(
-                            originalBitmap,
-                            originalCropRect?.left!!,
-                            originalCropRect.top,
-                            originalCropRect.width(),
-                            originalCropRect.height()
-                        )
+                    cropImageCopyCount++
+                    Log.i(TAG, "onViewCreated: $cropImageCopyCount  //   $it")
+                    /*val inputStream = requireActivity().contentResolver.openInputStream(it.value.imageUri)
+                    val originalBitmap = BitmapFactory.decodeStream(inputStream)
+                    Log.i(TAG, "onViewCreated: Rect Width-> ${it.value.rect?.width()}  height-> ${it.value.rect?.height()!!}   o_width-> ${originalBitmap.width}   o_height-> ${originalBitmap.height}")
+                    val originalCropRect = it.value.rect
+                    val height = if(it.value.rect?.height()!! > originalBitmap.height){
+                        originalBitmap.height
+                    } else {
+                        originalCropRect?.height()
                     }
-                    cropImage(croppedBitmap,it.value.currentTimeSession){
-                        cropImageCopyCount++
+                    val width = if(it.value.rect?.width()!! > originalBitmap.width){
+                        originalBitmap.width
+                    } else {
+                        originalCropRect?.width()
+                    }
+                    Log.i(TAG, "onViewCreated: Width-> $width    /   height->$height")
+                    val croppedBitmap = Bitmap.createBitmap(
+                        originalBitmap,
+                        originalCropRect?.left!!,
+                        originalCropRect.top,
+                        width!!,
+                        height!!,null,false
+                    )*/
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) { progressDialog.progress = cropImageCopyCount }
+                    cropImage(it.value.bitmap!!,it.value.currentTimeSession){
                         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
                             progressDialog.progress = cropImageCopyCount
+                            Log.i(TAG, "onViewCreated: dialogue $cropImageCopyCount")
                             if(it.value.id == Constant.cropImageList.size) {
                                 progressDialog.dismiss()
                                 Log.i(TAG, "onViewCreated: dialogue dismiss")

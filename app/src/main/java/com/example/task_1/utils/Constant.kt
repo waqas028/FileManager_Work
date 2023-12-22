@@ -10,6 +10,7 @@ object Constant {
     const val PREVIOUS_FRAG_NAME = "Previous Frag Name"
     const val SAVED_FRAG_NAME = "Saved Frag"
     const val PREVIOUS_DIR_NAME = "Previous Directory Name"
+    const val IS_LAST_IMAGE = "Is It Last Image"
 
     var selectImagePosition = 0
     var selectVideoPosition = 0
@@ -23,5 +24,4 @@ object Constant {
     var actionMode : ActionMode? = null
 
     var cropImageList : MutableMap<Int, TempImage> = mutableMapOf()
-
 }
