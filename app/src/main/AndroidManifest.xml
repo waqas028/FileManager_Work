@@ -29,6 +29,12 @@
         android:theme="@style/Theme.Task_1"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activity.PurchasingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.PremiumActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.MemberShipActivity"
             android:exported="true">
             <intent-filter>
@@ -53,9 +59,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.activity.MainActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false" />
     </application>
 
 </manifest>

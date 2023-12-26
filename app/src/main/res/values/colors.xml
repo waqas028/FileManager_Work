@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="textColor">#FF0057</color>
+    <color name="gray">#8a8683</color>
 
     <color name="colorAccent">#FF4081</color>
     <color name="icActive">#FFFFFFFF</color>
@@ -10,4 +11,7 @@
     <color name="icPressed">#AAFFFFFF</color>
 
     <color name="memberBgColor">#181411</color>
+
+    <color name="radioButtonSelectColor">#ffb419</color>
+    <color name="radioButtonUnSelectColor">#75716e</color>
 </resources>

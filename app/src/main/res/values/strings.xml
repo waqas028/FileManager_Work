@@ -22,7 +22,30 @@
     <string name="delete_button_alt">Delete</string>
     <string name="delete_dialog">Delete current photo?</string>
     <string name="delete_title">Confirm</string>
-    
+
     <string name="unlockAllFeatures">Unlock All Features</string>
     <string name="unlimitedScanning">Unlimited Scanning</string>
+    <string name="adFreeExperience">Ad Free Experience</string>
+    <string name="premiumFeatures">Premium Features</string>
+    <string name="monthlyPkgPrice">Rs 750.00/Month</string>
+    <string name="threeDaysFreeTrial">3-Days Free Trial</string>
+    <string name="monthYearPkgPrice">Rs 4,500.00/Year (Rs 4,500.00 375.00/Month)</string>
+    <string name="oneTimePkgPrice">Rs 2,000.00/One time purchase</string>
+    <string name="con">Continue</string>
+    <string name="autoRenewableCancelAnytime">Auto-renewable,Cancel anytime</string>
+    <string name="termAndUse"><u>Terms and Use</u></string>
+    <string name="privacyPolicy"><u>Privacy Policy</u></string>
+    <string name="save70">Save 70%</string>
+
+    <string name="getPremiumNow">Get Premium Now!</string>
+    <string name="pkrPerYears">PKR: 14000/ per year</string>
+    <string name="just12000PerYear">just PKR 12,00 monthly</string>
+    <string name="eight5ff">85% OFF</string>
+    <string name="weekly">WEEKLY</string>
+    <string name="monthly">MONTHLY</string>
+    <string name="weekPrice">PKR:1,500</string>
+    <string name="monthPrice">PKR:9,500</string>
+    <string name="text_with_bullet">Text with a</string>
+    <string name="text1">Printer took a gallery of type and scrambled it to make a type book.</string>
+    <string name="text2">Centuries, but also the leap into electric typesetting.</string>
 </resources>

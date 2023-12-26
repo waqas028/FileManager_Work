@@ -18,6 +18,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_cancel"
+        android:elevation="80dp"
+        android:contentDescription="@string/app_name"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
     <TextView
         android:id="@+id/unlockAllFeaturesTextview"
         android:layout_width="wrap_content"
@@ -27,11 +37,12 @@
         android:textStyle="bold"
         android:textSize="25sp"
         android:textAlignment="center"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/memberImageview"/>
     <TextView
+        android:id="@+id/unlimitedScanningTextview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/unlimitedScanning"
@@ -43,4 +54,240 @@
         app:layout_constraintStart_toStartOf="@id/unlockAllFeaturesTextview"
         app:layout_constraintTop_toBottomOf="@id/unlockAllFeaturesTextview"
         app:drawableStartCompat="@drawable/ic_electricity" />
+    <TextView
+        android:id="@+id/adFreeTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/adFreeExperience"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:drawablePadding="10dp"
+        app:layout_constraintStart_toStartOf="@id/unlimitedScanningTextview"
+        app:layout_constraintTop_toBottomOf="@id/unlimitedScanningTextview"
+        app:drawableStartCompat="@drawable/ic_electricity" />
+    <TextView
+        android:id="@+id/premiumFeaturesTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/premiumFeatures"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:drawablePadding="10dp"
+        app:layout_constraintStart_toStartOf="@id/unlimitedScanningTextview"
+        app:layout_constraintTop_toBottomOf="@id/adFreeTextview"
+        app:drawableStartCompat="@drawable/ic_electricity" />
+    <View
+        android:id="@+id/viewLine"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="#c0c0c0"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@id/unlimitedScanningTextview"
+        app:layout_constraintEnd_toEndOf="@id/unlockAllFeaturesTextview"
+        app:layout_constraintTop_toBottomOf="@id/premiumFeaturesTextview"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/monthlyPkgLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewLine">
+        <RadioButton
+            android:id="@+id/monthlyRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginVertical="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <TextView
+            android:id="@+id/monthlyPriceTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/monthlyPkgPrice"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/monthlyRadioButton"
+            app:layout_constraintTop_toTopOf="@id/monthlyRadioButton"
+            app:layout_constraintBottom_toTopOf="@id/monthlyThreeDaysTrialTextview"/>
+        <TextView
+            android:id="@+id/monthlyThreeDaysTrialTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/threeDaysFreeTrial"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            app:layout_constraintStart_toStartOf="@id/monthlyPriceTextview"
+            app:layout_constraintTop_toBottomOf="@id/monthlyPriceTextview"
+            app:layout_constraintBottom_toBottomOf="@id/monthlyRadioButton"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/monthlyDiscountTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save70"
+        android:textColor="@color/white"
+        android:paddingHorizontal="10dp"
+        android:layout_marginEnd="20dp"
+        android:visibility="gone"
+        android:background="@drawable/ic_discount_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/monthlyPkgLayout"
+        app:layout_constraintTop_toTopOf="@id/monthlyPkgLayout"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/threeDaysLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_select_pkg_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/monthlyPkgLayout">
+        <RadioButton
+            android:id="@+id/threeDaysTrialRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginVertical="10dp"
+            android:checked="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <TextView
+            android:id="@+id/threeDaysTrialTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/threeDaysFreeTrial"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/threeDaysTrialRadioButton"
+            app:layout_constraintTop_toTopOf="@id/threeDaysTrialRadioButton"
+            app:layout_constraintBottom_toTopOf="@id/monthlyYearlyPkgPriceTextview"/>
+        <TextView
+            android:id="@+id/monthlyYearlyPkgPriceTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/monthYearPkgPrice"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            app:layout_constraintStart_toStartOf="@id/threeDaysTrialTextview"
+            app:layout_constraintTop_toBottomOf="@id/threeDaysTrialTextview"
+            app:layout_constraintBottom_toBottomOf="@id/threeDaysTrialRadioButton"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/threeDaysTrialDiscountTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save70"
+        android:textColor="@color/white"
+        android:paddingHorizontal="10dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/ic_discount_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/threeDaysLayout"
+        app:layout_constraintTop_toTopOf="@id/threeDaysLayout"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/oneTimePkgLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/threeDaysLayout">
+        <RadioButton
+            android:id="@+id/oneTimePkgRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginVertical="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <TextView
+            android:id="@+id/oneTimePriceTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/oneTimePkgPrice"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/oneTimePkgRadioButton"
+            app:layout_constraintTop_toTopOf="@id/oneTimePkgRadioButton"
+            app:layout_constraintBottom_toBottomOf="@id/oneTimePkgRadioButton"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/oneTimeDiscountTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save70"
+        android:textColor="@color/white"
+        android:paddingHorizontal="10dp"
+        android:layout_marginEnd="20dp"
+        android:visibility="gone"
+        android:background="@drawable/ic_discount_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/oneTimePkgLayout"
+        app:layout_constraintTop_toTopOf="@id/oneTimePkgLayout"/>
+
+    <Button
+        android:id="@+id/continueButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/con"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/radioButtonSelectColor"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/autoRenewableTextview"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_forward"
+        android:contentDescription="@string/app_name"
+        android:layout_marginEnd="10dp"
+        android:elevation="2dp"
+        app:layout_constraintEnd_toEndOf="@id/continueButton"
+        app:layout_constraintTop_toTopOf="@id/continueButton"
+        app:layout_constraintBottom_toBottomOf="@id/continueButton" />
+
+    <TextView
+        android:id="@+id/autoRenewableTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/autoRenewableCancelAnytime"
+        android:textColor="@color/gray"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintStart_toStartOf="@id/continueButton"
+        app:layout_constraintEnd_toEndOf="@id/continueButton"
+        app:layout_constraintBottom_toTopOf="@id/termsAndUseTextview"/>
+
+    <TextView
+        android:id="@+id/termsAndUseTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/termAndUse"
+        android:textColor="@color/white"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
+        android:id="@+id/privacyPolicyTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/privacyPolicy"
+        android:textColor="@color/white"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
