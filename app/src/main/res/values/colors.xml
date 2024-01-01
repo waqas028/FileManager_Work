@@ -14,4 +14,8 @@
 
     <color name="radioButtonSelectColor">#ffb419</color>
     <color name="radioButtonUnSelectColor">#75716e</color>
+
+    <color name="lightWhiteColor">#fafafa</color>
+    <color name="green">#01e760</color>
+    <color name="lightGrayColor">#a4a4a4</color>
 </resources>

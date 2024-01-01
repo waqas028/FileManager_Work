@@ -3,7 +3,7 @@
     <style name="Base.Theme.Task_1" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-
+        <item name="android:statusBarColor">@android:color/white</item>
         <item name="radioButtonStyle">@style/Widget.App.RadioButton</item>
 
     </style>

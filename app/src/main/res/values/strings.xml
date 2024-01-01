@@ -46,6 +46,8 @@
     <string name="weekPrice">PKR:1,500</string>
     <string name="monthPrice">PKR:9,500</string>
     <string name="text_with_bullet">Text with a</string>
-    <string name="text1">Printer took a gallery of type and scrambled it to make a type book.</string>
-    <string name="text2">Centuries, but also the leap into electric typesetting.</string>
+    <string name="text1">Printer took a gallery of type and scrambled it make.</string>
+    <string name="text2">Centuries, but also the leap into electric.</string>
+    <string name="restore">Restore</string>
+    <string name="termOfUse">Term of use</string>
 </resources>
